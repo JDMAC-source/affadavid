@@ -68,208 +68,40 @@
 					{% endif %}
 					{% if request.user.is_authenticated %}
 						<div id="account" style="position: relative; top: -6px; display: inline-block">
-							<div class=useraccount ontouchstart="$('.dropdown-contentuu')[0].display = 'block';">
-								<a href="{% url 'Bable:tob_user_view_count' request.user.username 0 %}" >/u/</a>
-							</div>
-							<div class="dropdown-contentuu">
-								<div class="settings_dictionary_ads">
-									<a href="{% url 'Bable:settings' 'dictionary' %}">
-									<p> Dictionary Ads </p><input type=checkbox name=dictionary_ads id=dictionary_ads {% if loggedinanon.settings_dictionary_ads %}checked{% endif %}></a>
-								</div>
-								<div class="settings_word_ads">
-									<a href="{% url 'Bable:settings' 'word' %}">
-									<p> Word Ads </p><input type=checkbox name=word_ads id=word_ads {% if loggedinanon.settings_word_ads %}checked{% endif %}>
-									</a>
-								</div>
-								<div class="settings_space_ads">
-									<a href="{% url 'Bable:settings' 'space' %}">
-									<p> Space Ads </p><input type=checkbox name=space_ads id=space_ads {% if loggedinanon.settings_space_ads %}checked{% endif %}>
-									</a>
-								</div>
-								<div class="settings_post_ads">
-									<a href="{% url 'Bable:settings' 'post' %}">
-									<p> Post Ads </p><input type=checkbox name=post_ads id=post_ads {% if loggedinanon.settings_post_ads %}checked{% endif %}>
-									</a>
-								</div>
+							<div class=useraccount>
+								<a href="{% url 'Bable:tob_user_view_count' request.user.username 0 %}" >{{ request.user.username }}</a>
 							</div>
 							
+							
 						</div>
-						<div id="headerNav3">
-							<div id="top_apply" style="color: #e3dac9;" ontouchstart="$('.dropdown-content3')[0].display = 'block';">
-								A
-							</div>
-							<div class="dropdown-content3">
-								<div class="apply_votes" onclick="showhideapplyvotes()">
-									<p> Create Votes </p>
-								</div>
-								<div class="exclude_votes" onclick="showhideexcludevotes()">
-									<p> Exclude Votes </p>
-								</div>
-								<div class="apply_dic" onclick="showhideapplydic()">
-									<p> Apply Dic </p>
-								</div>
-								<div class="exclude_dic" onclick="showhideexcludedic()">
-									<p> Exclude Dic </p>
-								</div>
-								<div class="apply_votestyle" onclick="showhideapplyvotestyle()">
-									<p> Apply Votestyle </p>
-								</div>
-								<div class="upload_file" onclick="showhideuploadfile()">
-									<p> Upload File </p>
-								</div>
-							</div>
-						</div>
-						<div id="headerNav2">
-							<div id="top_create" style="color: #e3dac9;" ontouchstart="$('.dropdown-content2')[0].display = 'block';">+</div>
-							<div class="dropdown-content2">
-								<div class="create_dic" onclick="showhidedic()">
-									<p> Grow A Dic </p>
-								</div>
-								<div class="word-bar" onclick="showhideword()">
-									<p> Define A Word </p>
-								</div>
-								<div class="space-bar" onclick="showhidespace()">
-									<p> Make Space </p>
-								</div>
-								<div class="post-bar" onclick="showhidesubmit()">
-									<p> Mark Post </p>
-								</div>
-								<div class="task-bar" onclick="showhidetask()">
-									<p> Set Task </p>
-								</div>
-							</div>
-						</div>
+						
 						<div id="notifications">
 							<div id="notification-count"></div>
 							<div class="notification-dropdown">
 							</div>
 						</div>
 					{% endif %}
-				<!--
-				<div id="headerNav1" ontouchstart="$('.dropdown-content1')[0].display = 'block';">
-					<div id="top"></div>
-					<div id="middle"></div>
-					<div id="bottom"></div>
-					<div class="dropdown-content1">
-						<div class="space_view">
-							<a href="{% url 'Bable:tob_view_spaces' %}">Spaces</a>
-						</div>
-						<div class="user_view">
-							<a href="{% url 'Bable:tob_view_users' %}">Users</a>
-						</div>
-						<div class="word_attributes">
-							<a href="/B/word_attributes/">Word Attributes</a>
-						</div>
-						<div class="universal_pronunciation">
-							<a href="/B/universal_pronunciation/">Universal Pronunciation</a>
-						</div>
-						<div class="mutawords">
-							<a href="/B/mutawords/">Mutawords</a>
-						</div>
-						<div class="dictionaries">
-							<a href="/B/dictionary/">Dictionaries</a>
-						</div>
-					</div>
-				</div>
-				-->
-			</div>
-			<div class=header-middle style="height: fit-content;">
-				{% if request.user.is_authenticated %}
-					<p style="height: 20px; margin-top: 0px; margin-bottom: 0px;">{{ loggedinanon.false_wallet }} <img src="{% static '$$$8880.00.png' %}" style="height: 1em; width: 1em;" alt="moneyflipbrokerbrokerbrokedbroken ld"></p>
-				{% endif %}
+				
 			</div>
 			
+			
 			<div class=header-lower style="display: inline-block;">
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="space_view" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-						<a href="{% url 'Bable:tob_view_spaces' %}">Spaces</a>
-					</div>
-				</div>
+				
 				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
 					<div class="user_view" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
 					<a href="{% url 'Bable:tob_view_users' %}">Users</a>
 					</div>
 				</div>
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="word_attributes" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/word_attributes/">Word Attributes</a>
-					</div>
-				</div>
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="universal_pronunciation" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/universal_pronunciation/">Universal Pronunciation</a>
-					</div>
-				</div>
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="mutawords" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/mutawords/">Mutawords</a>
-					</div>
-				</div>
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="dictionaries" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/dictionary/">Dictionaries</a>
-					</div>
-				</div>
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="sponsors_header" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/tob_sponsors/0/">Sponsors</a>
-					</div>
-				</div>
-				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
-					<div class="products_header" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/tob_products/0/">Products</a>
-					</div>
-				</div>
+				
 				<div style="display: inline-block; border-radius:5px; border: 1px white solid;">
 					<div class="storefronts_header" style="display: inline-block; border-radius:4px; border: 1px #e3dac9 solid;">
-					<a href="/B/storefronts/0/">Storefronts</a>
+					<a href="/B/pages/">Pages</a>
 					</div>
 				</div>
 			</div>
 		</header>
 		<div class="boardpinup" id=dontchange>
-			<div id="leftsidenav" class="leftsidenav" style="margin-top: 3em;">
-				<a href="javascript:void(0)" class="leftclosebtn" onclick="closeleftNav()">&times;</a>
-				{% if request.user.is_authenticated %}
-					<div class=gooddoggo>
-						<div class=applied_votestyles>
-							{% if loggedinanon.applied_votestyles.count %}
-								Applied Votestyles:
-								{% for vote in loggedinanon.applied_votestyles.all %}
-									<a href="{% url 'Bable:tob_vote' vote.id %}" style="color: #e3dac9;">{{ vote.the_vote_name|fontype:vote.the_vote_style.the_space_itself.to_full|safe }}; {{ vote.id }}</a>, 
-								{% endfor %}
-							{% else %}
-								No Applied Votestyles.
-							{% endif %}
-						</div>
-						<div class=applied_dictionaries>
-							{% if loggedinanon.applied_dictionaries.count %}
-								{% for dic in loggedinanon.applied_dictionaries.all %}
-									<a href="{% url 'Bable:tob_dic' dic.id %}">{{ dic.the_dictionary_itself }}</a>, 
-								{% endfor %}
-							{% else %}
-								No Applied Dictionaries.
-							{% endif %}
-						</div>
-						<div class=tasks>
-							{% if loggedinanon.tasks.count %}
-								{% for task in loggedinanon.tasks.all %}
-									<a href="{% url 'Bable:delete_task' task.id %}">{{ task.priority }}: {{ task.the_task_itself }}</a>
-								{% endfor %}
-							{% endif %}
-						</div>
-					</div>
-				{% else %}
-					<div class=gooddoggo>
-						Well done. You've clicked the tower. This would actually achieve something if you had logged in first. Use the key for that. The name takes you home. This is where all the applicables sit. And you can't apply any changes to my site unless you are logged in.
-						<br><br>
-						Our policy is best summarized as "we don't care about _you_, we care about _them_", no emails, so no forgetting your password. You have no rights. It's like you don't even exist. If you publish material, I reserve the right to remove it, or use it myself.
-						<br><br>
-						Don't impersonate. Don't name someone involuntarily. You can lose everything if you cross the line, and no, I won't cancel your automatic payments first, so you'll have to do it the hard way. See how serious this sounds? That's how serious you're meant to take these.
-						<br><br>
-					</div>
-				{% endif %}
-			</div>
+			
 			<div id="sidenav" class="sidenav" style="margin-top: 50px;">
 				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 				<div id="logs" style="margin-top: 50px; margin-bottom: 400px;">
@@ -303,41 +135,9 @@
 					{% endif %}
 				</div>
 				<div id="searchindex" >
-					<form id="searchform" action="{% url 'Bable:search' 0 %}" method="get">
+					<form id="searchform" action="{% url 'Bable:search' 0 0 %}" method="get">
 						<input id="search" name="q" type="text" placeholder="Search:">
 						<input id="search_submit" type="submit" value="Search">
-					</form>
-				</div>
-				<div id="dicform" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:create_dic' %}" method="post">
-						<b>Grow A Dic</b><br>
-						{% csrf_token %}
-						{{ dic_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="wordform" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:create_word' %}" method="post">
-						<b>Define A Word</b><br>
-						{% csrf_token %}
-						{{ word_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="spaceform" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:create_space' %}" method="post" style="overflow-y: auto; margin-bottom: 500px;">
-						<b>Make Space</b><br>
-						{% csrf_token %}
-						{{ space_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="taskform" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:create_task' %}" method="post">
-						<b>Set Task</b><br>
-						{% csrf_token %}
-						{{ task_form }}
-						<button type="submit">Submit</button>
 					</form>
 				</div>
 				<div id="submitindex" style="margin-top: 50px; margin-bottom: 400px;">
@@ -357,69 +157,6 @@
 						<button type="submit">Submit</button>
 					</form>
 					{% endif %}
-				</div>
-				<div id="apply_votestyle" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:apply_votestyle' %}" method="post">
-						<b>Apply Votestyle</b><br>
-						{% csrf_token %}
-						{{ apply_votestyle_form }}
-						<input type="text" class="AutoComplete" placeholder="Search Votestyles" data-url="{% url 'Bable:autocomplete_votestyles' %}">
-						<button id="searchforvote" type="none">Use Vote</button>
-						<button type="submit">Submit</button>
-					</form>
-					<script src="https://cdn.rawgit.com/xcash/bootstrap-autocomplete/3de7ad37/dist/latest/bootstrap-autocomplete.js"></script>
-				    <script type="text/javascript">
-				    	$('.AutoComplete').autoComplete({minLength: 0});
-				      	$('.dropdown-menu').css({'top': 'auto', 'left': 'auto'});
-				      	var search = document.getElementById('searchforvote');
-				      	search.addEventListener('click', function() {
-					      	var vote_name = $('.AutoComplete').val()
-					      	$.ajax({
-							  url: "{% url 'Bable:grabvoteid' %}",
-							  data: {
-							    format: 'json',
-							    name: vote_name,
-							  },
-							  success: function(data) {
-							  	console.log(data)
-							  	$("#id_the_vote_style").val(parseInt(data));
-							  }
-							});
-					      });
-				    </script>
-				</div>
-				<div id="apply_votes" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:apply_votes' %}" method="post">
-						<b>Create Votes</b><br>
-						{% csrf_token %}
-						(From: saved spaces)
-						{{ create_votes_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="exclude_votes" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:exclude_votes' %}" method="post">
-						<b>Exclude Votes</b><br>
-						{% csrf_token %}
-						{{ exclude_votes_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="apply_dic" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:apply_dic' %}" method="post">
-						<b>Apply Dic</b><br>
-						{% csrf_token %}
-						{{ apply_dic_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="exclude_dic" style="margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:exclude_dic' %}" method="post">
-						<b>Exclude Dic</b><br>
-						{% csrf_token %}
-						{{ exclude_dic_form }}
-						<button type="submit">Submit</button>
-					</form>
 				</div>
 				<div id="fileform" style="display: none; background: white; margin-top: 50px; margin-bottom: 400px;">
 					<form action="{% url 'Bable:upload_file' %}" method="post" enctype='multipart/form-data'>
@@ -453,9 +190,7 @@
 					{% endblock %}
 				{% endif %}
 			</div>
-			<div id=bloodsuckers class=overripped style="display: none;">
-				Death aint certain, death me yesterday, damn you dead, oh shit pot luck. Bleed after me, drain my blood, bleed bloood blood aint free, bleed for purpose, pleasure for glory, bleed unto us, bleed unto, blood unto blood, blood unto bloarders, blood unto bleeding, blood is bloody, bloody aint bleeding, bleeding bleeding, blood is blood, bleeding bleeding, blood blood, bleeding bleeding blood bleeding bleeding blood. Tooth in nail. Nail in board. Board in nail. Nail in head. Head in nail. Nail in head. Head to nail. Nail the head. Head the nail. Islain snail. Snail the head. Head the snail. sail the head. head to sail. sail a head. buy a booby, bitches is nudey, nude is dudey, dudi nuti. Nuti duti. Duti nuti. Nute the duti. Dute nuti. Isna nuti, nisna nute nit nuti nute ti duti duti duti ti nuti. tit ti nuti nute de duty duty nuti nuti duty. islain misnail snail misnail snail misnail snail snail. snail his snail. his snail is snail. he sa snail. sa snail da mail. mail da snail. snail da mail. mail da mail. snail snail. isno snow snail ne now. now ne snail. isna nail.
-			</div>
+			
 		</div>
 		<footer id="footer" style="position: relative; top: 250px; padding-bottom: 100px;">
 			<div class="footer-inner">
@@ -478,7 +213,7 @@
 			</p>
 				<div class="footer-links">
 					<div class="feedback">
-						<a href="https://www.affago.org">Affago.org</a>
+						<a href="https://glocal.com">Glocal.com</a>
 					</div>
 				</div>
 			</div>
@@ -491,21 +226,9 @@
 		    document.getElementById("logs").style.display = "none";
 		    document.getElementById("searchindex").style.display = "none";
 		    document.getElementById("submitindex").style.display = "none";
-		    document.getElementById("spaceform").style.display = "none";
-		    document.getElementById("wordform").style.display = "none";
-		    document.getElementById("dicform").style.display = "none";
-		    document.getElementById("apply_votes").style.display = "none";
-		    document.getElementById("apply_votestyle").style.display = "none";
-		    document.getElementById("apply_dic").style.display = "none";
-		    document.getElementById("exclude_dic").style.display = "none";
-		    document.getElementById("exclude_votes").style.display = "none";
+		    
 		}
-		function closeleftNav() {
-		    document.getElementById("leftsidenav").style.width = "0px";
-		}
-		function showhideleft() {
-		    document.getElementById("leftsidenav").style.width = "350px";
-		}
+		
 
 		function openNav() {
 		    document.getElementById("sidenav").style.width = "450px";
@@ -556,96 +279,7 @@
 		        element.style.display = "inline-block";
 		    }
 		}
-		function showhidespace() { 
-		    openNav();
-		    var element = document.getElementById("spaceform");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhideword() {
-			openNav(); 
-		    var element = document.getElementById("wordform");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhidedic() { 
-			openNav();
-		    var element = document.getElementById("dicform");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhidetask() { 
-			openNav();
-		    var element = document.getElementById("taskform");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhideapplyvotes() { 
-			openNav();
-		    var element = document.getElementById("apply_votes");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhideapplyvotestyle() { 
-			openNav();
-		    var element = document.getElementById("apply_votestyle");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhideapplydic() { 
-			openNav();
-		    var element = document.getElementById("apply_dic");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhideexcludedic() { 
-			openNav();
-		    var element = document.getElementById("exclude_dic");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
-		function showhideexcludevotes() { 
-			openNav();
-		    var element = document.getElementById("exclude_votes");
-		    if (element.style.display === "inline-block") {
-		        element.style.display = "none";
-		        closeNav();
-		    } else {
-		        element.style.display = "inline-block";
-		    }
-		}
+		
 		function showhideuploadfile() { 
 			openNav();
 		    var element = document.getElementById("fileform");

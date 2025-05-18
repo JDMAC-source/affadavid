@@ -73,9 +73,7 @@ class Requested_Agent(models.Model):
 
 class Author(models.Model):
 	username = models.CharField(max_length=150, default='', unique=True)
-	spent_invoices = models.ManyToManyField(Invoice, default=None, related_name='spentinvoices')
-	earnt_invoices = models.ManyToManyField(Invoice, default=None, related_name='earntinvoices')
-
+	
 	def to_anon(self):
 		if Anon.objects.filter(username__username=self.username[0:149]).count():
 			if not User.objects.filter(username=self.username[0:149]).count():
@@ -114,7 +112,7 @@ class Author(models.Model):
 				return anon
 
 
-class Commend_Edit(models.Model):
+class Comment_Edit(models.Model):
 	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None)
 	body = models.TextField(max_length=1440, default='')
 	comment_id = models.IntegerField(default=0)
@@ -177,12 +175,44 @@ COMMENT_SORT_CHOICES_CHAR = (
 )
 
 class Views(models.Model):
-	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None, null=True)
 	creation_date = models.DateTimeField(default=timezone.now)
 	sentence_id = models.IntegerField(default=0)
 
+class Sentence_Edit(models.Model):
+	sentence = models.TextField(max_length=14400)
+	creation_date = models.DateTimeField(default=timezone.now)
+	sentence_prior = models.TextField(max_length=14400)
+	
+	accuracy = models.ManyToManyField(Author, default=None, related_name="sentence_edit_accuracy")
+	credibility = models.ManyToManyField(Author, default=None, related_name="sentence_edit_credibility")
+	
+	post_views_before_sentence_edit = models.ManyToManyField(Views, default=None, related_name="post_views_before_sentence_editing")
+	post_views_after_sentence_edit = models.ManyToManyField(Views, default=None, related_name="post_views_after_sentence_editing")
+	
+	one_day_has_passed = models.BooleanField(default=False)
+	
+	one_day_view_bump_from_sentence_edit = models.IntegerField(default=0)
+	odvbfse_with_assumed_information_decay = models.IntegerField(default=0)
+	
+	two_days_have_passed = models.BooleanField(default=False)
+	
+	odvbfse_waid_virality_day_two = models.IntegerField(default=0)
+	odvbfse_woaid_virality_day_two = models.IntegerField(default=0)
+
+	post_id = models.IntegerField(default=0)
+	edit_id = models.IntegerField(default=0)
+	
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None, null=True)
+
 class Sentence(models.Model):
-	sentence = models.TextField(max_length=1440)
+	sentence = models.TextField(max_length=14400, default='')
+
+
+	collaborated_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="collaborated_sentence_edits")
+	contributed_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="contributed_sentence_edits")
+	suggested_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="suggested_sentence_edits")
+	
 	accuracy = models.ManyToManyField(Author, default=None, related_name="sentence_accuracy")
 	credibility = models.ManyToManyField(Author, default=None, related_name="sentence_credibility")
 	post_views_before_sentence_edit = models.ManyToManyField(Views, default=None, related_name="post_views_before_sentence_edit")
@@ -201,7 +231,8 @@ class Sentence(models.Model):
 
 	
 class Edit(models.Model):
-	body = models.TextField(max_length=144000, default='')
+	new_body = models.TextField(max_length=144000, default='')
+	old_body = models.TextField(max_length=144000, default='')
 	sentences = models.ManyToManyField(Sentence, default=None)
 	post_id = models.IntegerField(default=0)
 	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
@@ -213,15 +244,20 @@ class Edit(models.Model):
 class Post(models.Model):
 	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None, null=True)
 	sentences = models.ManyToManyField(Sentence, default=None)
+	collaborated_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="post_collaborated_sentence_edits")
+	contributed_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="post_contributed_sentence_edits")
+	suggested_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="post_suggested_sentence_edits")
 	edits = models.ManyToManyField(Edit, default=None)
 	title = models.CharField(max_length=200, default='')
+	img = models.OneToOneField(File, default=None, on_delete=models.PROTECT, related_name="display_image")
+	imgs = models.ManyToManyField(File, default=None, related_name="other_images")
 	has_commented = models.ManyToManyField(Author, default=None, related_name='post_has_commented')
 	sum_has_commented = models.IntegerField(default=0)
 	has_viewed = models.ManyToManyField(Author, default=None, related_name='post_has_viewed')
 	sum_has_viewed = models.IntegerField(default=0)
-	has_credibilities = models.ManyToManyField(Author, default=None, related_name='post_has_voted')
+	has_credibilities = models.ManyToManyField(Author, default=None, related_name='post_has_credibilities')
 	sum_has_credibilities = models.IntegerField(default=0)
-	has_accuracy = models.ManyToManyField(Author, default=None, related_name='post_has_voted')
+	has_accuracy = models.ManyToManyField(Author, default=None, related_name='post_has_accuracy')
 	sum_has_accuracy = models.IntegerField(default=0)
 	body = models.TextField(max_length=1440, default='')
 	comments = models.ManyToManyField(Comment, default=None)
@@ -249,35 +285,173 @@ class Post(models.Model):
 	def __unicode__(self):
    		return unicode(self.title) or u''
 
-   	def check_one_and_two_day_view_bumps(self):
-   		# BIG VIEW BUMPS ONE DAY -> sentence change highly impactful, value improvement score percentage
-   		# BIG VIEW BUMPS DAY TWO -> sentence change highly impactful and sustained, value improvement score viral percentage
-   		
-   		# BIG VIEW BUMPS ONE DAY with decay -> sentence change impactful, value improvement score percentage
-   		# BIG VIEW BUMPS DAY TWO with decay -> sentence change impactful, value improvement score viral percentage
-   		for sentence in self.sentences.all():
-   			if not sentence.one_day_has_passed:
-	   			if timezone.now - sentence.creation_date > timedelta(+1):
-	   				sentence.one_day_has_passed = True
-	   				sentence.save()
-	   				if sentence.post_views_after_sentence_edit.count() > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count():
-	   					sentence.one_day_view_bump_from_sentence_edit = sentence.post_views_after_sentence_edit.count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count()
-	   					sentence.save()
-	   				if sentence.post_views_after_sentence_edit.count() > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count():
-	   					sentence.odvbfse_with_assumed_information_decay = sentence.post_views_after_sentence_edit.count() - (sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count())
-	   					sentence.save()
-	   				
+	def pass_sentence_to_collaborative_edit(self, new_sentence, old_sentence, appearance_order=0):
+		unedited_sentence = self.sentences.filter(sentence=old_sentence).order_by('creation_date')[appearance_order]
+		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
+		unedited_sentence.collaborated_sentence_edits.add(sentence_edit)
+		self.post_collaborated_sentence_edits.add(sentence_edit)
+		self.sentences.remove(unedited_sentence)
+		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
+		for view in unedited_sentence.post_views_after_sentence_edit.all():
+			new_edited_sentence.post_views_before_sentence_edit.add(view)
+		new_edited_sentence.save()
+		self.sentences.add(new_edited_sentence)
 
-	   		if not sentence.two_days_have_passed:
-	   			if timezone.now - sentence.creation_date > timedelta(+2):
-	   				sentence.two_days_have_passed = True
-	   				sentence.save()
-	   				if sentence.post_views_after_sentence_edit.count() - sentence.one_day_view_bump_from_sentence_edit > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count():
-	   					sentence.odvbfse_woaid_virality_day_two = sentence.post_views_after_sentence_edit.count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count()
-	   					sentence.save()
-	   				if sentence.post_views_after_sentence_edit.count() - sentence.one_day_view_bump_from_sentence_edit > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count():
-	   					sentence.odvbfse_waid_virality_day_two = sentence.post_views_after_sentence_edit.count() - sentence.one_day_view_bump_from_sentence_edit - (sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count())
-	   					sentence.save()
+		splitting = self.body.split(old_sentence)
+		for bit in splitting[0:appearance_order]:
+			if not appearance_order:
+				new_body += bit + old_sentence
+		new_body += new_sentence
+		for bit in splitting[appearance_order:]:
+			new_body += bit
+
+		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=self.author, post_id=self.id))
+		self.body = new_body
+
+		self.save()
+
+		anons_with_unedited_sentence_in_saved = Anon.objects.filter(anon_saved_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_saved.all():
+			anon.anon_saved_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_collaborated = Anon.objects.filter(anon_collaborated_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_collaborated.all():
+			anon.anon_collaborated_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_contributed = Anon.objects.filter(anon_contributed_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_contributed.all():
+			anon.anon_contributed_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_suggested = Anon.objects.filter(anon_suggested_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_suggested.all():
+			anon.anon_suggested_sentence_edits.add(sentence_edit)
+			anon.save()
+
+
+	def pass_sentence_to_contributive_edit(self, new_sentence, old_sentence, appearance_order=0):
+		unedited_sentence = self.sentences.filter(sentence=old_sentence).order_by('creation_date')[appearance_order]
+		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
+		unedited_sentence.contributed_sentence_edits.add(sentence_edit)
+		self.post_collaborated_sentence_edits.add(sentence_edit)
+		self.sentences.remove(unedited_sentence)
+		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
+		for view in unedited_sentence.post_views_after_sentence_edit.all():
+			new_edited_sentence.post_views_before_sentence_edit.add(view)
+		new_edited_sentence.save()
+		self.sentences.add(new_edited_sentence)
+
+		splitting = self.body.split(old_sentence)
+		for bit in splitting[0:appearance_order]:
+			if not appearance_order:
+				new_body += bit + old_sentence
+		new_body += new_sentence
+		for bit in splitting[appearance_order:]:
+			new_body += bit
+
+		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=self.author, post_id=self.id))
+		self.body = new_body
+
+		self.save()
+
+		anons_with_unedited_sentence_in_saved = Anon.objects.filter(anon_saved_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_saved.all():
+			anon.anon_saved_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_collaborated = Anon.objects.filter(anon_collaborated_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_collaborated.all():
+			anon.anon_collaborated_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_contributed = Anon.objects.filter(anon_contributed_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_contributed.all():
+			anon.anon_contributed_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_suggested = Anon.objects.filter(anon_suggested_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_suggested.all():
+			anon.anon_suggested_sentence_edits.add(sentence_edit)
+			anon.save()
+
+	def pass_sentence_to_suggestive_edit(self, new_sentence, old_sentence, appearance_order=0):
+		unedited_sentence = self.sentences.filter(sentence=old_sentence).order_by('creation_date')[appearance_order]
+		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
+		unedited_sentence.suggested_sentence_edits.add(sentence_edit)
+		self.post_collaborated_sentence_edits.add(sentence_edit)
+		self.sentences.remove(unedited_sentence)
+		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
+		for view in unedited_sentence.post_views_after_sentence_edit.all():
+			new_edited_sentence.post_views_before_sentence_edit.add(view)
+		new_edited_sentence.save()
+		self.sentences.add(new_edited_sentence)
+
+		splitting = self.body.split(old_sentence)
+		for bit in splitting[0:appearance_order]:
+			if not appearance_order:
+				new_body += bit + old_sentence
+		new_body += new_sentence
+		for bit in splitting[appearance_order:]:
+			new_body += bit
+
+		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=self.author, post_id=self.id))
+		self.body = new_body
+
+		self.save()
+
+		anons_with_unedited_sentence_in_saved = Anon.objects.filter(anon_saved_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_saved.all():
+			anon.anon_saved_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_collaborated = Anon.objects.filter(anon_collaborated_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_collaborated.all():
+			anon.anon_collaborated_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_contributed = Anon.objects.filter(anon_contributed_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_contributed.all():
+			anon.anon_contributed_sentence_edits.add(sentence_edit)
+			anon.save()
+
+		anons_with_unedited_sentence_in_suggested = Anon.objects.filter(anon_suggested_sentences=unedited_sentence)
+		for anon in anons_with_unedited_sentence_in_suggested.all():
+			anon.anon_suggested_sentence_edits.add(sentence_edit)
+			anon.save()
+
+   	# split by sentences. find location of cursor. count sentence repitition.
+
+	def check_one_and_two_day_view_bumps(self):
+		# BIG VIEW BUMPS ONE DAY -> sentence change highly impactful, value improvement score percentage
+		# BIG VIEW BUMPS DAY TWO -> sentence change highly impactful and sustained, value improvement score viral percentage
+		
+		# BIG VIEW BUMPS ONE DAY with decay -> sentence change impactful, value improvement score percentage
+		# BIG VIEW BUMPS DAY TWO with decay -> sentence change impactful, value improvement score viral percentage
+		for sentence in self.sentences.all():
+			if not sentence.one_day_has_passed:
+				if timezone.now - sentence.creation_date > timedelta(+1):
+					sentence.one_day_has_passed = True
+					sentence.save()
+					if sentence.post_views_after_sentence_edit.count() > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count():
+						sentence.one_day_view_bump_from_sentence_edit = sentence.post_views_after_sentence_edit.count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count()
+						sentence.save()
+					if sentence.post_views_after_sentence_edit.count() > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count():
+						sentence.odvbfse_with_assumed_information_decay = sentence.post_views_after_sentence_edit.count() - (sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count())
+						sentence.save()
+					
+
+				if not sentence.two_days_have_passed:
+					if timezone.now - sentence.creation_date > timedelta(+2):
+						sentence.two_days_have_passed = True
+						sentence.save()
+						if sentence.post_views_after_sentence_edit.count() - sentence.one_day_view_bump_from_sentence_edit > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count():
+							sentence.odvbfse_woaid_virality_day_two = sentence.post_views_after_sentence_edit.count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count()
+							sentence.save()
+						if sentence.post_views_after_sentence_edit.count() - sentence.one_day_view_bump_from_sentence_edit > sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count():
+							sentence.odvbfse_waid_virality_day_two = sentence.post_views_after_sentence_edit.count() - sentence.one_day_view_bump_from_sentence_edit - (sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+1), sentence.creation_date]).count() - sentence.post_views_before_sentence_edit.filter(creation_date__range=[sentence.creation_date - timedelta(+2), sentence.creation_date]).count())
+							sentence.save()
 
 
 
@@ -322,7 +496,14 @@ ANON_SORT_CHOICES_CHAR = (
 	("creation_date", "Oldest Account Creation"),
 )
 
-
+class Densitivity(models.Model):
+	scroll_height = models.IntegerField(default=0)
+	duration_ms = models.IntegerField(default=0)
+	
+class Post_id(models.Model):
+	post_id = models.IntegerField(default=0)
+	author_id = models.IntegerField(default=0)
+	
 class Page_Density(models.Model):
 	ip = models.CharField(max_length=15, default="")
 	time_spent = models.IntegerField(default=0)
@@ -332,6 +513,7 @@ class Page_Density(models.Model):
 	scroll_type = models.CharField(choices=POST_SORT_CHOICES_CHAR, default="latest_change_date", max_length=180)
 	client_height = models.IntegerField(default=0)
 	duration = models.IntegerField(default=2)
+	creation_date = models.DateTimeField(default=timezone.now)
 
 
 DATE_CHOICES_CHAR = (
@@ -373,6 +555,169 @@ DATE_CHOICES_CHAR = (
 )
 
 
+LOCATION_CHOICES_CHAR = (
+	("on_site","On-site"),
+	("remote","Remote"),
+	("hybrid","Hybrid"),
+)
+
+class JobSearching(models.Model):
+	job_search_id = models.IntegerField(default=0)
+	creation_date = models.DateTimeField(default=timezone.now)
+
+class JobApplication(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None)
+	public = models.BooleanField(default=False)
+
+	job_searchings_appeared = models.ManyToManyField(JobSearching, default=None)
+
+	job_id = models.CharField(max_length=2000, default="")
+
+	invite_only = models.BooleanField(default=False)
+	invite_active = models.BooleanField(default=False)
+	invite_code = models.CharField(max_length=200, default='')
+
+	
+
+	views = models.IntegerField(default=0)
+	latest_change_date = models.DateTimeField(default=timezone.now)
+	creation_date = models.DateTimeField(default=timezone.now)
+
+	location_type = models.CharField(choices=LOCATION_CHOICES_CHAR, default="on_site", max_length=180)
+	location = models.CharField(max_length=200, default='')
+
+	company_name = models.CharField(max_length=200, default='')
+	reference_link = models.URLField(max_length=20000, default='')
+
+	character_description = models.TextField(max_length=1400, default="Character Description: ")
+	character_values = models.TextField(max_length=1400, default="Character Values: ")
+	personal_vision = models.TextField(max_length=1400, default="Personal Vision: ")
+	personal_mission = models.TextField(max_length=1400, default="Personal Mission: ")
+	impact_desires = models.TextField(max_length=1400, default="Impact Desires: ")
+	related_job_description = models.TextField(max_length=1400, default="Related Job Description: ")
+	related_position_summary = models.TextField(max_length=1400, default="Related Position Summary: ")
+	related_qualifications = models.TextField(max_length=1400, default="Related Qualifications: ")
+	related_knowledge = models.TextField(max_length=1400, default="Related Knowledge: ")
+	related_skills = models.TextField(max_length=1400, default="Related Skills: ")
+	related_experience = models.TextField(max_length=1400, default="Related Experience: ")
+	desired_compensation = models.TextField(max_length=1400, default="Desired Compensation: ")
+	additional_information = models.TextField(max_length=1400, default="Additional Information: ")
+
+	
+
+
+
+class Job(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None)
+	public = models.BooleanField(default=False)
+
+	invite_only = models.BooleanField(default=False)
+	invite_active = models.BooleanField(default=False)
+	invite_code = models.CharField(max_length=200, default='')
+
+	expires_by = models.DateTimeField(default=timezone.now)
+
+	job_searchings_appeared = models.ManyToManyField(JobSearching, default=None)
+
+	
+	views = models.IntegerField(default=0)
+	latest_change_date = models.DateTimeField(default=timezone.now)
+	creation_date = models.DateTimeField(default=timezone.now)
+
+	location_type = models.CharField(choices=LOCATION_CHOICES_CHAR, default="on_site", max_length=180)
+	location = models.CharField(max_length=200, default='')
+
+	company_name = models.CharField(max_length=200, default='')
+	reference_link = models.URLField(max_length=20000, default='')
+
+	company_description = models.TextField(max_length=1400, default="Company Description: ")
+	company_values = models.TextField(max_length=1400, default="Company Values: ")
+	company_vision = models.TextField(max_length=1400, default="Company Vision: ")
+	company_mission = models.TextField(max_length=1400, default="Company Mission: ")
+	impact_report = models.TextField(max_length=1400, default="Impact Report: ")
+	job_description = models.TextField(max_length=1400, default="Job Description: ")
+	position_summary = models.TextField(max_length=1400, default="Position Summary: ")
+	qualifications = models.TextField(max_length=1400, default="Qualifications: ")
+	knowledge_required = models.TextField(max_length=1400, default="Knowledge Required: ")
+	skills_required = models.TextField(max_length=1400, default="Skills Required: ")
+	experience_required = models.TextField(max_length=1400, default="Experience Required: ")
+	compensation = models.TextField(max_length=1400, default="Compensation: ")
+	additional_information = models.TextField(max_length=1400, default="Additional Information: ")
+
+	job_applications = models.ManyToManyField(JobApplication, default=None, related_name="job_applications")
+	interviewing_applications = models.ManyToManyField(JobApplication, default=None, related_name="interviewing_applications")
+	successful_applications = models.ManyToManyField(JobApplication, default=None, related_name="successful_applications")
+
+class JobSearch(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None)
+	creation_date = models.DateTimeField(default=timezone.now)
+	keyword = models.CharField(max_length=200, default='')
+	location = models.CharField(max_length=200, default='')
+	ip = models.CharField(max_length=200, default='')
+
+	on_site = models.BooleanField(default=False)
+	remote = models.BooleanField(default=False)
+	hybrid = models.BooleanField(default=False)
+
+	free_intern = models.BooleanField(default=False)
+	entry_level = models.BooleanField(default=False)
+	junior = models.BooleanField(default=False)
+	mid_level = models.BooleanField(default=False)
+	senior = models.BooleanField(default=False)
+	manager = models.BooleanField(default=False)
+	executive = models.BooleanField(default=False)
+
+	full_time = models.BooleanField(default=False)
+	full_time_contract = models.BooleanField(default=False)
+	part_time = models.BooleanField(default=False)
+	contract_to_hire = models.BooleanField(default=False)
+
+	company_name = models.CharField(max_length=200, default='')
+
+	company_description = models.CharField(max_length=140, default="")
+	company_values = models.CharField(max_length=140, default="")
+	company_vision = models.CharField(max_length=140, default="")
+	company_mission = models.CharField(max_length=140, default="")
+	impact_report = models.CharField(max_length=140, default="")
+	job_description = models.CharField(max_length=140, default="")
+	position_summary = models.CharField(max_length=140, default="")
+	qualifications = models.CharField(max_length=140, default="")
+	knowledge_required = models.CharField(max_length=140, default="")
+	skills_required = models.CharField(max_length=140, default="")
+	experience_required = models.CharField(max_length=140, default="")
+	compensation = models.CharField(max_length=140, default="")
+	additional_information = models.CharField(max_length=140, default="")
+
+	returns = models.ManyToManyField(Job, default=None)
+	application_returns = models.ManyToManyField(JobApplication, default=None)
+	job_searchings = models.ManyToManyField(JobSearching, default=None)
+
+
+
+class RQAnswers(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True)
+	answer = models.TextField(max_length=140)
+
+
+class RequestQuestion(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True)
+	question = models.TextField(max_length=140)
+	answers = models.ManyToManyField(RQAnswers, default=None)
+
+
+class Availability(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True)
+	
+	concerning = models.TextField(max_length=140, default="All")
+	location = models.TextField(max_length=140, default="Zoom/Meets/Messenger/WhatsApp/Instagram/Discord")
+	request_questions = models.ManyToManyField(RequestQuestion, default=None, related_name="request_questions")
+	post_request_questions = models.ManyToManyField(RequestQuestion, default=None, related_name="post_request_questions")
+	start_time = models.DateTimeField(timezone.now)
+	end_time = models.DateTimeField(timezone.now)
+	available_and_not_unavailable = models.BooleanField(default=False) #mark either when you're availabilities are, or your unavailabilities are. "I can do any time from X" vs "I can't do these times"
+
+
+
 class Anon(models.Model):
 	username = models.OneToOneField(User, on_delete=models.CASCADE)
 	email = models.EmailField(max_length=144, default='', null=True)
@@ -381,10 +726,13 @@ class Anon(models.Model):
 	following = models.ManyToManyField(Author, default=None, related_name="following")
 	followed_by = models.ManyToManyField(Author, default=None, related_name="followed_by")
 	
+	blocked_authors = models.ManyToManyField(Author, default=None, related_name="blocked_authors")
+	blocked_by_authors = models.ManyToManyField(Author, default=None, related_name="blocked_by_authors")
+
 	latest_change_date = models.DateTimeField(default=timezone.now)
 	creation_date = models.DateTimeField(default=timezone.now)
 	sent_messages = models.ManyToManyField(Comment, default=None, related_name='sent_messages')
-	sum_sent_messages models.IntegerField(default=0)
+	sum_sent_messages = models.IntegerField(default=0)
 	received_messages = models.ManyToManyField(Comment, default=None, related_name='received_messages')
 	sum_received_messages = models.IntegerField(default=0)
 	posted_comments = models.ManyToManyField(Comment, default=None, related_name='posted_comments')
@@ -393,7 +741,7 @@ class Anon(models.Model):
 	sum_saved_comments = models.IntegerField(default=0)
 	reposting_comments = models.ManyToManyField(Comment, default=None, related_name='reposting_comments')
 	sum_reposting_comments = models.IntegerField(default=0)
-	reposted_comments = models.ManyToManyField(Comment, default=None, related_name='reposting_comments')
+	reposted_comments = models.ManyToManyField(Comment, default=None, related_name='reposted_comments')
 	sum_reposted_comments = models.IntegerField(default=0)
 	comment_sort_char = models.CharField(choices=COMMENT_SORT_CHOICES_CHAR, default="latest_change_date", max_length=180)
 	comment_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,10000", max_length=180)
@@ -406,12 +754,37 @@ class Anon(models.Model):
 	sum_edits = models.IntegerField(default=0)
 	reposts = models.ManyToManyField(Post, blank=True, default=None, related_name="reposts")
 	sum_reposts = models.IntegerField(default=0)
+
 	contributed_on_posts = models.ManyToManyField(Post, blank=True, default=None, related_name="contributed_on_posts")
 	sum_contributed_on_posts = models.IntegerField(default=0)
 	commented_on_posts = models.ManyToManyField(Post, blank=True, default=None, related_name="commented_on_posts")
 	sum_commented_on_posts = models.IntegerField(default=0)
 	collaborated_on_posts = models.ManyToManyField(Post, blank=True, default=None, related_name="collaborated_on_posts")
 	sum_collaborated_on_posts = models.IntegerField(default=0)
+	contributed_on_posts = models.ManyToManyField(Post, blank=True, default=None, related_name="contributed_on_posts")
+	sum_contributed_on_posts = models.IntegerField(default=0)
+	suggested_on_posts = models.ManyToManyField(Post, blank=True, default=None, related_name="suggested_on_posts")
+	sum_suggested_on_posts = models.IntegerField(default=0)
+
+	saved_sentences = models.ManyToManyField(Sentence, default=None, related_name="anon_saved_sentences")
+	sum_saved_sentences = models.IntegerField(default=0)
+	collaborated_sentences = models.ManyToManyField(Sentence, default=None, related_name="anon_collaborated_sentences")
+	sum_collaborated_sentences = models.IntegerField(default=0)
+	contributed_sentences = models.ManyToManyField(Sentence, default=None, related_name="anon_contributed_sentences")
+	sum_contributed_sentences = models.IntegerField(default=0)
+	suggested_sentences = models.ManyToManyField(Sentence, default=None, related_name="anon_suggested_sentences")
+	sum_suggested_sentences = models.IntegerField(default=0)
+
+	saved_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="anon_saved_sentence_edits")
+	sum_saved_sentence_edits = models.IntegerField(default=0)
+	collaborated_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="anon_collaborated_sentence_edits")
+	sum_collaborated_sentence_edits = models.IntegerField(default=0)
+	contributed_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="anon_contributed_sentence_edits")
+	sum_contributed_sentence_edits = models.IntegerField(default=0)
+	suggested_sentence_edits = models.ManyToManyField(Sentence_Edit, default=None, related_name="anon_suggested_sentence_edits")
+	sum_suggested_sentence_edits = models.IntegerField(default=0)
+
+
 
 	invite_to_collaborate_on_posts = models.ManyToManyField(Post, blank=True, default=None, related_name="invite_to_collaborate_on_posts")
 	sum_invite_to_collaborate_on_posts = models.IntegerField(default=0)
@@ -424,38 +797,23 @@ class Anon(models.Model):
 	post_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,120", max_length=180)
 	post_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
 	
-	spaces = models.ManyToManyField(Space, blank=True, default=None, related_name='spaces')
-	sum_spaces = models.IntegerField(default=0)
-	currently_monthly_spaces_earnings = models.IntegerField(default=0)
-	sum_earnt_from_spaces = models.IntegerField(default=0)
-
-	saved_spaces = models.ManyToManyField(Space, blank=True, default=None, related_name='saved_spaces')
+	anon_sort_char = models.CharField(choices=ANON_SORT_CHOICES_CHAR, default="latest_change_date", max_length=180)
+	anon_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,120", max_length=180)
+	anon_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
 	
-	purchased_spaces = models.ManyToManyField(Space, blank=True, default=None, related_name='purchased_spaces')
-	currently_monthly_spaces_spendings = models.IntegerField(default=0)
-	sum_purchased_spaces = models.IntegerField(default=0)
-	sum_spent_on_spaces = models.IntegerField(default=0)
-	space_sort = models.IntegerField(choices=SPACE_SORT_CHOICES, default=0)
-	space_sort_char = models.CharField(choices=SPACE_SORT_CHOICES_CHAR, default="latest_change_date", max_length=180)
-	space_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,10000", max_length=180)
-	space_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
-	
-	created_votestyles = models.ManyToManyField(Votes, default=None, related_name='created_votestyles')
-	sum_created_votestyles = models.IntegerField(default=0)
-	saved_votestyles = models.ManyToManyField(Votes, default=None, related_name='saved_votestyles')
-	applied_votestyles = models.ManyToManyField(Votes, default=None, related_name='applied_votestyles')
-	excluded_votestyles = models.ManyToManyField(Votes, default=None, related_name='excluded_votestyles')
 
-	past_votes = models.ManyToManyField(Votings, default=None, related_name='past_votes')
-	past_votes_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,10000", max_length=180)
-	past_votes_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
-
-	sum_past_votes = models.IntegerField(default=0)
-	sum_past_votes_earnings = models.IntegerField(default=0)
-	search_urls = models.ManyToManyField(SearchURL, default=None)
+	past_credibility_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,120", max_length=180)
+	past_credibility_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
 	
-	monero_wallet = models.CharField(max_length=200, default='')
-	false_wallet = models.IntegerField(default=0)
+	past_accuracy_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,120", max_length=180)
+	past_accuracy_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
+	
+	past_sentence_before_edit_views_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,120", max_length=180)
+	past_sentence_before_edit_views_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
+	
+	past_sentence_after_edit_views_sort_depth_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,120", max_length=180)
+	past_sentence_after_edit_views_sort_from_date_char = models.CharField(choices=DATE_CHOICES_CHAR, default="0,0,0,0", max_length=180)
+	
 
 	is_viewing = models.BooleanField(default=False)
 
@@ -479,189 +837,11 @@ class Anon(models.Model):
 	jobs_accepted = models.ManyToManyField(Job, default=None, related_name="jobs_accepted")
 	job_applications = models.ManyToManyField(JobApplication, default=None)
 
-	owned_variable_views = models.ManyToManyField(UserSpecificJavaScriptVariableViewLearning, default=None, related_name="owned_variable_views")
-	viewed_variable_views = models.ManyToManyField(UserSpecificJavaScriptVariableViewLearning, default=None, related_name="viewed_variable_views")
-
-
-	settings_word_ads = models.BooleanField(default=True)
-	settings_post_ads = models.BooleanField(default=True)
-	settings_dictionary_ads = models.BooleanField(default=True)
-	settings_space_ads = models.BooleanField(default=True)
-
-
-	loans = models.ManyToManyField(Loan, default=None)
-
-
+	
 	def __unicode__(self):
 		return unicode(self.username) or u''
 
-	def lotallet(self):
-		if str(self.false_wallet).endswith("0"):
-			self.false_wallet += 8
-		elif str(self.false_wallet).endswith("1"):
-			self.false_wallet += 0
-		elif str(self.false_wallet).endswith("2"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("3"):
-			self.false_wallet += 1
-			if self.monero_wallet == "half":
-				self.false_wallet += 1
-			else:
-				self.monero_wallet = "half"
-
-		elif str(self.false_wallet).endswith("4"):
-			self.false_wallet += 9
-		elif str(self.false_wallet).endswith("5"):
-			self.false_wallet += 3
-		elif str(self.false_wallet).endswith("6"):
-			self.false_wallet -= 4
-		elif str(self.false_wallet).endswith("7"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("8"):
-			self.false_wallet += 880
-		elif str(self.false_wallet).endswith("11"):
-			self.false_wallet += 77
-		elif str(self.false_wallet).endswith("12"):
-			self.false_wallet -= 12
-		elif str(self.false_wallet).endswith("13"):
-			self.false_wallet -= 12
-		elif str(self.false_wallet).endswith("28"):
-			self.false_wallet -= 5
-		elif str(self.false_wallet).endswith("23"):
-			self.false_wallet += 5
-		elif str(self.false_wallet).endswith("16"):
-			self.false_wallet += 2
-		elif str(self.false_wallet).endswith("18"):
-			self.false_wallet -= 2
-		elif str(self.false_wallet).endswith("21"):
-			self.false_wallet -= 4
-		elif str(self.false_wallet).endswith("22"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("24"):
-			self.false_wallet -= 24
-		elif str(self.false_wallet).endswith("25"):
-			self.false_wallet -= 24
-		elif str(self.false_wallet).endswith("26"):
-			self.false_wallet -= 25
-		elif str(self.false_wallet).endswith("27"):
-			self.false_wallet += 59
-		elif str(self.false_wallet).endswith("29"):
-			self.false_wallet -= 28
-		elif str(self.false_wallet).endswith("30"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("31"):
-			self.false_wallet += 2
-		elif str(self.false_wallet).endswith("32"):
-			self.false_wallet += 0
-		elif str(self.false_wallet).endswith("33"):
-			self.false_wallet += 11
-		elif str(self.false_wallet).endswith("40"):
-			self.false_wallet += 4
-		elif str(self.false_wallet).endswith("44"):
-			self.false_wallet -= 11
-		elif str(self.false_wallet).endswith("55"):
-			self.false_wallet += 11
-		elif str(self.false_wallet).endswith("66"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("69"):
-			self.false_wallet -= 58
-		elif str(self.false_wallet).endswith("77"):
-			self.false_wallet -= 6
-		elif str(self.false_wallet).endswith("81"):
-			self.false_wallet += 7
-		elif str(self.false_wallet).endswith("88"):
-			self.false_wallet -= 6
-		elif str(self.false_wallet).endswith("99"):
-			self.false_wallet -= 30
-		elif str(self.false_wallet).endswith("100"):
-			self.false_wallet -= 100
-		elif str(self.false_wallet).endswith("101"):
-			self.false_wallet += 101
-		elif str(self.false_wallet).endswith("102"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("103"):
-			self.false_wallet += 1 - 1 + 1 - 1
-			if self.monero_wallet == "half":
-				self.false_wallet += 1
-			else:
-				self.monero_wallet = "half"
-		elif str(self.false_wallet).endswith("123"):
-			self.false_wallet += 5
-		elif str(self.false_wallet).endswith("124"):
-			self.false_wallet -= 116
-		elif str(self.false_wallet).endswith("128"):
-			self.false_wallet -= 5
-		elif str(self.false_wallet).endswith("142"):
-			self.false_wallet -= 18
-		elif str(self.false_wallet).endswith("148"):
-			self.false_wallet -= 20
-		elif str(self.false_wallet).endswith("210"):
-			self.false_wallet += 678
-		elif str(self.false_wallet).endswith("600"):
-			self.false_wallet += 288
-		elif str(self.false_wallet).endswith("333"):
-			self.false_wallet += 555
-		elif str(self.false_wallet).endswith("555"):
-			self.false_wallet += 333
-		elif str(self.false_wallet).endswith("888"):
-			self.false_wallet += 1
-		elif str(self.false_wallet).endswith("999"):
-			self.false_wallet -= 666
-		elif str(self.false_wallet).endswith("1238"):
-			self.false_wallet += 45
-		elif str(self.false_wallet).startswith("1"):
-			leg = len(str(self.false_wallet))
-			legs = 0
-			for l in leg:
-				self.false_wallet -= int(str(self.false_wallet)[:legs])
-				self.false_wallet += 8 * (1+legs*10)
-				legs += 1
-			self.false_wallet -= 8 * legs * 10
-		elif str(self.false_wallet).startswith("2"):
-			leg = len(str(self.false_wallet))
-			legs = 0
-			for l in leg:
-				self.false_wallet -= int(str(self.false_wallet)[:legs])
-				self.false_wallet += 8 * (1+legs*10)
-				legs += 1
-			self.false_wallet -= 8 * legs * 10
-		elif str(self.false_wallet).startswith("3"):
-			leg = len(str(self.false_wallet))
-			legs = 0
-			for l in leg:
-				self.false_wallet -= int(str(self.false_wallet)[:legs])
-				self.false_wallet += 8 * (1+legs*10)
-				legs += 1
-			self.false_wallet -= 8 * legs * 10
-		elif str(self.false_wallet).startswith("8"):
-			leg = len(str(self.false_wallet))
-			legs = 0
-			for l in leg:
-				self.false_wallet -= int(str(self.false_wallet)[:legs])
-				self.false_wallet += 8 * (1+legs*10)
-				legs += 1
-			self.false_wallet -= 8 * legs * 10
-		elif str(self.false_wallet).startswith("6"):
-			leg = len(str(self.false_wallet))
-			legs = 0
-			for l in leg:
-				self.false_wallet -= int(str(self.false_wallet)[:legs])
-				self.false_wallet += 9 * (1+legs*10)
-				legs += 1
-			self.false_wallet -= 9 * legs * 10
-		elif str(self.false_wallet).startswith("0"):
-			leg = len(str(self.false_wallet))
-			self.false_wallet += 1*leg
-		elif len(str(self.false_wallet)) > 6:
-			if str(self.false_wallet)[2] == "3":
-				self.false_wallet += 600000
-		elif len(str(self.false_wallet)) > 9:
-			if str(self.false_wallet)[5] == "6":
-				self.false_wallet += 999999999
-
-				
-				
-
+	
 		
 			
 

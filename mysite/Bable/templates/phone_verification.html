@@ -1,0 +1,487 @@
+<!-- # Copyright Aden Handasyde 2019 -->
+
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{% if count %}
+Predictionary.us - incentivised-ascento-secrecy {{ count }}
+{% else %}
+Predictionary.us - incentivised-ascento-secrecy
+{% endif %}
+{% endblock %}
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta property="og:description" content="Predictionary.us - Incentivised-Ascento-Secrecy - Police yourself to police others AKA please yourself to please others. User-Choice Definitions. Create your own code words, or buy them and gain access to income that you can spend on deeper secrets granting you deeper income.">
+<meta property="og:image" content="{% static 'bullseye_3.jpeg' %}">
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+	elements = document.getElementsByClassName("csrf");
+	for (var i=0;  i< elements.length; i++) {
+		elements[i].name = "csrfmiddlewaretoken";
+		elements[i].type = "hidden";
+		elements[i].value = "{{ csrf_token }}";
+	};})
+</script>
+{% endblock %}
+
+
+{% block authenticatedposts %}
+
+<div class=displaybanner>
+	
+	<p>Total post views: {{ total }}</p>
+</div>
+<div class=possectionsort>
+	<form name=post_sort action="{% url 'Bable:change_post_sort_char' %}" method=post>
+		{% csrf_token %}
+		{{ post_sort_form }}
+	</form>
+	<script>
+		var form = document.querySelector('form[name="post_sort"]');
+		form.addEventListener('change', function() {
+		    form.submit();
+		});
+	</script>
+</div>
+<div class=possectionsort>
+	<form name=post_filter_from_date action="{% url 'Bable:change_post_filter_from_date' %}" method=post>
+		{% csrf_token %}
+		{{ post_filter_from_date_form }}
+	</form>
+	<script>
+		var form_filter_from_date = document.querySelector('form[name="post_filter_from_date"]');
+		form_filter_from_date.addEventListener('change', function() {
+		    form_filter_from_date.submit();
+		});
+	</script>
+</div>
+<div class=possectionsort>
+	<form name=post_filter_depth action="{% url 'Bable:change_post_filter_depth' %}" method=post>
+		{% csrf_token %}
+		{{ post_filter_depth_form }}
+	</form>
+	<script>
+		var form_filter_depth = document.querySelector('form[name="post_filter_depth"]');
+		form_filter_depth.addEventListener('change', function() {
+		    form_filter_depth.submit();
+		});
+	</script>
+</div>
+<style>
+	.posttitle h4 {
+		font-size: 1.5em;
+		margin: 0 auto;
+	}
+
+	.posttitle {
+		margin: auto;
+		text-align: center;
+	}
+
+	.postpreview img, .postssponsors img, .post, .postbody {
+		border-radius: 8px;
+	}
+
+	.dummy {
+		animation-duration: 0.1s;
+		animation-name: changeboxshadow;
+		animation-iteration-count: infinite;
+		animation-direction: alternate;
+	}
+
+	.post:hover, .post:active {
+		box-shadow: 0 2px 10px black;
+	    transition: box-shadow 0.3s ease-in-out;
+	}
+
+	@keyframes changeboxshadow {
+	  from {
+	    box-shadow: 0 2px 10px black;
+	    transition: box-shadow 0.3s ease-in-out;
+		
+	  }
+
+	  to {
+	    box-shadow: 0 2px 10px white;
+	    transition: box-shadow 0.3s ease-in-out;
+		
+	  }
+	}
+
+	
+.postpreview img:active {
+		transform: scale(4);
+		position: relative;
+		pointer-events: auto;
+		left: 10em;
+		top: 4em;
+	}
+	
+</style>
+
+
+<div class=posts onbeforeunload="sendtimeframe();" >
+	{% if postscount %}
+		{% for post in posts %}
+		<div class=post style="display: flex;">
+				{% if post.img %}
+					<img src="{{ post.img }}" style="z-index: 0; max-height:400px; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; margin: 10px; object-fit: contain; background-color: black;" alt="{{ post.title }}">
+				{% else %}
+					{% with 0|random_int:25 as rando %}
+						{% if rando == 0 %}
+						<img src="{% static 'bullseye_3.jpeg' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 1 %}
+						<img src="{% static 'giphy.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 2 %}
+						<img src="{% static 'giphy-1.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 3 %}
+						<img src="{% static 'giphy-2.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 4 %}
+						<img src="{% static 'giphy-3.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 5 %}
+						<img src="{% static 'giphy-4.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 6 %}
+						<img src="{% static 'giphy-5.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 7 %}
+						<img src="{% static 'giphy-6.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 8 %}
+						<img src="{% static 'giphy-7.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 9 %}
+						<img src="{% static 'giphy-8.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 10 %}
+						<img src="{% static 'giphy-9.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 11 %}
+						<img src="{% static 'giphy-10.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 12 %}
+						<img src="{% static 'giphy-11.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 13 %}
+						<img src="{% static 'giphy-12.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 14 %}
+						<img src="{% static 'giphy-13.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 15 %}
+						<img src="{% static 'giphy-14.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 16 %}
+						<img src="{% static 'giphy-15.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% elif rando == 17 %}
+						<img src="{% static 'giphy-16.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% else %}
+						<img src="{% static 'towerofbable.png' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin: 10px; object-fit: contain; background-color: black;" alt="Please Others With A Gif">
+						{% endif %}
+						{% endwith %}
+				{% endif %}
+						<div style="display: block; width: 20%; margin-right: 10px;">
+							<form method=POST action="{% url 'Bable:clickthrough' %}" style="font-size: 12px; display: block; width:fit-content;">
+									{% csrf_token %}
+									{% if post.author %}
+									<input readonly=true hidden id=author name="author" value="{{post.author.username}}"/>
+									{% else %}
+									<input readonly=true hidden id=author name="author" value="test"/>
+									{% endif %}
+									<input readonly=true hidden id=sponsor_id name=sponsor_id value="{{post.max_sponsor_id}}"/>
+									<input readonly=true hidden id=sponsored_on name=sponsored_on value="post"/>
+									<input readonly=true hidden id=sponsored_id name=sponsored_id value="{{post.id}}"/>
+									<button type=submit style="cursor: pointer; border: 0px; width:fit-content;">
+									{% if post.max_sponsor_img %}
+										<img src="{{ post.max_sponsor_img }}" style="max-height:100%; z-index: 0; width: 100%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin-top: 10px; display: block;" alt="Please Others With A Gif">
+									{% else %}
+										<img src="{% static 'towerofbable2.png' %}" style="max-height:100%; z-index: 0; width: 100%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin-top: 10px; display: block;" alt="Please Others With A Gif">
+									{% endif %}
+								Post Sponsor</button></form>
+		
+						</div>
+						
+			<div class=posttop style="display: inline-block; vertical-align: top;">
+				
+				{% if post.author.username %}
+				<div class=posttitle>
+					<a href="{% url 'Bable:tob_users_post' post.author.username post.id 0 %}"><h4>{{ post.title }}</h4></a>
+				</div>
+				{% if post.author.username == loggedinanon.username.username %}
+				<div class=postdel>
+					<a href="{% url 'Bable:delete_own_post' post.author.username post.id %}">X</a>
+				</div>
+				{% endif %}
+				{% else %}
+				<div class=posttitle>
+					<a href="{% url 'Bable:tob_post' post.id %}"><h4>{{ post.title }}</h4></a>
+				</div>
+				{% endif %}
+			<div class=postbody style="margin-right: 0.5em;">
+				{{ post.body|truncatechars:111|safety_check|safe }}
+			</div>
+			<div class=postcount style="font-size: 1em;">
+				<a href="{% url 'Bable:votewvotestyle' 'post' post.id %}">Voters: {{ post.votes_uniques }}</a>
+			</div>
+			<div class=postviews style="font-size: 1em;">
+				Views: {{ post.viewcount }}
+			</div>
+			<div class=postlatest style="font-size: 1em;">
+				Latest: {{ post.latest_change_date }}
+			</div>
+			{% if post.author.username %}
+			<div class=postauthor style="font-size: 1em;">
+				<a href="{% url 'Bable:tob_user_view_count' post.author.username 0 %}">/u/{{ post.author.username }}</a>
+			</div>
+			{% else %}
+			<div class=postauthor style="font-size: 1em;">
+				<a href="">/u/anonymous</a>
+			</div>
+			{% endif %}
+
+			</div>
+		</div>
+		{% endfor %}
+	{% else %}
+		<div class=post>
+			There are no posts.
+		</div>
+	{% endif %}
+</div>
+<div class=pageno>
+	<a href="{% url 'Bable:tower_of_bable_count' mcount %}"><</a>{{ count }}:{{ count100 }}<a href="{% url 'Bable:tower_of_bable_count' count100 %}">></a>
+</div>
+
+{% endblock %}
+
+
+{% block unauthenticated_posts %}
+<div class=displaybanner>
+	<p>Total post views: {{ total }}</p>
+</div>
+<div class=displaybanner>
+	<h3>
+		Sort: (click the keys to login/signup to enable post sorting)
+	</h3>
+</div>
+
+<style>
+	.posttitle h4 {
+		font-size: 1.5em;
+		margin: 0 auto;
+	}
+
+	.posttitle {
+		margin: auto;
+		text-align: center;
+	}
+
+	.postpreview img, .postssponsors img, .post, .postbody {
+		border-radius: 8px;
+	}
+
+	.dummy {
+		animation-duration: 0.1s;
+		animation-name: changeboxshadow;
+		animation-iteration-count: infinite;
+		animation-direction: alternate;
+	}
+
+	.post:hover {
+		box-shadow: 0 2px 10px black;
+	    transition: box-shadow 0.3s ease-in-out;
+	}
+
+	@keyframes changeboxshadow {
+	  from {
+	    box-shadow: 0 2px 10px black;
+	    transition: box-shadow 0.3s ease-in-out;
+		
+	  }
+
+	  to {
+	    box-shadow: 0 2px 10px white;
+	    transition: box-shadow 0.3s ease-in-out;
+		
+	  }
+	}
+	.postpreview img:active {
+		transform: scale(4);
+		position: relative;
+		pointer-events: auto;
+		left: 10em;
+		top: 4em
+	}
+</style>
+
+<div class=posts style="">
+	{% if postscount %}
+		{% for post in posts %}
+			<div class=post style="display: flex;">
+					{% if post.img %}
+						<img src="{{ post.img }}" style="z-index: 0; max-height:400px; width: 30%; box-shadow: 0 2px 10px grey; margin: 10px; border-radius: 20px; object-fit: contain; background-colour: black; vertical-align: top;" alt="{{ post.title }}">
+					{% else %}
+						{% with 0|random_int:25 as rando %}
+						{% if rando == 0 %}
+						<img src="{% static 'bullseye_3.jpeg' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 1 %}
+						<img src="{% static 'giphy.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 2 %}
+						<img src="{% static 'giphy-1.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 3 %}
+						<img src="{% static 'giphy-2.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 4 %}
+						<img src="{% static 'giphy-3.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 5 %}
+						<img src="{% static 'giphy-4.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 6 %}
+						<img src="{% static 'giphy-5.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 7 %}
+						<img src="{% static 'giphy-6.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 8 %}
+						<img src="{% static 'giphy-7.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 9 %}
+						<img src="{% static 'giphy-8.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 10 %}
+						<img src="{% static 'giphy-9.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 11 %}
+						<img src="{% static 'giphy-10.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 12 %}
+						<img src="{% static 'giphy-11.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 13 %}
+						<img src="{% static 'giphy-12.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 14 %}
+						<img src="{% static 'giphy-13.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 15 %}
+						<img src="{% static 'giphy-14.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 16 %}
+						<img src="{% static 'giphy-15.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% elif rando == 17 %}
+						<img src="{% static 'giphy-16.gif' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% else %}
+						<img src="{% static 'towerofbable.png' %}" style="max-height:400px; z-index: 0; width: 30%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; object-fit: contain; background-colour: black; margin: 10px;" alt="Please Others With A Gif">
+						{% endif %}
+						{% endwith %}
+					{% endif %}
+							<div style="display: block; width: 20%; margin-right: 10px;">
+							<form method=POST action="{% url 'Bable:clickthrough' %}" style="font-size: 12px; display: block; width:fit-content;">
+									{% csrf_token %}
+									{% if post.author %}
+									<input readonly=true hidden id=author name="author" value="{{post.author.username}}"/>
+									{% else %}
+									<input readonly=true hidden id=author name="author" value="test"/>
+									{% endif %}
+									<input readonly=true hidden id=sponsor_id name=sponsor_id value="{{post.max_sponsor_id}}"/>
+									<input readonly=true hidden id=sponsored_on name=sponsored_on value="post"/>
+									<input readonly=true hidden id=sponsored_id name=sponsored_id value="{{post.id}}"/>
+									<button type=submit style="cursor: pointer; border: 0px; width:fit-content;">
+									{% if post.max_sponsor_img %}
+										<img src="{{ post.max_sponsor_img }}" style="max-height:100%; z-index: 0; width: 100%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin-top: 10px; display: block;" alt="Please Others With A Gif">
+									{% else %}
+										<img src="{% static 'towerofbable2.png' %}" style="max-height:100%; z-index: 0; width: 100%; box-shadow: 0 2px 10px grey; border-radius: 20px; vertical-align: top; margin-top: 10px; display: block;" alt="Please Others With A Gif">
+									{% endif %}
+								Post Sponsor</button></form>
+		
+						</div>
+				<div class=posttop style="display: inline-block; width: 60%; margin-left: 10px;">
+					
+					{% if post.author.username %}
+					<div class=posttitle>
+						<a href="{% url 'Bable:tob_users_post' post.author.username post.id 0 %}"><h4>{{ post.title }}</h4></a>
+					</div>
+					{% else %}
+					<div class=posttitle>
+						<a href="{% url 'Bable:tob_post' post.id %}"><h4>{{ post.title }}</h4></a>
+					</div>
+					{% endif %}
+				
+				<div class=postbody style="margin-right: 0.5em;">
+					{{ post.body|truncatechars:111|safety_check|safe }}
+				</div>
+				<div class=postcount style="font-size: 1em;" onclick="showregister();">
+					Voters: {{ post.votes_uniques }}
+				</div>
+				<div class=postvotes style="font-size: 1em;">
+					Vote:
+					<div class=postvotestyles>
+						{{ votestyles_form }}
+					</div>
+				</div>
+				<div class=postviews style="font-size: 1em;">
+					Views: {{ post.viewcount }}
+				</div>
+				<div class=postlatest style="font-size: 1em;">
+					Latest: {{ post.latest_change_date }}
+				</div>
+				{% if post.author.username %}
+				<div class=postauthor style="font-size: 1em;">
+					<a href="{% url 'Bable:tob_user_view_count' post.author.username 0 %}">/u/{{ post.author.username }}</a>
+				</div>
+				{% else %}
+				<div class=postauthor style="font-size: 1em;">
+					<a href="">/u/anonymous</a>
+				</div>
+				{% endif %}
+			</div>
+			</div>
+		{% endfor %}
+
+	{% else %}
+		<div class=post>
+			There are no posts.
+		</div>
+	{% endif %}
+
+</div>
+<div class=pageno>
+	<a href="{% url 'Bable:tower_of_bable_count' mcount %}"><</a>{{ count }}:{{ count100 }}<a href="{% url 'Bable:tower_of_bable_count' count100 %}">></a>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		
+		function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function openCommentThread(starter, com) {
+			var element = document.getElementById(starter).getElementById(com);
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function comCollapse(node) {
+			var element = document.getElementById(node)
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function nodeCollapse(node) {
+			var element = document.getElementById(node)
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		/* Needs to be step-counted for the DAHS of each Attribute
+		function wordsAttributesAddMore() {
+				var form_idx = $('#id_wa-TOTAL_FORMS').value;
+				var copy = $('#waef').html().replace(/__prefix__/g, form_idx);
+				$('#wafs').append(copy);
+				$('#id_wa-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+			}
+		*/
+
+
+	</script>
+{% endblock %}

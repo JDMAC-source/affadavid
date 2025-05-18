@@ -109,7 +109,7 @@ DATABASES = {
         # psql db
         # CREATE USER default WITH SUPERUSER PASSWORD 'default';        # \q
         # issues in psycopg2: makemigrations Bable
-        'NAME': 'db2',                                                   
+        'NAME': 'db3',                                                   
         'USER': 'adenhandasyde',                                                   
         'PASSWORD': '',                                      
         'HOST': '127.0.0.1',                                                     

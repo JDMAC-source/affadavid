@@ -22,9 +22,8 @@ from django.views.generic import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.contrib.sitemaps.views import sitemap
 
-from Bable.sitemaps import Static_Sitemap, Post_Sitemap, Anon_Sitemap, Dictionary_Sitemap, Word_Sitemap
+from Bable.sitemaps import Static_Sitemap, Post_Sitemap, Anon_Sitemap
 
-from Bable.views import CancelView, SuccessView
 from django.views.generic import View
 from django.http.response import HttpResponse
 class Adsense(View):
@@ -34,8 +33,7 @@ sitemaps = {
     'post': Post_Sitemap(),
     'static': Static_Sitemap(),
     'user': Anon_Sitemap(),
-    'dictionary': Dictionary_Sitemap(),
-    'word': Word_Sitemap(),
+    
 }
 
 
@@ -43,8 +41,6 @@ urlpatterns = [
 	url(r'^paypal/', include('paypal.standard.ipn.urls')),
 	path('B/', include('Bable.urls')),
     path('ads.txt', Adsense.as_view()),
-    path('cancel/', CancelView.as_view(), name='cancel'),
-    path('success/', SuccessView.as_view(), name='success'),
     path('', RedirectView.as_view(pattern_name='Bable:landingpage')),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
