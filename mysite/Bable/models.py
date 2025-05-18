@@ -255,7 +255,6 @@ class Post(models.Model):
    		
    		# BIG VIEW BUMPS ONE DAY with decay -> sentence change impactful, value improvement score percentage
    		# BIG VIEW BUMPS DAY TWO with decay -> sentence change impactful, value improvement score viral percentage
-   		
    		for sentence in self.sentences.all():
    			if not sentence.one_day_has_passed:
 	   			if timezone.now - sentence.creation_date > timedelta(+1):
