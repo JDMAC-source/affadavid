@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load vote_screen %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+Users Storefronts - {{ request.META.HTTP_HOST|stripwww }}
+{% endblock %}
+
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta property="og:description" content="{{ users_post.title }} - Babylon Police">
+<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+{% endblock %}
+
+
+
+
+
+
+{% block authenticatedposts %}
+<div class=storefronts style="margin-top:50px;">
+	<div class=storefronts-heading>
+		Storefronts ({{storefronts_count}}):
+	</div>
+	<div class=spasectionsort>
+		<form name=space_sort action="{% url 'Bable:change_storefront_sort_char' %}" method=post>
+			{% csrf_token %}
+			{{ storefront_sort_form }}
+		</form>
+		<script>
+			var form = document.querySelector('form[name="storefront_sort"]');
+			form.addEventListener('change', function() {
+			    form.submit();
+			});
+		</script>
+	</div>
+	<div>
+	{% for storefront in storefronts %}
+	<div class=storefront>
+		<div>
+			Logo: <a href="{% url 'Bable:tob_word' storefront.logo.id %}">{{ storefront.logo.the_word_itself }}</a>
+		</div>
+		<div>
+			Title: <a href="{% url 'Bable:tob_storefront' storefront.id %}">{{ storefront.title }}</a>
+		</div>
+		<div>
+			Preview Text: {{ storefront.preview_text }}
+		</div>
+		<div>
+			Products Count: {{ storefront.products_count }}
+		</div>
+		<div>
+			Sales Count: {{ storefront.sales_count }}
+		</div>
+		<div>
+			Business Admins: 
+			{% for admin in storefront.business_admin.all %}
+			<a href="{% url 'Bable:tob_user_view' admin.username %}">/u/{{ admin.username }}</a>&nbsp;
+			{% endfor %}
+		</div>
+		<div>
+			Views: {{ storefront.views }}
+		</div>
+		<div>
+			Total Product Value: {{ storefront.total_product_value }}
+		</div>
+		<div>
+			Total Sales Volume: {{ storefront.total_sales_made }}
+		</div>
+		
+		
+		<div>
+			Disclaimer: {{ storefront.disclaimer }}
+		</div>
+	</div>
+	{% endfor %}
+	</div>
+	<div class=spasectionsort>
+		<form name=storefron_dic action="{% url 'Bable:users_storefronts' user_anon.username.username 0 %}" method=post>
+			{% csrf_token %}
+			{{ storefront_dic_form }}
+		</form>
+		<script>
+			var form = document.querySelector('form[name="storefront_dic"]');
+			form.addEventListener('change', function() {
+			    form.submit();
+			});
+		</script>
+	</div>
+	<form name=space_sort action="{% url 'Bable:create_storefront' storefront_dic %}" method=post>
+		{% csrf_token %}
+		{{ storefront_form }}
+		<button type=submit>Submit</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block unauthenticated_posts %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+	function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+	function openCommentThread(starter, com) {
+		var element = document.getElementById(starter).getElementById(com);
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+
+	function comCollapse(node) {
+		var element = document.getElementById(node)
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+</script>
+{% endblock %}

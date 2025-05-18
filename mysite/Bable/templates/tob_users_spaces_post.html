@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load vote_screen %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+
+{% block title %}
+{{ spaces_post.title }} - Babylon Police - ID: {{ spaces_post.id }}
+{% endblock %}
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta name="description" content="{{ spaces_post.title }} - Babylon Police - ID: {{ spaces_post.id }}">
+<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+	elements = document.getElementsByClassName("csrf");
+	for (var i=0;  i< elements.length; i++) {
+		elements[i].name = "csrfmiddlewaretoken";
+		elements[i].type = "hidden";
+		elements[i].value = "{{ csrf_token }}";
+	};})
+</script>
+{% endblock %}
+
+
+{% block authenticatedposts %}
+	<div class=usersusername>
+		<h2>
+		<a href="{% url 'Bable:tob_user_view_count' user_anon.username.username 0 %}">User: {{ user_anon.username.username }}</a>; <a href="{% url 'Bable:tob_users_spaces' user_anon.username.username 0 %}">Space: {{ users_space.the_space_itself.the_word_itself }}</a>; <a href="{% url 'Bable:tob_users_spaces_post' user_anon.username.username users_space.the_space_itself.the_word_itself spaces_post.id %}">Post: {{ spaces_post.id}}</a>
+		</h2>
+
+		
+		<div class=space_sponsor>
+			<div class=sponsor_me onclick="var id = document.getElementById('sponsor_form'); if (id.style.display == 'block') {id.style.display = 'none';} else {id.style.display = 'block';};" style="cursor: pointer;">
+				Sponsor +
+			</div>
+			<form id="sponsor_form" action="{% url 'Bable:tob_users_spaces_sponsor' user_anon.username users_space.id 0 %}" method=post>
+				{% csrf_token %}
+				{{ sponsor_form }}
+				<button type=submit>Sponsor</button>
+			</form>
+			<style>
+				#sponsor_form {
+					display: none;
+				}
+			</style>
+		</div>
+	</div>
+	<div class=spacesposts>
+		
+		
+		<div class=posts>
+		{% if space_viewable %} 
+			{% with spaces_post as post %}
+			<div class=post>
+				<div class=posttitle style="vertical-align: top;">
+					<div class=postpreview>
+						{% if post.url2 %}
+							<a href="{{ post.url2 }}"><img src="{% static 'babylonpolice.com.gif' %}" style="height: 6em; width: 6em;"></a>
+						{% else %}
+							<img src="{% static 'babylonpolice.com.gif' %}" style="height: 6em; width: 6em;">
+						{% endif %}
+					</div>
+					<div class=posttitle>
+						<a href="{% url 'Bable:tob_spaces_post' users_space.the_space_itself post.id 0 %}"><h4>{{ post.title }}</h4></a>
+					</div>
+					{% if post.author.username == user_anon.username.username %}
+					<div class=postdel>
+						<a href="{% url 'Bable:delete_own_post' post.author.username post.id %}">X</a>
+					</div>
+					{% endif %}
+					
+					{% if post.max_sponsor %}
+						<form action="{% url 'Bable:clickthrough' %}" method=POST>
+							{% csrf_token %}
+							<input type=hidden value="{{ post.author.username }}" readonly>
+							<input type=hidden value="{{ post.max_sponsor.id }}" readonly>
+							<button type=submit>
+								<img src="{{ post.max_sponsor.img }}" style="height: 4em; width: 4em; float:right;">
+							</button>
+						</form> <!-- if no sponsor input default ad -->
+					{% endif %}
+				
+				</div>
+				<div class=postbody>
+					{% if post.dictionaries.count %}
+					{{ post.body|safety_check|prereq_dics_word_up:spaces_post.dictionaries.all|dics_word:spaces_post.dictionaries.all|fontypes:spaces_post.words.all|usernames|spaces|safe|linebreaks }}
+					{% else %}
+					<div id=postbody class=postbody style="width: fit-content; margin: auto;">
+						{{ post.body|safety_check|fontypes:spaces_post.words.all|usernames|spaces|safe|linebreaks }}
+					</div>
+					{% endif %}
+				</div>
+				<div class=postauthor>
+					<a href="{% url 'Bable:tob_user_view_count' post.author.username 0 %}">/u/{{ post.author.username }}</a>
+				</div>
+				<div class=postwords>
+					{% for word in post.words.all|slice:"10" %}
+					<a href="{% url 'Bable:tob_users_dic_word_count' post.author.username word.home_dictionary.the_dictionary_itself word.the_word_itself 0 %}">
+						{{ word.the_word_itself }}
+					</a>
+					{% endfor %}
+				</div>
+				<div class=postcount>
+					<a href="{% url 'Bable:votewvotestyle' 'post' post.id %}">Votes: {{ post.votes_uniques }}</a>
+				</div>
+				<div class=postvotes>
+					Votes:
+					{% for vote in spaces_post.votes.all %}
+					<a href="{% url 'Bable:vote' vote.id %}">{{ vote.votes }}</a>: <a href="{% url 'Bable:tob_users_space' vote.author.username vote.the_vote_name 0 %}">{{ vote.the_vote_name }}</a>
+					{% endfor %}
+					
+				</div>
+				<div class=postcc>
+					CC:
+					<br/>
+					{% if spaces_post.cc %}
+					{{ spaces_post.cc|safe }}
+					{% else %}
+						No creative common's license
+					{% endif %}
+				</div>
+				{% if spaces_post.sponsors.count %}
+
+					<form action="{% url 'Bable:clickthrough' %}" method=POST>
+								{% csrf_token %}
+								<input type=hidden value="{{ spaces_post.author.username }}" readonly>
+								<input type=hidden value="{{ spaces_post.max_sponsor.id }}" readonly>
+								<button type=submit>
+									<img src="{{ spaces_post.max_sponsor.img }}" style="height: 4em; width: 4em; float:right;">
+								</button>
+							</form>
+				{% else %}
+					<img src="{% static 'babylonpolice.com.gif' %}" style="height: 8em; width: 8em;">
+				{% endif %}
+				<div class=postcomments>
+					Comments: {{ spaces_post.comments.count }}
+					<div class=comsubmit>
+						<div id=postcomlist onclick="openComment('postcomlist')">
+							Newcom
+						</div>
+						<form id=postcomlistform class=starter action="{% url 'Bable:create_comment' 'post' post.id 0 %}" method=post>
+							{% csrf_token %}
+							{{ comment_form }}
+							<button type=submit>what've I got to lose?</button>
+						</form>
+					</div>
+					{% if spaces_post.comments.count %}
+						{% recursetree spaces_post.comments.all %}
+						<div class=postcoms>
+							<div class=comclose onclick="comCollapse('{{node.id}}')">
+								-:
+							</div>
+							<div id={{node.id}}>
+								<div class=postcomsbody>
+									{% if not node.votes.all.count %}
+										{{ node.body }}
+									{% elif node.votes.all|subset:loggedinanon.applied_votestyles.to_source %}
+										{{ node.body }}
+
+									{% else %}
+										<p style="color: red;">Remains a secret until you apply the right votestyles</p>
+									{% endif %}
+								</div>
+								<div class=postcomsbodyad>
+									{% if node.dictionaries.all.sponsors.count %}
+									<form action="{% url 'Bable:clickthrough' %}" method=POST>
+										{% csrf_token %}
+										<input type=hidden value="{{ node.author.username }}" readonly>
+										<input type=hidden value="{{ node.dictionaries.max_sponsor.id }}" readonly>
+										<button type=submit>
+											<img src="{{ post.max_sponsor.img.url2 }}" style="height: 4em; width: 4em; float:right;">
+										</button>
+									</form>
+									
+										<div style="position: relative; top: -2em; color: blue; background-color: white;">Ad
+										</div>
+
+									{% else %}
+										<a href="https://www.jackdonmclovin.com/"><img src="{% static 'babylonpolice.com.gif' %}" style="z-index: 1; height: 6em; width: 6em;"></a>
+									{% endif %}
+								</div>
+								<div class=postcomsvotes>
+									<a href="{% url 'Bable:votewvotestyle' 'com' node.id %}">Votes: {{ node.votes_count }}</a>
+								</div>
+								<div class=postcomsvotess>Votess:
+									{% for vote in node.votes.all %}
+										{% if vote in loggedinanon.applied_votestyles.to_source %}
+										<div class=postcomsvotesss>
+											<a href="{% url 'Bable:vote' vote.id %}">{{ vote.votes }}</a>: <a href="{% url 'Bable:tob_users_space' vote.author.username vote.the_vote_name.the_word_itself %}">{{ vote.the_vote_itself }}</a>
+										</div>
+										{% endif %}
+									{% endfor %}
+								</div>
+								{% if request.user.username == user_authore.username or request.user.username == node.author.username %}
+								<div class=comdelete>
+									<a href="{% url 'Bable:delete_own_com' node.id 'full' %}">X</a>
+								</div>
+								{% endif %}
+								<div class=postcomsdics>Dics:
+										{% for dic in node.dictionaries.all %}
+											{% if dic in loggedinanon.applied_dictionaries.all %}
+												<div class=postcomsdicss>
+													<a href="{% url 'Bable:tob_user_view_count' dic.author.username 0 %}">/u/{{ dic.author.username }}</a>: <a href="{% url 'Bable:tob_users_dic' dic.author.username dic.the_dictionary_itself %}">{{ dic.the_dictionary_itself }}</a>
+												</div>
+											{% endif %}
+										{% endfor %}
+									</div>
+									<div class=postcomswords>Words:
+										{% for word in node.words.all|slice:"10" %}
+											<a href="{% url 'Bable:tob_users_dic_word_count' word.author.username word.home_dictionary.the_dictionary_itself word.the_word_itself 0 %}">{{ word.the_word_itself }}</a>
+										{% endfor %}
+									</div>
+								<div class=postcomsauthor>
+									<a href="{% url 'Bable:tob_user_view_count' node.author.username 0 %}">/u/{{ node.author.username }}</a>
+								</div>
+								<div class=comsubmit>
+									<div id='{{ node.id }}submit' onclick="openComment('{{ node.id }}')">
+										Reply
+									</div>
+									<form id='{{node.id}}form' class=threaded action="{% url 'Bable:create_comment' 'post' post.id node.id %}" method=post>
+										{% csrf_token %}
+										{{ comment_form }}
+										<button type=submit>what've I got to lose?</button>
+									</form>
+								</div>
+								{% if not node.is_leaf_node %}
+									{{ children }}
+								{% endif %}
+							</div>
+						</div>
+						{% endrecursetree %}
+					{% endif %}
+				</div>
+			{% endwith %}
+		{% else %}
+			<div class=post>
+				This user either has not marked their post, or you can't smell what's under your nose, iykwim (because you're not logged in or have purchased).
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+
+{% endblock %}
+
+{% block unauthenticated_posts %}
+<div class=usersusername>
+	<h2>
+	<a href="{% url 'Bable:tob_user_view_count' user_anon.username.username 0 %}">User: {{ user_anon.username.username }}</a>
+	</h2>
+</div>
+<div class=usersspaces>
+	<div class=sectiontitle>
+		<a href="{% url 'Bable:tob_users_spaces' user_anon.username.username 0 %}"><h3>Spaces:</h3></a>
+	</div>
+	<div class="spaces">
+	{% if users_spaces %} 
+		{% for space in users_spaces %}
+		<div class="space">
+			{{ space.the_space_itself.the_word_itself }}
+		</div>
+		{% endfor %}
+	{% else %}
+		<div class="space">
+			This user has no space. Give them some room. Perhaps you need to sign up and buy in.
+		</div>
+	{% endif %}
+	</div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+	function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+	function openCommentThread(starter, com) {
+		var element = document.getElementById(starter).getElementById(com);
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+
+	function comCollapse(node) {
+		var element = document.getElementById(node)
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+</script>
+{% endblock %}

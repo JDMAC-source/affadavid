@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load vote_screen %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+
+{% block title %}
+Babylon Police About Page - Please yourself to please others
+{% endblock %}
+
+{% block inserts %}
+<meta name="viewport" content="width=1024">
+<meta property="og:description" content="BabylonPolice - Incentivised-Ascento-Secrecy - Police yourself to police others AKA please yourself to please others. User-Choice Definitions. Create your own code words, or buy them and gain access to income that you can spend on deeper secrets granting you deeper income.">
+<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+{% endblock %}
+
+{% block authenticatedposts %}
+<div style="margin-top: 20px;">
+	<h2>About</h2>
+	<div style="line-height: 1em; font-size:3em; font-family: FS Kim,Georgia,'Serif';">
+		BabylonPolice is about the exploration language and meaning.
+	</div>
+	<br/>
+	<br/>
+	<div class=middle style="ont-family: monospace;">
+		Hopefully, in your language, that means something to you.
+	</div>
+	<br/>
+	<br/>
+	<div class=bottom style="font-family: FS Kim,Georgia,'Serif';">
+		May the language you enscribe proscribe the descriptions you ascribe to the transcriptions of your mind.
+	</div>
+	<div class=management>
+		Always under newer management. Hand selected (connections of)^N. Now that we know you're all here right alongside with us.
+		<br/>
+		Who can I help when God only helps themselves.
+	</div>
+</div>
+{% endblock %}
+
+{% block unauthenticated_posts %}
+<div style="margin-top: 20px;">
+	<h2>About</h2>
+	<div style="line-height: 1em; font-size:3em; font-family: FS Kim,Georgia,'Serif';">
+		BabylonPolice is about the exploration language and meaning.
+	</div>
+	<br/>
+	<br/>
+	<div class=middle style="ont-family: monospace;">
+		Hopefully, in your language, that means something to you.
+	</div>
+	<br/>
+	<br/>
+	<div class=bottom style="font-family: FS Kim,Georgia,'Serif';">
+		May the language you enscribe proscribe the descriptions you ascribe to the transcriptions of your mind.
+	</div>
+	<br/>
+	<br/>
+	<div class=management>
+		Always under newer management. Hand selected (connections of)^N. Now that we know you're all here right alongside with us.
+		<br/>
+		Who can I help when God only helps themselves.
+	</div>
+</div>
+{% endblock %}

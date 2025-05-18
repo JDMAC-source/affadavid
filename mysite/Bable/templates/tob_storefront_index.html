@@ -1,0 +1,469 @@
+{% extends 'base_storefront.html' %}
+{% load user_referencing %}
+{% load vote_screen %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{{user_storefront.title}} - {{ request.META.HTTP_HOST|stripwww }}
+{% endblock %}
+
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta property="og:description" content="{{ user_storefront.title }} - Predictionary.us">
+<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+{% endblock %}
+
+
+{% block header_inner %}
+<div class="header-inner">
+	<div id="siteTitleWrapper">
+		<h1 id="siteTitle" class="site-title" width=20%>
+			{{ user_storefront.title|fontype:user_storefront.logo|safe }}
+		</h1>
+	</div>
+	<div class="bar" style="display: inline-block; margin: 20px">
+		<div class="past_purchases-bar" onclick="showregister()" style="display:inline-block;">
+			<img src="{% static 'key.png' %}" style="height: 1em; width: 1em; border: solid; border-color: #e3dac9;" alt="Login">
+		</div>
+		
+		{% if request.user.is_authenticated %}
+		{% else %}
+		<div class="landingpage" style="display: inline-block; margin-left:1em;">
+			<a href="{% url 'Bable:landingpage' %}">Landing Page</a>
+		</div>
+		{% endif %}
+		{% if request.user.is_authenticated %}
+			<div class="account" style="">
+				<a href="{% url 'Bable:tob_user_view_count' request.user.username 0 %}">/u/</a>
+			</div>
+			<div id="notifications">
+				<div id="notification-count"></div>
+				<div class="notification-dropdown">
+				</div>
+			</div>
+		{% endif %}
+
+	<div id="headerNav1" ontouchstart="$('.dropdown-content1')[0].display = 'block';" style="margin-top: -1.3em;">
+		<div id="top"></div>
+		<div id="middle"></div>
+		<div id="bottom"></div>
+		<div class="dropdown-content1">
+			<div class="space_view">
+				<a href="{% url 'Bable:storefront_landing_page' user_storefront.author.username user_dic.first.id user_storefront.title %}">Landing Page</a>
+			</div>
+			<div class="universal_pronunciation">
+				<a href="{% url 'Bable:storefront_index' user_storefront.author.username user_dic.first.id user_storefront.title %}">Index</a>
+			</div>
+			<div class="mutawords">
+				<a href="{% url 'Bable:storefront_about' user_storefront.author.username user_dic.first.id user_storefront.title %}">About</a>
+			</div>
+			<div class="dictionaries">
+				<a href="{% url 'Bable:storefront_story' user_storefront.author.username user_dic.first.id user_storefront.title %}">Story of Us</a>
+			</div>
+			<div class="user_view">
+				<a href="{% url 'Bable:storefront_product_list' user_storefront.author.username user_dic.first.id user_storefront.title %}">Products List</a>
+			</div>
+			<div class="word_attributes">
+				<a href="{% url 'Bable:storefront_past_purchases' user_storefront.author.username user_dic.first.id user_storefront.title %}">Past Purchases</a>
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+
+{% block authenticated_posts %}
+
+<div style="margin-top: 50px;">
+	<section id="storefront_textblock_1" style="text-align: center;">{{ user_storefront.textblock_1 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|slice:"5" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	<section id="storefront_textblock_2" style="text-align: center;">{{ user_storefront.textblock_2 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|skip_how_many_keep_how_many:"5-10" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	<section id="storefront_textblock_3" style="text-align: center;">{{ user_storefront.textblock_3 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|skip_how_many_keep_how_many:"10-15" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	<section id="storefront_textblock_4" style="text-align: center;">{{ user_storefront.textblock_4 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|skip_how_many_keep_how_many:"15-20" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	
+	<form method=POST action="{% url 'Bable:edit_storefront' user_storefront.id %}">
+		{% csrf_token %}
+		{{ storefront_form }}
+		<button type=submit>Edit Storefront</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block unauthenticated_posts %}
+<div style="margin-top: 50px;">
+	<section id="storefront_textblock_1" style="text-align: center;">{{ user_storefront.textblock_1 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|slice:"5" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	<section id="storefront_textblock_2" style="text-align: center;">{{ user_storefront.textblock_2 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|skip_how_many_keep_how_many:"5-10" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	<section id="storefront_textblock_3" style="text-align: center;">{{ user_storefront.textblock_3 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|skip_how_many_keep_how_many:"10-15" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	<section id="storefront_textblock_4" style="text-align: center;">{{ user_storefront.textblock_4 }}</section>
+	<section id="storefront_product_list_1" style="text-align: center;">
+		<div class="row pt-5 pricing-table">
+            <div class="col-12 mx-auto">
+                <div class="card-deck pricing-table">
+
+			            {% for price in user_storefront.products.all|skip_how_many_keep_how_many:"15-20" %}
+
+                     <div class="card">
+			            <hr />
+			            
+			            <a href="{% url 'Bable:tob_product' price.id %}"><h3>{{ price.name }}</h3></a>
+			            {% if price.img %}
+			            <img src="{{ price.img }}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% else %}
+			            <img src="{% static 'babylonpolice.jpg' %}" style="width: 200px !important; max-height: 200px; margin: auto; width: fit-content;">
+			            {% endif %}
+			            <div>
+			                <h5>${{ price.get_display_price }} AUD {% if price.monthly %}per month{% endif %}</h5>
+			                <form action="{% url 'Bable:api_checkout_session' users_post.id 0 %}" method="POST">
+			                    {% csrf_token %}
+			                    <div onclick="openComment('saleform')">
+			                    Address+
+			                	</div>
+			                	<div id=saleform>
+			                    {{ sale_form }}
+			                	</div>
+			                	<style>
+			                		#saleform {
+			                			display:none;
+			                		}
+			                	</style>
+			                    <button type="submit">Checkout</button>
+			                </form>
+			            </div>
+
+			        </div>
+			            {% endfor %}
+                </div>
+            </div>
+        </div>
+	</section>
+	
+	<form method=POST action="{% url 'Bable:edit_storefront' user_storefront.id %}">
+		{% csrf_token %}
+		{{ storefront_form }}
+		<button type=submit>Edit Storefront</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+	function openCommentThread(starter, com) {
+		var element = document.getElementById(starter).getElementById(com);
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+
+	function comCollapse(node) {
+		var element = document.getElementById(node)
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+</script>
+{% endblock %}

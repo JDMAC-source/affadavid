@@ -1,0 +1,342 @@
+<!-- # Copyright Aden Handasyde 2019 -->
+
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+Affago.org - Roadmaps - You can't predict from what you don't know.
+{% endblock %}
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta content="X-Frame-Options: SAMEORIGIN">
+<meta property="og:description" content="Affago.org - Roadmaps - You can't predict from what you don't know. Urban Dictionary with a twist, sell your slang, hide meaning behind meaning. Ulterior motives like it's a potion.">
+<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+{% endblock %}
+
+{% block authenticatedposts %}
+<div style="display: block; width: 100%;">
+	<div style="display: inline-block;"><a href="{% url 'Bable:landingpage_roadmaps' %}">Roadmap</a></div>
+	<div style="display: inline-block;"><a href="{% url 'Bable:landingpage' %}">Frontpage</a></div>
+</div>
+<style>
+	.multiexpimage {
+		width: 26.6em;
+	}
+	.framer-19un3sn, .framer-1r4ux0k {
+			top: -100px;
+		}
+	@media only screen {
+		.framer-19un3sn, .framer-1r4ux0k {
+			top: 0px;
+		}
+		
+	}
+
+	@media only screen and (max-width: 489px) {
+		.multiexpimage {
+		width: 100%;
+	}
+	}
+</style>
+<div class="pitch" style="width:fit-content; margin: auto;">
+	<canvas id=canvas1>
+	</canvas>
+</div>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	#canvas1{
+		border: 5px solid black;
+		position: absolute;
+		top: 50%;
+		left:50%;
+		transform: translate(-50%, -50%);
+
+	}
+	
+</style>
+<div id=roadmaps>
+	<div class=roadmap>
+		<li>
+			[X] Build algorithm that generates increasing revenues over increasing periods of time on a global level.
+			<li>
+				<ol>
+					<li>
+					implement user-owned text-adjacent per-word advertising
+					</li>
+				</ol>
+			</li>
+			<ol>
+				implement purchasing of dictionaries that require dictionaries, and purchasing of spaces that require words, made of words. Therefor allowing each purchasing page enabled to be inserted as an ad.
+			</ol>
+			<ol>
+				income from purchasing of dictionaries goes into creation of more exclusive dictionaries. income from purchasing of spaces goes into creation of more detailed descriptions of higher order complexity spaces.
+			</ol>
+			<ol>
+				each space is built with the same 4 characteristics as any business entity in the world, or as approximated by the best of the best (about, vision, mission, values)
+				<li>
+					whereby the about sells the vision while tying in how the values achieve the mission.
+					<ol>
+						the vision represents are far distant future of continued growth in operations
+					</ol>
+					<ol>
+						the mission represents what the means to the ends are, and how each facilitated transaction is of a certain type that can be characterised by key features.
+					</ol>
+					<ol>
+						the values represent the core assets of an individual that would enable them to being able to achieve the mission while their regulatory/responsibiliy capabilities are being optimised.
+					</ol>
+					<ol>
+						selling isn't in the art of selling, or how much you can sell how little for, or how much value you can provide to the overall market by facilitating the transaction and supply from supplier to demander at the object of the demander's highest and most optimally arranged selection of fulfilled demands.
+						<li>
+							the highest point of fulfilled demands is apprehending the demands before the demands have been made, to the point of knowing how to finish the client, hopefully so loved as to call partner, has fulfilled all commands in advance of awaiting the next newest command.
+						</li>
+						<li>
+							the highest features of an individual fulfilling commands ought to be that of knowing what might be needed by the commander in order to fulfill the most highest of commands, the highest of which is 1vAll apocalypse, which is the stalemate form of the basis of our economy.
+						</li>
+
+					</ol>
+				</li>
+				<li>
+					
+					<ol>
+					</ol>
+					<ol>
+					</ol>
+					<ol>
+					</ol>
+					<ol>
+					</ol>
+				</li>
+
+			</ol>
+		</li>
+		<li>
+			
+			<ol>
+			</ol>
+			<ol>
+			</ol>
+			<ol>
+			</ol>
+			<ol>
+			</ol>
+		</li>
+		<li>
+			
+			<ol>
+			</ol>
+			<ol>
+			</ol>
+			<ol>
+			</ol>
+			<ol>
+			</ol>
+		</li>
+	</div> 
+</div>
+{% endblock %}
+
+
+{% block unauthenticated_posts %}
+<div style="display: block; width: 100%;">
+	<div style="display: inline-block;"><a href="{% url 'Bable:landingpage_roadmaps' %}">Roadmap</a></div>
+	<div style="display: inline-block;"><a href="{% url 'Bable:landingpage' %}">Frontpage</a></div>
+</div>
+<style>
+	.multiexpimage {
+		width: 26.6em;
+	}
+	.framer-19un3sn, .framer-1r4ux0k {
+			top: -100px;
+		}
+	@media only screen {
+		.framer-19un3sn, .framer-1r4ux0k {
+			top: 0px;
+		}
+		
+	}
+
+	@media only screen and (max-width: 489px) {
+		.multiexpimage {
+		width: 100%;
+	}
+	}
+</style>
+<div class="pitch" style="width:fit-content; margin: auto;">
+	<canvas id=canvas1>
+	</canvas>
+</div>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+	#canvas1{
+		border: 5px solid black;
+		position: absolute;
+		top: 20%;
+		left:50%;
+		transform: translate(-50%, -50%);
+
+	}
+	
+</style>
+<div id=roadmaps style="margin-left: 30px; margin-top: 800px;">
+	<div class=roadmap>
+		<li>
+			[X] Build algorithm that generates increasing revenues over increasing periods of time on a global level. (Value $++ continuous limitless potential for profit to our users)
+			<ol style="margin-left: 50px;">
+				<li>
+					implement user-owned text-adjacent per-word advertising
+				</li>
+				<li>
+					implement purchasing of dictionaries that require dictionaries, and purchasing of spaces that require words, made of words. Therefor allowing each purchasing page enabled to be inserted as an ad.
+				</li>
+				<li>
+					income from purchasing of dictionaries goes into creation of more exclusive dictionaries. income from purchasing of spaces goes into creation of more detailed descriptions of higher order complexity spaces.
+				</li>
+				<li>
+					each space is built with the same 4 characteristics as any business entity in the world, or as approximated by the best of the best (about, vision, mission, values)
+					<ul style="margin-left: 30px;">
+						<li>
+							whereby the about sells the vision while tying in how the values achieve the mission.
+							<ul style="margin-left: 30px;">
+								<li>
+								the vision represents are far distant future of continued growth in operations
+								</li>
+								<li>
+								
+								the mission represents what the means to the ends are, and how each facilitated transaction is of a certain type that can be characterised by key features.
+								<li>
+								
+								the values represent the core assets of an individual that would enable them to being able to achieve the mission while their regulatory/responsibiliy capabilities are being optimised.
+								<li>
+								
+									selling isn't in the art of selling, or how much you can sell how little for, or how much value you can provide to the overall market by facilitating the transaction and supply from supplier to demander at the object of the demander's highest and most optimally arranged selection of fulfilled demands.
+									<ul style="margin-left: 30px;">
+										<li>
+											the highest point of fulfilled demands is apprehending the demands before the demands have been made, to the point of knowing how to finish the client, hopefully so loved as to call partner, has fulfilled all commands in advance of awaiting the next newest command.
+										</li>
+										<li>
+											the highest features of an individual fulfilling commands ought to be that of knowing what might be needed by the commander in order to fulfill the most highest of commands, the highest of which is 1vAll apocalypse, which is the stalemate form of the basis of our economy.
+										</li>
+									</ul>
+								</li>
+
+
+							</ul>
+						</li>
+						<li>
+							Whereby the vision promotes how the about reflects how we should view the mission with the values in-tact over the game mechanics of each individual player.
+							<ul style="margin-left: 30px;">
+
+								<li>
+									the vision is a view of how the present-tense of the about reflects the long-term future-tense of the company's development providing it may continue to grow profitably
+								</li>
+								<li>
+									the mission is what happens when individuals act under certain guiding values and at the end of it being repeated day in day out the vision is achieved.
+								</li>
+								<li>
+									the values are what is needed to ascertain the mission on a competitive flooring so much so that once the mission can be completed by solving for these values, a long term vision can be instantiated whereby any future value can be manifested over a long-term vision creation dynamic procedure such as a generous business plan.
+								</li>
+
+							</ul>
+							
+						</li>
+					</ul>
+				</li>
+			</ol>
+		</li>
+		<li>
+			[X] Build a display containing display images and display titles, body content, and a reference link, we have everything equivalent needed to attach memetic units of descriptive information to memetic units of written information, creating the deterministic tie between what ensures that the advertising material in the display post has a hidden subtext. (Value $++ continuous limitless potential for profit to us and therefor our users)
+			
+			<ol style="margin-left: 50px;">
+				<li>
+					Implement room in the database for "posts", each with a "URL" an "Image URL" a "title" a "body" and let it be attributable with "dictionaries" and "spaces" to provide advertising revenue, and communities for engagement to complete the two-way action-cycle.
+				</li>
+				<li>
+				</li>
+				<li>
+				</li>
+			</ol>
+			
+		</li>
+		<li>
+			[X] Build limitless capability for Shopify-style websites for our users at zero cost for access to them. (Value $150 Billion USD)
+			<ol style="margin-left: 50px;">
+				<li>
+				</li>
+				<li>
+				</li>
+				<li>
+				</li>
+			</ol>
+			
+		</li>
+	</div> 
+</div>
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		
+		function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function openCommentThread(starter, com) {
+			var element = document.getElementById(starter).getElementById(com);
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function comCollapse(node) {
+			var element = document.getElementById(node)
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function nodeCollapse(node) {
+			var element = document.getElementById(node)
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		/* Needs to be step-counted for the DAHS of each Attribute
+		function wordsAttributesAddMore() {
+				var form_idx = $('#id_wa-TOTAL_FORMS').value;
+				var copy = $('#waef').html().replace(/__prefix__/g, form_idx);
+				$('#wafs').append(copy);
+				$('#id_wa-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+			}
+		*/
+		$(document).on('click', 'button.Delete', function() {
+			var target = '#id_' + $(this).val() + '-DELETE';
+			$(target).prop('checked', true);
+			$(this).closest('tr').hide();
+		});
+	</script>
+{% endblock %}

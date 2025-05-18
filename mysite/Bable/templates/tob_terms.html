@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load vote_screen %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{{ users_post.title }} - {{ request.META.HTTP_HOST|stripwww }}
+{% endblock %}
+
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta property="og:description" content="{{ users_post.title }} - Babylon Police">
+<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+{% endblock %}
+
+
+{% block authenticatedposts %}
+<div id=terms_space>
+	<h2>Space: {{ space.the_space_itself.the_word_itself }}; ID: {{ space.id }}</h2>
+	<h3>Owner: {{space.author.username}}</h3>
+	<h3>Dictionary: {{space.the_space_itself.the_word_itself.home_dictionary.the_dictionary_itself}}</h3>
+</div>
+<div id=terms>
+	<h2>Terms of Governing Body's Representatives:</h2>
+	{% if space_viewable %}
+	{% for term in space.legislating_terms.all %}
+		<div id=legislating_terms>
+			<h3>Legislating Terms: {{ term.chapter }}</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_legislating_terms_form' %}" method=post>
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+			
+		</div>
+	{% endfor %}
+	{% for term in space.administrating_terms.all %}
+		<div id=administrating_terms>
+			<h3>Administrating Terms: {{ term.chapter }}</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_legislating_terms_form' %}" method=post>
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+		</div>
+	{% endfor %}
+	{% for term in space.executing_terms.all %}
+		<div id=executing_terms>
+			<h3>Executing Terms:</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_legislating_terms_form' %}" method=post>
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+		</div>
+	{% endfor %}
+	{% for term in space.adjudicating_terms.all %}
+		<div id=adjudicating_terms>
+			<h3>Adjudicating Terms: {{ term.chapter }}</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_adjudicating_terms_form' %}" method=post>
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				<!-- include term id readonly -->
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+		</div>
+	{% endfor %}
+	{% else %}
+	<div id=disclaimer>
+		This space's terms are not viewable to you
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}
+
+{% block unauthenticated_posts %}
+<div id=terms_space>
+	<h2>Space: {{ space.the_space_itself.the_word_itself }}; ID: {{ space.id }}</h2>
+	<h3>Owner: {{space.author.username}}</h3>
+	<h3>Dictionary: {{space.the_space_itself.the_word_itself.home_dictionary.the_dictionary_itself}}</h3>
+</div>
+<div id=terms>
+	<h2>Terms of Governing Body's Representatives:</h2>
+	{% if space_viewable %}
+	{% for term in space.legislating_terms.all %}
+		<div id=legislating_terms>
+			<h3>Legislating Terms: {{ term.chapter }}</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_legislating_terms_form' %}" method=post>
+				{% csrf_token %}
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+			{% if loggedinauthor in space.legislative_members %}
+			<form action="{% url 'Bable:legislative_memebers_select_primation_reference' %}" method=post>
+				{% csrf_token %}
+				{{ legislative_memebers_select_primation_reference }}
+			</form>
+			{% endif %}
+			
+		</div>
+	{% endfor %}
+	{% for term in space.administrating_terms.all %}
+		<div id=administrating_terms>
+			<h3>Administrating Terms: {{ term.chapter }}</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_legislating_terms_form' %}" method=post>
+				{% csrf_token %}
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+			{% if loggedinauthor in space.legislative_members %}
+			<form action="{% url 'Bable:legislative_memebers_select_primation_reference' %}" method=post>
+				{% csrf_token %}
+				{{ legislative_memebers_select_primation_reference }}
+			</form>
+			{% endif %}
+		</div>
+	{% endfor %}
+	{% for term in space.executing_terms.all %}
+		<div id=executing_terms>
+			<h3>Executing Terms:</h3>
+			{% if loggedinauthor in space.legislative_members.all %}
+			<form action="{% url 'Bable:add_or_remove_legislating_terms_form' %}" method=post>
+				{% csrf_token %}
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+			{% if loggedinauthor in space.legislative_members %}
+			<form action="{% url 'Bable:legislative_members_select_primation_reference' %}" method=post>
+				{% csrf_token %}
+				{{ legislative_members_select_primation_reference }}
+			</form>
+			{% endif %}
+		</div>
+	{% endfor %}
+	{% for term in space.adjudicating_terms.all %}
+		<div id=adjudicating_terms>
+			<h3>Adjudicating Terms: {{ term.chapter }}</h3>
+			{% if loggedinauthor in space.judiciary_members.all %}
+			<form action="{% url 'Bable:add_or_remove_adjudicating_terms_form' %}" method=post>
+				{% csrf_token %}
+				{{ add_or_remove_legislating_terms_form }}
+				<submit>Edit Legislating Terms</submit>
+			</form>
+			{% endif %}
+			<h4>Conditionees:</h4>
+			{% for conditionee in term.conditionees.all %}
+			<p>{{ conditionee.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditionee_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				<!-- include term id readonly -->
+				{{ primation_conditionee_selector_feedback_form }}
+				<submit>Refer Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditioners:</h4>
+			{% for conditioner in term.conditioners.all %}
+			<p>{{ conditioner.username }}</p>
+			{% endfor %}
+			{% if request.user.username == term.primation_reference %}
+			<form action="{% url 'Bable:primation_conditioner_selector_feedback' %}" method=post>
+				{% csrf_token %}
+				{{ primation_conditioner_selector_feedback_form }}
+				<submit>Submit Primation</submit>
+			</form>
+			{% endif %}
+			<h4>Conditions:</h4>
+			<p>{{ term.conditions }}</p>
+			<h4>Accostings:</h4>
+			<p>{{ term.accostings }}</p>
+			<h4>Primation Fee:</h4>
+			<p>{{ term.primation_fee }}</p>
+			<h4>Primation Reference:</h4>
+			{% for reference in term.primation_reference.all %}
+			<p>{{ reference.username }}, </p>
+			{% endfor %}
+			{% if loggedinauthor in space.judiciary_members %}
+			<form action="{% url 'Bable:judiciary_members_select_primation_reference' %}" method=post>
+				{% csrf_token %}
+				{{ judiciary_members_select_primation_reference }}
+			</form>
+			{% endif %}
+		</div>
+	{% endfor %}
+	{% else %}
+	<div id=disclaimer>
+		This space's terms are not viewable to logged out users.
+	</div>
+	{% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+	function openCommentThread(starter, com) {
+		var element = document.getElementById(starter).getElementById(com);
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+
+	function comCollapse(node) {
+		var element = document.getElementById(node)
+		if (element.style.display === "inline-block") {
+			element.style.display = "none";
+		} else {
+			element.style.display = "inline-block";
+		}
+	}
+</script>
+{% endblock %}
