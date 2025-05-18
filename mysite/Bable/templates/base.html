@@ -174,6 +174,14 @@
 						<button type="submit">Submit</button>
 					</form>
 				</div>
+				<div id="changepasswordform" style="display: none; background: white; margin-top: 50px; margin-bottom: 400px;">
+					<form action="{% url 'Bable:change_password_form' %}" method="post">
+						<b>Submit Email</b><br>
+						{% csrf_token %}
+						{{ change_password_form }}
+						<button type="submit">Submit</button>
+					</form>
+				</div>
 			</div>
 			<div id="postindex" style="position:relative; top: 120px; padding-right: 0px; overflow-y: clip;">
 				<div id=registerterms>

@@ -12,7 +12,7 @@ from .models import *
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import *
@@ -1038,143 +1038,42 @@ def landingpage(request):
 
 
 
+
 def change_password(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
-	registerform = UserCreationForm()
-	
-		
-	
-	loginform = AuthenticationForm()
-	
-	count = 0
-	count100 = 100
-	mcount = 0
-
-	
-
-	page_views, created = Pageviews.objects.get_or_create(page="change_password")
-	page_views.views += 1
-	page_views.save()
-
-	translation = page_views.translation
-
-	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-	if x_forwarded_for:
-		x_forwarded_for = x_forwarded_for.split(',')[0]
-	ip = request.META.get('REMOTE_ADDR')
-
-	total = 0
-	for page in Pageviews.objects.all():
-		total += page.views
-
-	total = 0
-	for page in Pageviews.objects.all():
-		total += page.views
-
-	if request.user.is_authenticated:
-		loggedinuser = User.objects.get(username=request.user.username)
-		loggedinanon = Anon.objects.get(username=loggedinuser)
-		loggedinauthor = Author.objects.get(username=request.user.username)
-		previous_view = UserViews.objects.filter(anon=loggedinanon).order_by('-view_date').first()
-		pages_view = UserViews.objects.create(page_view="change_password", anon=loggedinanon, ip_address=ip, httpxforwardfor=x_forwarded_for)
-		page_views.user_views.add(pages_view)
-		if previous_view:
-			pages_view.previous_view_id = previous_view.id
-			pages_view.previous_page = previous_view.page_view
-			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		post_form = PostForm(request)
-		
-		the_response = render(request, 'tower_of_bable.html', {"total": total, "count": count, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
-	else:
-		previous_view = UserViews.objects.filter(ip_address=ip).order_by('-view_date').first()
-		pages_view = UserViews.objects.create(page_view="change_password", ip_address=ip, httpxforwardfor=x_forwarded_for)
-		page_views.user_views.add(pages_view)
-		if previous_view:
-			pages_view.previous_view_id = previous_view.id
-			pages_view.previous_page = previous_view.page_view
-			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		
-		count = 0
-		the_response = render(request, 'tower_of_bable.html', {"total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, })
-	
-	the_response.set_cookie('current', 'tower_of_bable')
-	return the_response
-
+	if request.method == "POST":
+		change_password_form = CustomChangePasswordForm(data=request.POST)
+		if change_password_form.is_valid():
+			change_password_form.save()
+			update_session_auth_hash(request, request.user)
+	return base_redirect(request, 0)
 
 
 def email_verification(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
-	registerform = UserCreationForm()
-	
-		
-	
-	loginform = AuthenticationForm()
-	
-	count = 0
-	count100 = 100
-	mcount = 0
-
-	
-
-	page_views, created = Pageviews.objects.get_or_create(page="change_password")
-	page_views.views += 1
-	page_views.save()
-
-	translation = page_views.translation
-
-	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-	if x_forwarded_for:
-		x_forwarded_for = x_forwarded_for.split(',')[0]
-	ip = request.META.get('REMOTE_ADDR')
-
-	total = 0
-	for page in Pageviews.objects.all():
-		total += page.views
-
-	total = 0
-	for page in Pageviews.objects.all():
-		total += page.views
-
-	if request.user.is_authenticated:
-		loggedinuser = User.objects.get(username=request.user.username)
-		loggedinanon = Anon.objects.get(username=loggedinuser)
-		loggedinauthor = Author.objects.get(username=request.user.username)
-		previous_view = UserViews.objects.filter(anon=loggedinanon).order_by('-view_date').first()
-		pages_view = UserViews.objects.create(page_view="change_password", anon=loggedinanon, ip_address=ip, httpxforwardfor=x_forwarded_for)
-		page_views.user_views.add(pages_view)
-		if previous_view:
-			pages_view.previous_view_id = previous_view.id
-			pages_view.previous_page = previous_view.page_view
-			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		post_form = PostForm(request)
-		
-		the_response = render(request, 'tower_of_bable.html', {"total": total, "count": count, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
-	else:
-		previous_view = UserViews.objects.filter(ip_address=ip).order_by('-view_date').first()
-		pages_view = UserViews.objects.create(page_view="change_password", ip_address=ip, httpxforwardfor=x_forwarded_for)
-		page_views.user_views.add(pages_view)
-		if previous_view:
-			pages_view.previous_view_id = previous_view.id
-			pages_view.previous_page = previous_view.page_view
-			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		
-		count = 0
-		the_response = render(request, 'tower_of_bable.html', {"total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, })
-	
-	the_response.set_cookie('current', 'tower_of_bable')
-	return the_response
+	if request.method == "POST":
+		email_verification_form = EmailVerificationForm(request, data=request.POST)
+		if email_verification_form.is_valid():
+			email_verification_form.save()
+	return base_redirect(request, 0)
 
 
+def sms_verification(request):
+	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
+	if request.method == "POST":
+		sms_verification_form = SMSVerificationForm(request, data=request.POST)
+		if sms_verification_form.is_valid():
+			sms_verification_form.save()
+	return base_redirect(request, 0)
 
 
 def tower_of_bable_count(request, count):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	registerform = UserCreationForm()
-
+	change_password_form = CustomChangePasswordForm()
+	begin_verification_form = BeginVerificationForm()
+	sms_verification_form = SMSVerificationForm()
+	email_verification_form = EmailVerificationForm()
 	if Anon.objects.all().count():
 		user = User.objects.create(username="test")
 		user.set_password("thattickles")
@@ -1255,7 +1154,7 @@ def tower_of_bable_count(request, count):
 		
 		
 
-		the_response = render(request, 'tower_of_bable.html', {"basic_price": basic_price, "post_sort_form": post_sort_form, "postscount": postscount, "buyadvertisingform": buyadvertisingform, "total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, "loggedinanon": loggedinanon, 'loginform': loginform, 'registerform': registerform,  'postform': post_form, 'spaceform': space_form, "post_form": post_form, 'taskform': task_form, 
+		the_response = render(request, 'tower_of_bable.html', {"change_password_form": change_password_form, "basic_price": basic_price, "post_sort_form": post_sort_form, "postscount": postscount, "buyadvertisingform": buyadvertisingform, "total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, "loggedinanon": loggedinanon, 'loginform': loginform, 'registerform': registerform,  'postform': post_form, 'spaceform': space_form, "post_form": post_form, 'taskform': task_form, 
 			"apply_votestyle_form": apply_votestyle_form, "create_votes_form": create_votes_form, "exclude_votes_form": exclude_votes_form, "apply_dic_form": apply_dic_form, "exclude_dic_form": exclude_dic_form})
 	else:
 		previous_view = UserViews.objects.filter(ip_address=ip).order_by('-view_date').first()

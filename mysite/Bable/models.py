@@ -716,11 +716,16 @@ class Availability(models.Model):
 	end_time = models.DateTimeField(timezone.now)
 	available_and_not_unavailable = models.BooleanField(default=False) #mark either when you're availabilities are, or your unavailabilities are. "I can do any time from X" vs "I can't do these times"
 
+def validate_phone_number(value):
+    phone_regex = r"^\+?1?\d{9,15}$"
+    if not re.match(phone_regex, value):
+        raise ValidationError("Invalid phone number format.")
 
 
 class Anon(models.Model):
 	username = models.OneToOneField(User, on_delete=models.CASCADE)
 	email = models.EmailField(max_length=144, default='', null=True)
+	phone = models.CharField(max_length=16, validators=[validate_phone_number], blank=True, null=True)
 	
 	friends = models.ManyToManyField(Author, default=None, related_name="friends")
 	following = models.ManyToManyField(Author, default=None, related_name="following")

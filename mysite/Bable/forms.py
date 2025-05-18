@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
 from Bable.models import *
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.db.models import Q
 
 
@@ -27,6 +27,43 @@ class ContactForm(forms.Form):
     from_email = forms.EmailField(required=True)
     title = forms.CharField(required=True)
     message = forms.CharField(required=True, widget=forms.Textarea)
+
+
+
+class ChangeEmailForm(forms.ModelForm):
+    class Meta:
+        model = Anon
+        fields = ('email', 'phone',)
+    
+    def __init__(self, request, *args, **kwargs):
+        current_anon = Anon.objects.get(username=request.user)
+        self.instance = current_anon
+
+    def clean(self):
+        cleaned_data = super(BeginVerificationForm, self).clean()
+        email = cleaned_data.get('email')
+        phone = cleaned_data.get('phone')
+        if not email == self.instance.email and not phone == self.instance.phone:
+            raise forms.ValidationError('Check your email and phone number are correct')
+
+
+class BeginVerificationForm(forms.ModelForm):
+    class Meta:
+        model = Anon
+        fields = ('email', 'phone',)
+    
+    def __init__(self, request, *args, **kwargs):
+        current_anon = Anon.objects.get(username=request.user)
+        self.instance = current_anon
+
+    def clean(self):
+        cleaned_data = super(BeginVerificationForm, self).clean()
+        email = cleaned_data.get('email')
+        phone = cleaned_data.get('phone')
+        if not email == self.instance.email and not phone == self.instance.phone:
+            raise forms.ValidationError('Check your email and phone number are correct')
+
+
 
 # recreate with a comment model whereby you can attribute it to anyone.
 # novelty.
@@ -142,7 +179,10 @@ class PostFilterFromDateForm(forms.ModelForm):
 
 
 
-
+class CustomPasswordChangeForm(PasswordChangeForm):
+        class Meta:
+            model = User
+            fields = ['old_password', 'new_password1', 'new_password2']
 
 
 
