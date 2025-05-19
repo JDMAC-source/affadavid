@@ -1087,15 +1087,19 @@ def validate_phone_number(value):
 from random import randrange
 class VerificationNumbers(models.Model):
 	verification_number = models.IntegerField(default=int(str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))))
-
+	creation_date = models.DateTimeField(default=timezone.now)
 
 class Anon(models.Model):
 	username = models.OneToOneField(User, on_delete=models.CASCADE)
+	first_name = models.CharField(default='', max_length=66)
+	last_name = models.CharField(default='', max_length=66)
+	user_name = models.CharField(default='', max_length=66, unique=True)
+	password = models.CharField(default='', max_length=66)
 	email = models.EmailField(max_length=144, default='', null=True)
 	email_verify = models.OneToOneField(VerificationNumbers, default=None, null=True, on_delete=models.CASCADE, blank=True, related_name="email_verify")
 	phone = models.CharField(max_length=16, validators=[validate_phone_number], blank=True, null=True)
 	phone_verify = models.OneToOneField(VerificationNumbers, default=None, null=True, on_delete=models.CASCADE, blank=True, related_name="phone_verify")
-	
+
 	friends = models.ManyToManyField(Author, default=None, related_name="friends")
 	following = models.ManyToManyField(Author, default=None, related_name="following")
 	followed_by = models.ManyToManyField(Author, default=None, related_name="followed_by")

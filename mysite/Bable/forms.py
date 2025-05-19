@@ -40,7 +40,7 @@ class ChangeEmailForm(forms.ModelForm):
         self.instance = current_anon
 
     def clean(self):
-        cleaned_data = super(BeginVerificationForm, self).clean()
+        cleaned_data = super(ChangeEmailForm, self).clean()
         email = cleaned_data.get('email')
         phone = cleaned_data.get('phone')
         if not phone == self.instance.phone:
@@ -60,7 +60,7 @@ class ChangePhoneForm(forms.ModelForm):
         self.instance = current_anon
 
     def clean(self):
-        cleaned_data = super(BeginVerificationForm, self).clean()
+        cleaned_data = super(ChangePhoneForm, self).clean()
         email = cleaned_data.get('email')
         phone = cleaned_data.get('phone')
         if not email == self.instance.email:
@@ -85,6 +85,51 @@ class BeginVerificationForm(forms.ModelForm):
         phone = cleaned_data.get('phone')
         if not email == self.instance.email and not phone == self.instance.phone:
             raise forms.ValidationError('Check your email and phone number are correct')
+
+
+class BeginVerificationFormStart(forms.ModelForm):
+    class Meta:
+        model = Anon
+        fields = ('first_name', 'last_name', 'email', 'phone', 'user_name', 'password', )
+
+    def __init__(self, *args, **kwargs):
+        super(BeginVerificationFormStart, self).__init__(*args, **kwargs)
+        self.fields['first_name'].placeholder = "First Name"
+       
+
+    def clean(self):
+        cleaned_data = super(BeginVerificationFormStart, self).clean()
+        email = cleaned_data.get('email')
+        phone = cleaned_data.get('phone')
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
+        user_name = cleaned_data.get('user_name')
+        password = cleaned_data.get('password')
+        if not email and not phone and not first_name and not last_name and not user_name and not password:
+            raise forms.ValidationError('Check your email and phone number are correct')
+        else:
+            user_anon = User.objects.create(username=user_name)
+            user_anon.set_password(password)
+            Anon.objects.create(username=user_anon, first_name=first_name, last_name=last_name, phone=phone, email=email)
+            Author.objects.create(username=user_name)
+
+
+
+
+class SMSVerificationForm(forms.ModelForm):
+    class Meta:
+        model = Anon
+        fields = ('phone_verify',)
+    
+    def __init__(self, request, *args, **kwargs):
+        current_anon = Anon.objects.get(username=request.user)
+        self.instance = current_anon
+
+    def clean(self):
+        cleaned_data = super(SMSVerificationForm, self).clean()
+        phone_verify = cleaned_data.get('phone_verify')
+        if not phone_verify == self.instance.phone_verify.verification_number and not self.instance.phone_verify.creation_date > timedelta(0,5,0):
+            raise forms.ValidationError('SMS Code is wrong, try resending in 5 minutes, or retry')
 
 
 

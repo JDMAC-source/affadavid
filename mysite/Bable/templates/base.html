@@ -35,13 +35,13 @@
     	}
     </style>
 </head>
-<body id="body">
+<body id="body" style="background-color: black;">
 	<div id="siteWrapper">
-		<header id="header" class="show-on-scroll" role="banner">
+		<header id="header" class="show-on-scroll" role="banner" style="background-color: black;">
 			<div class="header-inner">
 				<div id="siteTitleWrapper">
 					<h1 id="siteTitle" class="site-title" width=8%>
-						<img src="{% static 'download.webp' %}" style="height: 1em; width: 1em" onclick="showhideleft()" alt="Glocal.com">&nbsp; <a href="{% url 'Bable:tower_of_bable' %}" style="font-style:Roboto-bold;">
+						<img src="{% static 'download.webp' %}" style="height: 1em; width: 1em" onclick="showhideleft()" alt="Glocal.com">&nbsp; <a href="{% url 'Bable:tower_of_bable' %}" style="font-family:Roboto-bold; font-color: white;">
 							Glocal
 							</a>
 					</h1>
@@ -169,19 +169,51 @@
 						<button type="submit">Submit</button>
 					</form>
 				</div>
-				<div id="emailform" style="display: none; background: white; margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:submit_email' %}" method="post">
-						<b>Submit Email</b><br>
-						{% csrf_token %}
-						{{ email_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
-				<div id="changepasswordform" style="display: none; background: white; margin-top: 50px; margin-bottom: 400px;">
+				<div id="changepasswordform" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
 					<form action="{% url 'Bable:change_password_form' %}" method="post">
 						<b>Submit Email</b><br>
 						{% csrf_token %}
 						{{ change_password_form }}
+						<button type="submit">Submit</button>
+					</form>
+				</div>
+				<div id="changeemailform" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
+					<form action="{% url 'Bable:change_email_form' %}" method="post">
+						<b>Submit Email</b><br>
+						{% csrf_token %}
+						{{ change_email_form }}
+						<button type="submit">Submit</button>
+					</form>
+				</div>
+				<div id="changephoneform" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
+					<form action="{% url 'Bable:change_phone_form' %}" method="post">
+						<b>Submit Email</b><br>
+						{% csrf_token %}
+						{{ change_phone_form }}
+						<button type="submit">Submit</button>
+					</form>
+				</div>
+				<div id="email_verification_form" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
+					<form action="{% url 'Bable:email_verification_form' %}" method="post">
+						<b>Submit Email</b><br>
+						{% csrf_token %}
+						{{ email_verification_form }}
+						<button type="submit">Submit</button>
+					</form>
+				</div>
+				<div id="begin_verification_form" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
+					<form action="{% url 'Bable:begin_verification_form' %}" method="post">
+						<b>Submit Email</b><br>
+						{% csrf_token %}
+						{{ begin_verification_form }}
+						<button type="submit">Submit</button>
+					</form>
+				</div>
+				<div id="sms_verification_form" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
+					<form action="{% url 'Bable:sms_verification_form' %}" method="post">
+						<b>Submit Email</b><br>
+						{% csrf_token %}
+						{{ sms_verification_form }}
 						<button type="submit">Submit</button>
 					</form>
 				</div>
@@ -203,31 +235,13 @@
 			</div>
 			
 		</div>
-		<footer id="footer" style="position: relative; top: 250px; padding-bottom: 100px;">
-			<div class="footer-inner">
-				<div class="footer-links">
-					<div class="feedback">
-						<a href="{% url 'Bable:feedback' %}">Feedback</a>
-					</div>
-					<div class="about">
-						<a href="{% url 'Bable:about' %}">About</a>
-					</div>
-					<div class="about">
-						<a href="{% url 'Bable:management' %}">Under New Management</a>
-					</div>
-					
-				</div>
-			</div>
-			<div class="footer-inner">
-				<p style="color: #e3dac9; margin-top: 0px;">
-				Find us also at:
-			</p>
-				<div class="footer-links">
-					<div class="feedback">
-						<a href="https://glocal.com">Glocal.com</a>
-					</div>
-				</div>
-			</div>
+		<footer id="footer" style="position: relative; top: 50px; padding-bottom: 50px; background-color: black;">
+			<h1 width=8% style="font-size: 16px;margin-top:5px; margin-left: 5px; display: inline-block;">
+				<img src="{% static 'download.webp' %}" style="height: 20px; width: 20px;" onclick="showhideleft()" alt="Glocal.com">&nbsp; <a href="{% url 'Bable:tower_of_bable' %}" style="font-family:Roboto-bold; font-color: white;">
+					Glocal
+					</a>
+			</h1>
+			<p style="margin-top:25px; right:20px; color: white; font-size: 12px; display: inline; float: right;">Contact: info@glocal.com</p>
 			
 		</footer>
 	</div>

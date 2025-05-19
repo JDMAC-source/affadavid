@@ -128,18 +128,11 @@ def send_notification(author, text):
 
 from django.http import HttpResponseRedirect, JsonResponse
 
-def grabvoteid(request):
+def grabusername(request):
 	if request.GET.get('name'):
 		q = request.GET['name']
-		if Votes.objects.filter(the_vote_name__startswith=q):
-			data = Votes.objects.filter(the_vote_name__startswith=q).order_by('-creation_date').values_list('id',flat=True).first()
-			json = data
-			return JsonResponse(json, safe=False)
-		return JsonResponse([], safe=False)
-	else:
-		data = Votes.objects.all().order_by('-creation_date').values_list('id',flat=True).first()
-		json = list(data)
-		return JsonResponse(json, safe=False)
+		if not User.objects.filter(username__startswith=q):
+			return True
 
 
 
@@ -964,13 +957,26 @@ def tower_of_bable(request):
 		posts_values = list(posts_by_viewcount.values('img', 'author__username', 'id', 'title', 'body', 'viewcount', 'creation_date'))
 		postscount = 25
 		posts_by_viewcount = posts_values
+
+		begin_verification_form = BeginVerificationForm(request)
+		sms_verification_form = SMSVerificationForm(request)
+		email_verification_form = EmailVerificationForm(request)
+		change_email_form = ChangeEmailForm(request)
+		change_phone_form = ChangePhoneForm(request)
+
+		begin_verification_form_start = BeginVerificationFormStart()
 		
-		the_response = render(request, 'tower_of_bable.html', {"post_filter_depth_form": post_filter_depth_form, "post_filter_from_date_form": post_filter_from_date_form, "post_sort_form": post_sort_form, "postscount": postscount, "ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "total": total, "count": lower, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
+		
+
+		
+		the_response = render(request, 'tower_of_bable.html', {"begin_verification_form_start": begin_verification_form_start, "begin_verification_form": begin_verification_form, "sms_verification_form": sms_verification_form, "email_verification_form": email_verification_form, "change_email_form": change_email_form, "change_phone_form": change_phone_form,  "post_filter_depth_form": post_filter_depth_form, "post_filter_from_date_form": post_filter_from_date_form, "post_sort_form": post_sort_form, "postscount": postscount, "ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "total": total, "count": lower, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
 	else:
 		the_response = render(request, 'tower_of_bable.html', {"ip": ip, "x_forwarded_for": x_forwarded_for,  "total": total, "count": lower, "mcount": mcount, "count100": count100, 'loginform': loginform, 'registerform': registerform, })
 	
 	the_response.set_cookie('current', 'tower_of_bable')
 	return the_response
+
+
 
 
 def landingpage(request):
@@ -987,10 +993,6 @@ def landingpage(request):
 	mcount = 0
 
 	
-	if not Anon.objects.all().count():
-		Anon.objects.create(username=User.objects.create(username="test", password="thattickles"))
-		Author.objects.create(username="test")
-
 	
 	page_views, created = Pageviews.objects.get_or_create(page="landingpage")
 	page_views.views += 1
@@ -1030,8 +1032,8 @@ def landingpage(request):
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
 			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		
-		the_response = render(request, 'landingpage.html', { "basic_price":basic_price, "ip": ip, "x_forwarded_for": x_forwarded_for, 'loginform': loginform, 'registerform': registerform, })
+		begin_verification_form_start = BeginVerificationFormStart()
+		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "begin_verification_form_start": begin_verification_form_start })
 	
 	the_response.set_cookie('current', 'landingpage')
 	return the_response
@@ -1046,6 +1048,42 @@ def change_password(request):
 		if change_password_form.is_valid():
 			change_password_form.save()
 			update_session_auth_hash(request, request.user)
+	return base_redirect(request, 0)
+
+def change_phone(request):
+	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
+	if request.method == "POST":
+		change_phone_form = ChangePhoneForm(data=request.POST)
+		if change_phone_form.is_valid():
+			change_phone_form.save()
+			
+	return base_redirect(request, 0)
+
+def change_email(request):
+	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
+	if request.method == "POST":
+		change_email_form = ChangeEmailForm(data=request.POST)
+		if change_email_form.is_valid():
+			change_email_form.save()
+			
+	return base_redirect(request, 0)
+
+def begin_verification(request):
+	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
+	if request.method == "POST":
+		begin_verification_form = BeginVerificationForm(request, data=request.POST)
+		if begin_verification_form.is_valid():
+			begin_verification_form.save()
+
+	return base_redirect(request, 0)
+
+def begin_verification_start(request):
+	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
+	if request.method == "POST":
+		begin_verification_form = BeginVerificationFormStart(data=request.POST)
+		if begin_verification_form.is_valid():
+			begin_verification_form.save()
+			
 	return base_redirect(request, 0)
 
 

@@ -15,9 +15,10 @@
 }
 
 body {
-    background-color: #201a16;
+    background-color: black;
     margin: 0;
     display: block;
+    font-family:Roboto-bold;
 }
 
 h1, h2, h3 {
@@ -26,7 +27,7 @@ h1, h2, h3 {
 
 div {
 	display: block;
-	color: #1f1f1f;
+	color: black;
 }
 
 .postpreview {
@@ -77,27 +78,27 @@ div {
 }
 
 .error {
-	color: #1f1f1f;
+	color: black;
 }
 
 #header div a, #header div p, #footer div a{
-	color: #e3dac9;
-	font-family: futura-pt;
+	color: white;
+	font-family: Roboto-bold;
 	font-weight: 500;
 }
 
 #header div a:active, #footer div a:active {
-	color: #9c9999;
+	color: white;
 }
 
 a, a:link, a:visited, a:focus, a:hover, a:active {
 	background-color: transparent;
-	color: #1f1f1f;
+	color: white;
 	text-decoration: none;
 }
 
 #siteWrapper {
-	background-color: #1f1f1f;
+	background-color: black;
 	position: relative;
 	padding: 0;
 	box-sizing: border-box;
@@ -135,8 +136,6 @@ a, a:link, a:visited, a:focus, a:hover, a:active {
 }
 
 #siteTitle {
-	font-family: futura-pt;
-	text-transform: uppercase;
 	font-size: 14px;
 	letter-spacing: 2px;
 	margin-left: 0.5em;
@@ -154,7 +153,7 @@ a, a:link, a:visited, a:focus, a:hover, a:active {
 
 .header-inner {
 	position: fixed;
-	background-color: #1f1f1f;
+	background-color: black;
 	z-index: 10;
 	display: table;
 	width: 100%;
@@ -163,7 +162,7 @@ a, a:link, a:visited, a:focus, a:hover, a:active {
 
 .header-middle {
 	position: fixed;
-	background-color: #1f1f1f;
+	background-color: black;
 	z-index: 10;
 	display: table;
 	width: 100%;
@@ -248,7 +247,7 @@ select {
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
     right: 0;
-    background-color: #1f1f1f; /* #1f1f1f*/
+    background-color: black; /* black*/
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 60px; /* Place content 60px from the top */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
@@ -261,7 +260,7 @@ select {
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
     left: 0;
-    background-color: #1f1f1f; /* #1f1f1f*/
+    background-color: black; /* black*/
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 60px; /* Place content 60px from the top */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
@@ -366,7 +365,7 @@ select {
 
 #postindex {
 	display: block;
-	background-color: #e3dac9;
+	background-color: black;
 }
 
 .usersusername {
@@ -509,7 +508,7 @@ select {
 }
 
 .comsubmit form button {
-	color: #1f1f1f;
+	color: black;
 }
 
 .single_dictionary, .single_space, .single_example, .single_word {
@@ -624,8 +623,7 @@ select {
 	z-index: 1;
 	display: none;
 	position: absolute;
-	left: -4em;
-	top: 1.75em;
+	top: 1.em;
 	background-color: #2f2f2f;
 	z-index: 88;
 }
@@ -761,7 +759,7 @@ select {
 }
 
 .attributeformsetopen, .translationformopen, .storyformopen, .similarityformopen, .pronunciationformopen, .relationformopen, .exampleformopen, .spacesformopen, .sponsorformopen {
-	color: #1f1f1f;
+	color: black;
 }
 
 .attributeformsetopen .leave, .translationformopen .leave, .storyformopen .leave, .similarityformopen .leave, .pronunciationformopen .leave, .relationformopen .leave, .exampleformopen .leave {
@@ -787,7 +785,7 @@ select {
 
 .userbalance, .userself, .usermsgs, .words_itself, .words_latest, .words_pronunciations, .words_attributes, .words_similarities, .words_translations, .words_translations, .words_examples, .words_stories, .words_relations, .words_pronunciations, .words_sponsors, .words_price, .words_viewcount, .words_spaces, .words_votes, .dicwordattribute, .attdefs, .attdef, .attdefchange, .attdefviews, .attdefcount, .attdefvotes, .attdefcom, .defcomlist, .defcoms, .syns, .synbody, .syncoms, .ants, .antbody, .antcoms, .homs, .hom, .dicwordpronunciation, .dicwordexample, .dicwordsimilarity, .dicwordtranslation, .dicwordstory, .dicwordrelation, .dicwordspace, .dicwordsponsor  {
 	padding-left: 0.3em;
-	border-left: 1px solid #1f1f1f;
+	border-left: 1px solid black;
 	margin-left: 1px solid #e3dac9;
 }
 
@@ -809,7 +807,7 @@ select {
 
 .sent_itself, .sent_latest, .sent_renditions, .sent_author, .sent_views, .trans_itself, .trans_after, .trans_latest, .trans_votes, .trans_viewcount, .wordg_itself, .wordg_words, .wordg_author, .anal_itself, .anal_views, .anal_change, .anal_author, .anal_count, .anal_votes, .prereq_itself, .prereq_words, .prereq_author, .prereq_votes, .prereq_sponsors, .prereq_ms_author, .prereq_ms_price, .prereq_ms_allowable, .prereq_cost {
 	padding-left: 0.3em;
-	border-left: 1px solid #1f1f1f;
+	border-left: 1px solid black;
 	margin-left: 1px solid #e3dac9;
 }
 
@@ -823,7 +821,7 @@ select {
 }
 
 .votestyle {
-	border-bottom: 1px solid #1f1f1f;
+	border-bottom: 1px solid black;
 }
 
 .usersvotestyles {
@@ -839,7 +837,7 @@ select {
 }
 
 .comsubmit div {
-	color: #1f1f1f;
+	color: black;
 }
 
 .comsubmit form textarea {
@@ -851,7 +849,7 @@ select {
 }
 
 .comsubmit form button {
-	background-color: #1f1f1f; /* Green */
+	background-color: black; /* Green */
     border: none;
     color: #e3dac9;
     padding: 5px 10px;
@@ -889,7 +887,7 @@ select {
 .logout-form form button {
 	background-color: #e3dac9; /* Green */
     border: none;
-    color: #1f1f1f;
+    color: black;
     padding: 5px 10px;
     text-align: center;
     text-decoration: none;
@@ -909,7 +907,6 @@ select {
 	display: inline-block;
 	text-decoration-color: #e3dac9;
 	justify-content: center;
-	text-transform: uppercase;
 	margin-left: 1em;
 	cursor: pointer;
 }
@@ -918,7 +915,6 @@ select {
 	display: inline-block;
 	text-decoration-color: #e3dac9;
 	justify-content: center;
-	text-transform: uppercase;
 	margin-left: 1em;
 	cursor: pointer;
 }
@@ -927,7 +923,6 @@ select {
 	display: inline-block;
 	text-decoration-color: #e3dac9;
 	justify-content: center;
-	text-transform: uppercase;
 	margin-left: 1em;
 	cursor: pointer;
 }
@@ -952,10 +947,8 @@ select {
 }
 
 .creator, .feedback, .support, .contact, .about {
-	font-family: futura-pt;
 	font-size: 0.8em;
 	text-decoration-color: #e3dac9;
-    text-transform: uppercase;
     text-decoration-line: none;
     text-decoration-style: initial;
     text-decoration-color: initial;
@@ -981,7 +974,7 @@ select {
 @media only screen and (min-width: 490px) {
 
 	body {
-	    background-color: #201a16;
+	    background-color: black;
 	    margin: 0;
 	    display: block;
 	}
@@ -995,27 +988,27 @@ select {
 	}
 
 	#header div a, #header div p, #footer div a{
-		color: #e3dac9;
-		font-family: futura-pt;
+		color: white;
+		font-family: Roboto-bold;
 		font-weight: 500;
 	}
 
 	#header div a:active, #footer div a:active {
-		color: #9c9999;
+		color: white;
 	}
 
 	a, a:link, a:visited, a:focus, a:hover, a:active {
 		background-color: transparent;
-		color: #1f1f1f;
+		color: white;
 		text-decoration: none;
 	}
 
 	#siteWrapper {
-		background-color: #1f1f1f;
+		background-color: black;
 		position: relative;
 		padding: 0;
 		box-sizing: border-box;
-		font-family: silianrail;
+		font-family: Roboto;
 		font-size: 1.2em;
 		letter-spacing: 0.05em;
 		font-weight: 300;
@@ -1049,8 +1042,6 @@ select {
 	}
 
 	#siteTitle {
-		font-family: futura-pt;
-		text-transform: uppercase;
 		font-size: 24px;
 		letter-spacing: 2px;
 		margin-left: 0.5em;
@@ -1082,14 +1073,12 @@ select {
 		display: inline-block;
 		text-decoration-color: #e3dac9;
 		justify-content: center;
-		text-transform: uppercase;
 		margin-left: 1em;
 		cursor: pointer;
 	}
 
 	.account {
 		display: inline-block;
-		font-family: 'futura-pt';
 		text-decoration-color: #e3dac9;
 		margin-left: 1em;
 	}
@@ -1180,7 +1169,6 @@ select {
 		display: inline-block;
 		text-decoration-color: #e3dac9;
 		justify-content: center;
-		text-transform: uppercase;
 		margin-left: 1em;
 	}
 
@@ -1200,10 +1188,8 @@ select {
 
 @media only screen and (min-width: 600px) {
 	.creator, .feedback, .support, .contact, .about {
-		font-family: futura-pt;
 		font-size: 13px;
 		text-decoration-color: #e3dac9;
-	    text-transform: uppercase;
 	    text-decoration-line: none;
 	    text-decoration-style: initial;
 	    text-decoration-color: initial;
@@ -1221,7 +1207,7 @@ select {
 
 @media only screen and (min-width: 1300px) {
 	body {
-	    background-color: #201a16;
+	    background-color: black;
 	    margin: 0;
 	    display: block;
 	}
@@ -1235,23 +1221,23 @@ select {
 	}
 
 	#header div a, #header div p, #footer div a{
-		color: #e3dac9;
-		font-family: futura-pt;
+		color: white;
+		font-family: Roboto-bold;
 		font-weight: 500;
 	}
 
 	#header div a:active, #footer div a:active {
-		color: #9c9999;
+		color: white;
 	}
 
 	a, a:link, a:visited, a:focus, a:hover, a:active {
 		background-color: transparent;
-		color: #1f1f1f;
+		color: white;
 		text-decoration: none;
 	}
 
 	#siteWrapper {
-		background-color: #1f1f1f;
+		background-color: black;
 		position: relative;
 		box-sizing: border-box;
 		font-family: silianrail;
@@ -1285,8 +1271,6 @@ select {
 	}
 
 	#siteTitle {
-		font-family: futura-pt;
-		text-transform: uppercase;
 		font-size: 24px;
 		margin-left: 0.5em;
 		letter-spacing: 2px;
@@ -1309,9 +1293,7 @@ select {
 	}
 
 	.complementary, .mutawords, .dictionaries, .universal_pronunciation, .user_view, .word_attributes, .space_view, .create_dic, .word-bar, .space-bar, .post-bar, .task-bar {
-		font-family: futura-pt;
 		font-size: 13px;
-	    text-transform: uppercase;
 	    text-decoration-line: none;
 	    text-decoration-style: initial;
 	    text-decoration-color: initial;
@@ -1418,7 +1400,6 @@ select {
 		display: inline-block;
 		text-decoration-color: #e3dac9;
 		justify-content: center;
-		text-transform: uppercase;
 		margin-left: 1em;
 		cursor: pointer;
 	}
@@ -1442,10 +1423,8 @@ select {
 	}
 
 	.creator, .feedback, .support, .contact, .about {
-		font-family: futura-pt;
 		font-size: 13px;
 		text-decoration-color: #e3dac9;
-	    text-transform: uppercase;
 	    text-decoration-line: none;
 	    text-decoration-style: initial;
 	    text-decoration-color: initial;
@@ -1462,9 +1441,9 @@ select {
 }
 
 input[type=button] {
-    background-color: #2f2f2f; /* Green */
+    background-color: cadetblue; /* Green */
     border: none;
-    color: #e3dac9;
+    color: black;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
@@ -1473,9 +1452,9 @@ input[type=button] {
 }
 
 input[type=text], textarea {
-	background-color: #2f2f2f; /* Green */
+	background-color: white; /* Green */
     border: none;
-    color: #e3dac9;
+    color: black;
     width: 80%;
 }
 
