@@ -8,14 +8,14 @@
 {% load i18n %}
 
 {% block title %}
-Affago.org - You can't predict from what you don't know.
+Glocal.com News SuperIntelligence
 {% endblock %}
 
 {% block inserts %}
 <meta name="viewport" content="width=device-width">
 <meta content="X-Frame-Options: SAMEORIGIN">
-<meta property="og:description" content="Glocal.com NEWS INTELLIGENCE">
-<meta property="og:image" content="{% static 'babylonpolice.jpg' %}">
+<meta property="og:description" content="An unparalleled news environment powered by Humans + AI">
+<meta property="og:image" content="{% static 'strategic-action-section-image.bd870643.png' %}">
 {% endblock %}
 
 {% block authenticatedposts %}
@@ -63,30 +63,39 @@ Affago.org - You can't predict from what you don't know.
 		width: 100%;
 	}
 	}
+	#submit {
+		color: black; 
+		background-color: #044afc; 
+		border: none; 
+		padding: 10px 20px 10px 20px;
+		cursor: pointer;
+
+	}
+
 </style>
+
 <div id=topsection style="height: 800px;">
-	<div id=newsheader style="width:40%; position: relative; margin: auto; text-align: center; padding-right:200px; display: block; color: white">
+	<img src="{% static 'strategic-action-section-image.bd870643.png' %}" id=topheaderimg width=100%>
+	<div id=newsheader style="width:40%; position: relative; margin: auto; text-align: center; padding-right:200px; display: block; color: white;">
 		News SuperIntelligence
 		<br/>
 		For the World
 		
 	</div>
-	<div id=start style="width:100%; position: relative; margin:auto; text-align:center; display: block;">
-		<button style="color: black; background-color: cadetblue;" onclick="document.getElementById('beginverifystart').style.display = 'block'; document.getElementById('topsection').style.opacity = 20%;">Access Glocal</button>
+	<div id=start style="width:fit-content; position: relative; margin:auto; text-align:center; display: block;" >
+		<div id=submit onclick="beginVerify('')">Access Glocal</button>
 		
 	</div>
 </div>
 
 <div>
-	<div id=beginverifystart style="width:30%; position: relative; margin:auto; text-align:center; top: -800px;">
+	<div id=beginverifystart style="width:30%; position: relative; margin:auto; text-align:center; top: -750px;">
 		<form action="{% url 'Bable:begin_verification_form_start' %}" method=POST>
 			{% csrf_token %}
 			{{ begin_verification_form_start }}
 			<button type=submit>Submit</button>
 		</form>
 	</div>
-
-
 </div>
 
 <div>
@@ -108,9 +117,7 @@ Affago.org - You can't predict from what you don't know.
 		background-color: white;
 	}
 
-	#beginverifystart {
-		display: none;
-	}
+	
 </style>
 <div>
 	
@@ -119,6 +126,15 @@ Affago.org - You can't predict from what you don't know.
 {% endblock %}
 
 {% block scripts %}
+<script>
+	function beginVerify() {
+		
+			document.getElementById('beginverifystart').style.display = 'block !important'; 
+			document.getElementById('newsheader').style.opacity = '20%';
+			document.getElementById('topheaderimg').style.opacity = '20%';
+		
+	}
+</script>
 	<script>
 		
 		function openComment(starter) {
