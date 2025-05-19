@@ -83,24 +83,39 @@ Glocal.com News SuperIntelligence
 		
 	</div>
 	<div id=start style="width:fit-content; position: relative; margin:auto; text-align:center; display: block;" >
-		<div id=submit onclick="beginVerify('');">Access Glocal</button>
+		<div id=submit onclick="beginVerify('');">Access Glocal</div>
 		
 	</div>
 </div>
 
-<div>
+<div id=secondsection style="height:800px;">
 	<div id=beginverifystart style="width:30%; position: relative; margin:auto; text-align:center; display: none;">
 		<form id=formstart action="{% url 'Bable:begin_verification_form_start' %}" method=POST>
 			{% csrf_token %}
 			{{ begin_verification_form_start }}
 			<button type=submit>Sign Up</button>
 		</form>
-		<p onclick="document.getElementById('form').style.display='block';document.getElementById('formstart').style.display='none';" style="cursor: pointer; color: white;">or Sign In</p>
-		<form style="display: none;" id=form action="{% url 'Bable:begin_verification_form' %}" method=POST>
+		<p onclick="signInOpen('');" style="cursor: pointer; color: white;">or Sign In</p>
+		<form style="display: none;" id=beginverificationform action="{% url 'Bable:begin_verification_form' %}" method=POST>
 			{% csrf_token %}
 			{{ begin_verification_form }}
 			<button type=submit>Sign In</button>
 		</form>
+		<script>
+			var start = document.getElementById('formstart')
+			start.children[12].id = 'id_password1';
+			var begin = document.getElementById('beginverificationform');
+			begin.children[4].id = 'id_password2';
+
+			start.children[10].id = 'id_user_username';
+
+			begin.children[2].id = 'id_username';
+
+			function signInOpen() {
+				document.getElementById('beginverificationform').style.display='block';
+				document.getElementById('formstart').style.display='none';
+			}
+		</script>
 	</div>
 </div>
 

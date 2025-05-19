@@ -104,6 +104,7 @@ class BeginVerificationFormStart(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(BeginVerificationFormStart, self).__init__(*args, **kwargs)
         self.fields['first_name'].placeholder = "First Name"
+        
        
 
     def clean(self):
