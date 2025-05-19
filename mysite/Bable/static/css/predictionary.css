@@ -179,10 +179,11 @@ a, a:link, a:visited, a:focus, a:hover, a:active {
 }
 
 #searchindex {
-	display: none;
+	display: inline-block;
 	background-color: #e3dac9;
 	margin-left:1em;
-	width: 200px;
+	width: 300px;
+	border-radius: 24px;
 }
 
 #searchindex #search {
@@ -902,7 +903,9 @@ select {
 }
 
 .bar {
-	display: inline;
+	height: 50px;
+	width: fit-content;
+	display: inline-block;
 }
 
 .login-bar {

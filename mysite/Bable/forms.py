@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
 from Bable.models import *
+from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.db.models import Q
 
@@ -73,18 +74,26 @@ class ChangePhoneForm(forms.ModelForm):
 class BeginVerificationForm(forms.ModelForm):
     class Meta:
         model = Anon
-        fields = ('email', 'phone',)
-    
-    def __init__(self, request, *args, **kwargs):
-        current_anon = Anon.objects.get(username=request.user)
-        self.instance = current_anon
+        fields = ('user_name', 'password',)
+        
 
     def clean(self):
         cleaned_data = super(BeginVerificationForm, self).clean()
-        email = cleaned_data.get('email')
-        phone = cleaned_data.get('phone')
-        if not email == self.instance.email and not phone == self.instance.phone:
-            raise forms.ValidationError('Check your email and phone number are correct')
+        user_name = cleaned_data.get('user_name')
+        password = cleaned_data.get('password')
+        if not user_name and not password:
+            raise forms.ValidationError('Check your username and password are correct')
+        else:
+            if not Anon.objects.filter(user_name=user_name):
+                user_anon = Anon.objects.create(user_name=user_name, username=User.objects.create(username=user_name), password=password)
+                user_anon.username.set_password(password)
+                self.instance = user_anon
+            else:
+                user_anon = Anon.objects.filter(user_name=user_name).first()
+                user_anon.password = password
+                user_anon.save()
+                self.instance = user_anon
+
 
 
 class BeginVerificationFormStart(forms.ModelForm):
@@ -108,10 +117,14 @@ class BeginVerificationFormStart(forms.ModelForm):
         if not email and not phone and not first_name and not last_name and not user_name and not password:
             raise forms.ValidationError('Check your email and phone number are correct')
         else:
-            user_anon = User.objects.create(username=user_name)
-            user_anon.set_password(password)
-            Anon.objects.create(username=user_anon, first_name=first_name, last_name=last_name, phone=phone, email=email)
-            Author.objects.create(username=user_name)
+            if not User.objects.filter(username=user_name):
+                user_anon = User.objects.create(username=user_name)
+                user_anon.set_password(password)
+                user_anon.save()
+            else:
+                user_anon = User.objects.get(username=user_name)
+            Anon.objects.get_or_create(username=user_anon, user_name=user_name, first_name=first_name, last_name=last_name, phone=phone, email=email)
+            Author.objects.get_or_create(username=user_name)
 
 
 

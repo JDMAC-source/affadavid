@@ -1033,7 +1033,8 @@ def landingpage(request):
 			pages_view.previous_view_date = previous_view.view_date
 			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
 		begin_verification_form_start = BeginVerificationFormStart()
-		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "begin_verification_form_start": begin_verification_form_start })
+		begin_verification_form = BeginVerificationForm()
+		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "begin_verification_form_start": begin_verification_form_start, "begin_verification_form": begin_verification_form })
 	
 	the_response.set_cookie('current', 'landingpage')
 	return the_response
@@ -1071,9 +1072,16 @@ def change_email(request):
 def begin_verification(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
-		begin_verification_form = BeginVerificationForm(request, data=request.POST)
+		begin_verification_form = BeginVerificationForm(data=request.POST)
 		if begin_verification_form.is_valid():
-			begin_verification_form.save()
+			user = authenticate(request, username=begin_verification_form.cleaned_data["user_name"], password=begin_verification_form.cleaned_data['password'])
+			update_session_auth_hash(request, request.user)
+		else:
+			error_message = ''
+			for error in begin_verification_form.errors:
+				error_message += error
+			
+			return HttpResponse("Begin: "+ error_message)
 
 	return base_redirect(request, 0)
 
@@ -1082,7 +1090,10 @@ def begin_verification_start(request):
 	if request.method == "POST":
 		begin_verification_form = BeginVerificationFormStart(data=request.POST)
 		if begin_verification_form.is_valid():
-			begin_verification_form.save()
+			user_anon = Anon.objects.get(user_name=begin_verification_form.cleaned_data["user_name"])
+			login(request, user_anon.username)
+			update_session_auth_hash(request, request.user)
+
 			
 	return base_redirect(request, 0)
 

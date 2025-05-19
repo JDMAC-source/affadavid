@@ -14,9 +14,7 @@
   src: local('../fonts/Silian_Rail/Silian_Rail.ttf') format("truetype");
 }
 
-#beginverifystart {
-		display: none;
-	}
+
 
 body {
     background-color: black;
@@ -904,7 +902,9 @@ select {
 }
 
 .bar {
-	display: inline;
+	height: 50px;
+	width: fit-content;
+	display: inline-block;
 }
 
 .login-bar {

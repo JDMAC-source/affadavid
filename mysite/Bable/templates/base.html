@@ -33,7 +33,7 @@
     	}
     </style>
 </head>
-<body id="body" style="background-color: black;">
+<body id="body">
 	<div id="siteWrapper">
 		<header id="header" class="show-on-scroll" role="banner" style="background-color: black;">
 			<div class="header-inner">
@@ -45,16 +45,23 @@
 					</h1>
 				</div>
 				<div class="bar">
+
+					
+					<div id="searchindex" >
+						<form id="searchform" action="{% url 'Bable:search' 0 0 %}" method="get" style="background-color: white; border-radius: 12px;">
+							<img src="{% static 'search.png' %}" style="display: inline-block; height:20px; width:20px; border-radius: 12px; position:relative; top: 3px; left:3px background-color: transparent;">
+							<input id="search" name="q" type="text" style="display: inline-block; border: none; border-radius: 8px; width: 65%" placeholder="Enter Search">
+							<img src="{% static 'Circle_Plus_Expand_Icon.png' %}" style="display: inline-block; height: 20px; width: 20px;border-radius: 12px; position:relative; right:3px; top: 3px; float: right;">
+						</form>
+					</div>
 					<!--
-					{% if request.user.is_authenticated %}
 					<div class="login-bar" onclick="showhidelogin()">
 						<img src="{% static 'key.png' %}" style="height: 1em; width: 1em; border: solid; border-color: #e3dac9;" alt="Logout">
 					</div>
-					{% else %}
 					<div class="login-bar" onclick="showregister()">
 						<img src="{% static 'key.png' %}" style="height: 1em; width: 1em; border: solid; border-color: #e3dac9;" alt="Login">
 					</div>
-					{% endif %}
+					
 
 					<div class="search-bar" onclick="showhidesearch()">
 						<img src="{% static 'search.png' %}" style="height: 1em; width: 1em; border: solid; border-color: #e3dac9;" alt="Search">
@@ -114,33 +121,9 @@
 							<button type="submit">Logout</button>
 						</form>
 					</div>
-					{% else %}
-					<b>Register</b><br>
-					<p class="error">{{ register_error }}</p>
-					<div class="register-form" style="color: black;">
-						<form action="{% url 'Bable:register_view' %}" method="post">
-							{% csrf_token %}
-							{{ registerform.as_table }}
-							<button type="submit">Register</button>
-						</form>
-					</div>
-					<b>Login</b><br>
-					<p class="error">{{ login_error }}</p>
-					<div class="login-form" style="color: black;">
-						<form action="{% url 'Bable:login_view' %}" method="post">
-							{% csrf_token %}
-							{{ loginform.as_p }}
-							<button type="submit">Login</button>
-						</form>
-					</div>
 					{% endif %}
 				</div>
-				<div id="searchindex" >
-					<form id="searchform" action="{% url 'Bable:search' 0 0 %}" method="get">
-						<input id="search" name="q" type="text" placeholder="Search:">
-						<input id="search_submit" type="submit" value="Search">
-					</form>
-				</div>
+				
 				<div id="submitindex" style="margin-top: 50px; margin-bottom: 400px;">
 					{% if users_post and user_author.username == request.user.username %}
 					<form action="{% url 'Bable:edit_post' users_post.id %}" method="post">

@@ -90,10 +90,16 @@ Glocal.com News SuperIntelligence
 
 <div>
 	<div id=beginverifystart style="width:30%; position: relative; margin:auto; text-align:center; display: none;">
-		<form action="{% url 'Bable:begin_verification_form_start' %}" method=POST>
+		<form id=formstart action="{% url 'Bable:begin_verification_form_start' %}" method=POST>
 			{% csrf_token %}
 			{{ begin_verification_form_start }}
-			<button type=submit>Submit</button>
+			<button type=submit>Sign Up</button>
+		</form>
+		<p onclick="document.getElementById('form').style.display='block';document.getElementById('formstart').style.display='none';" style="cursor: pointer; color: white;">or Sign In</p>
+		<form style="display: none;" id=form action="{% url 'Bable:begin_verification_form' %}" method=POST>
+			{% csrf_token %}
+			{{ begin_verification_form }}
+			<button type=submit>Sign In</button>
 		</form>
 	</div>
 </div>
