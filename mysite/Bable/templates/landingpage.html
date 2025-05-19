@@ -83,13 +83,13 @@ Glocal.com News SuperIntelligence
 		
 	</div>
 	<div id=start style="width:fit-content; position: relative; margin:auto; text-align:center; display: block;" >
-		<div id=submit onclick="beginVerify('')">Access Glocal</button>
+		<div id=submit onclick="beginVerify('');">Access Glocal</button>
 		
 	</div>
 </div>
 
 <div>
-	<div id=beginverifystart style="width:30%; position: relative; margin:auto; text-align:center; top: -750px;">
+	<div id=beginverifystart style="width:30%; position: relative; margin:auto; text-align:center; display: none;">
 		<form action="{% url 'Bable:begin_verification_form_start' %}" method=POST>
 			{% csrf_token %}
 			{{ begin_verification_form_start }}
@@ -128,10 +128,17 @@ Glocal.com News SuperIntelligence
 {% block scripts %}
 <script>
 	function beginVerify() {
-		
-			document.getElementById('beginverifystart').style.display = 'block !important'; 
+		if (document.getElementById('beginverifystart').style.display === 'none')
+		{
+			document.getElementById('beginverifystart').style.display = 'block'; 
 			document.getElementById('newsheader').style.opacity = '20%';
 			document.getElementById('topheaderimg').style.opacity = '20%';
+		} else {
+			document.getElementById('beginverifystart').style.display = 'none'; 
+			document.getElementById('newsheader').style.opacity = '100%';
+			document.getElementById('topheaderimg').style.opacity = '100%';
+		}
+			
 		
 	}
 </script>

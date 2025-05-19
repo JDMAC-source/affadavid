@@ -14,9 +14,7 @@
   src: local('../fonts/Silian_Rail/Silian_Rail.ttf') format("truetype");
 }
 
-#beginverifystart {
-		display: none;
-	}
+
 
 body {
     background-color: black;
