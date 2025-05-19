@@ -43,8 +43,31 @@ class ChangeEmailForm(forms.ModelForm):
         cleaned_data = super(BeginVerificationForm, self).clean()
         email = cleaned_data.get('email')
         phone = cleaned_data.get('phone')
-        if not email == self.instance.email and not phone == self.instance.phone:
-            raise forms.ValidationError('Check your email and phone number are correct')
+        if not phone == self.instance.phone:
+            raise forms.ValidationError('Check phone number is correct')
+        else:
+            self.instance.email = email
+            self.instance.save()
+
+
+class ChangePhoneForm(forms.ModelForm):
+    class Meta:
+        model = Anon
+        fields = ('email', 'phone',)
+    
+    def __init__(self, request, *args, **kwargs):
+        current_anon = Anon.objects.get(username=request.user)
+        self.instance = current_anon
+
+    def clean(self):
+        cleaned_data = super(BeginVerificationForm, self).clean()
+        email = cleaned_data.get('email')
+        phone = cleaned_data.get('phone')
+        if not email == self.instance.email:
+            raise forms.ValidationError('Check email is correct')
+        else:
+            self.instance.phone = phone
+            self.instance.save()
 
 
 class BeginVerificationForm(forms.ModelForm):

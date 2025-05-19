@@ -134,6 +134,9 @@ class Comment(MPTTModel):
 	sum_has_accuracy = models.IntegerField(default=0)
 	has_credibilities = models.ManyToManyField(Author, default=None, related_name='comment_has_credible')
 	sum_has_credibilities = models.IntegerField(default=0)
+
+	likes = models.ManyToManyField(Author, default=None, related_name='comment_likes')
+	dislikes = models.ManyToManyField(Author, default=None, related_name='comment_dislikes')
 	parent = TreeForeignKey('self', on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='children', db_index=True)
 	children_count = models.IntegerField(default=0)
 
@@ -716,16 +719,348 @@ class Availability(models.Model):
 	end_time = models.DateTimeField(timezone.now)
 	available_and_not_unavailable = models.BooleanField(default=False) #mark either when you're availabilities are, or your unavailabilities are. "I can do any time from X" vs "I can't do these times"
 
+
+class Keyword(models.Model):
+	key_word = models.CharField(default='', max_length=66)
+
+class BodyCounter(models.Model):
+	keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+
+class DoubleRightAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_skip_one_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[1].startswith(self.right_keyword):
+					if splitsplit_body[2].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_two_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 3:
+				if splitsplit_body[2].startswith(self.right_keyword):
+					if splitsplit_body[3].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_three_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 4:
+				if splitsplit_body[3].startswith(self.right_keyword):
+					if splitsplit_body[4].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_four_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 5:
+				if splitsplit_body[4].startswith(self.right_keyword):
+					if splitsplit_body[5].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_five_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 6:
+				if splitsplit_body[5].startswith(self.right_keyword):
+					if splitsplit_body[6].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+
+class DoubleLeftAdjacentBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def two_skip_one_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' 'self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 1:
+				if splitsplit_body[1].startswith(self.right_keyword):
+				self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_two_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' 'self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[2].startswith(self.right_keyword):
+				self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_three_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' 'self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 3:
+				if splitsplit_body[3].startswith(self.right_keyword):
+				self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_four_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' 'self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 4:
+				if splitsplit_body[4].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_five_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' 'self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 5:
+				if splitsplit_body[5].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+class AdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length):
+			if split_body[i][1:].startswith(self.right_keyword):
+				self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_one_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_bdy[i].split(" ")
+			if splitsplit_body.length > 1:
+				if splitsplit_body[1].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_two_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 2):
+			splitsplit_body = split_bdy[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[2].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_three_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 3):
+			splitsplit_body = split_bdy[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[3].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_four_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 4):
+			splitsplit_body = split_bdy[i].split(" ")
+			if splitsplit_body.length > 3:
+				if splitsplit_body[4].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_five_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 5):
+			splitsplit_body = split_bdy[i].split(" ")
+			if splitsplit_body.length > 4:
+				if splitsplit_body[5].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+class TripleAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	middle_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_one_by_one_count_in_body(self, body):
+		three = self.left_keyword + ' ' + self.middle_keyword + ' ' + self.right_keyword
+		for three in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class DoubleDoubleAdjacentBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_one_by_one_by_one_count_in_body(self, body):
+		four = self.leftmost_keyword + ' ' + self.left_keyword + ' ' + self.right_keyword + ' ' + self.rightmost_keyword
+		for four in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class SpacelessAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_count_in_body(self, body):
+		spaceless = self.left_keyword + self.right_keyword
+		for spaceless in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class TripleSpacelessAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	middle_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_count_in_body(self, body):
+		spaceless = self.left_keyword + self.middle_keyword + self.right_keyword
+		for spaceless in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class DuoDuoBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_by_spaceless_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		for space_left + ' ' + space_right in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class SpacelessQuatroBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_by_spaceless_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		for space_left + space_right in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class ZipfsLawStatSignature(models.Model):
+	one_of_one = models.ManyToManyField(BodyCounter, default=None)
+	one_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_by_one")
+	
+	two_of_one = models.ManyToManyField(SpacelessAdjacentBodyCounter, default=None, related_name="two_of_one")
+
+	one_skip_one_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_one_by_one")
+	one_skip_two_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_two_by_one")
+	one_skip_three_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_three_by_one")
+	one_skip_four_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_four_by_one")
+	one_skip_five_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_five_by_one")
+
+	one_by_one_by_one = models.ManyToManyField(TripleAdjacentBodyCounter, default=None)
+	
+	three_of_one = models.ManyToManyField(TripleSpacelessAdjacentBodyCounter, default=None)
+
+	two_skip_one_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_one_by_one")
+	two_skip_two_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_two_by_one")
+	two_skip_three_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_three_by_one")
+	two_skip_four_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_four_by_one")
+	two_skip_five_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_five_by_one")
+
+	one_skip_one_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_one_by_two")
+	one_skip_two_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_two_by_two")
+	one_skip_three_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_three_by_two")
+	one_skip_four_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_four_by_two")
+	one_skip_five_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_five_by_two")
+
+	one_by_one_by_one_by_one = models.ManyToManyField(DoubleDoubleBodyCounter, default=None)
+	two_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None)
+	four_of_one = models.ManyToManyField(SpacelessQuatroBodyCounter, default=None)
+
+
+
+class Topic(models.Model):
+	topic_name = models.CharField(default='Topic Name', max_length=66)
+	privacy_settings = models.IntegerField(default=0)
+	active_admins = models.ManyToManyField(Author, default=None)
+	key_words_to_include = models.ManyToManyField(Keyword, default=None, related_name="key_words_to_include")
+	key_words_to_exclude = models.ManyToManyField(Keyword, default=None, related_name="key_words_to_exclude")
+	exact_match = models.CharField(default='', max_length=66)
+	date_range_start = models.DateTimeField(default=timezone.now)
+	date_range_end = models.DateTimeField(default=timezone.now)
+
+class SubFolder(models.Model):
+	folder_id = models.IntegerField(default=1)
+
+CATEGORY_CHOICES = (
+	("Public"),
+	("Private"),
+	("Organisation")
+)
+
+class Folder(models.Model):
+	name = models.CharField(default='Folder Name', max_length=66)
+	sub_folders = models.ManyToManyField(SubFolder, default=None)
+	order = models.IntegerField(default=0)
+	collaborators = models.ManyToManyField(Author, default=None)
+	comments = models.ManyToManyField(Comment, default=None)
+	category = models.CharField(choices=CATEGORY_CHOICES, default="Public")
+
+class CollaborationWorkspace(models.Model):
+	folders = models.ManyToManyField(Folder, default=None)
+
+
+
 def validate_phone_number(value):
     phone_regex = r"^\+?1?\d{9,15}$"
     if not re.match(phone_regex, value):
         raise ValidationError("Invalid phone number format.")
 
 
+
+
+
+
+from random import randrange
+class VerificationNumbers(models.Model):
+	verification_number = models.IntegerField(default=int(str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))))
+
+
 class Anon(models.Model):
 	username = models.OneToOneField(User, on_delete=models.CASCADE)
 	email = models.EmailField(max_length=144, default='', null=True)
+	email_verify = models.OneToOneField(VerificationNumbers, default=None, null=True, on_delete=models.CASCADE, blank=True, related_name="email_verify")
 	phone = models.CharField(max_length=16, validators=[validate_phone_number], blank=True, null=True)
+	phone_verify = models.OneToOneField(VerificationNumbers, default=None, null=True, on_delete=models.CASCADE, blank=True, related_name="phone_verify")
 	
 	friends = models.ManyToManyField(Author, default=None, related_name="friends")
 	following = models.ManyToManyField(Author, default=None, related_name="following")
