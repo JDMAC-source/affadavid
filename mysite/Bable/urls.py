@@ -28,7 +28,7 @@ urlpatterns = [
 	path('i18n/', include('django.conf.urls.i18n')),
 	path('posts/', views.ListCreatePostAPIView.as_view()),
 	
-
+	path('heatmap/<keywords>/', views.heatmap, name="heatmap"),
 	# path('admin/', admin.site.urls),
 	path('logout/', views.logout_user, name='logout_user'),
 	path('login/', views.login_view, name='login_view'),

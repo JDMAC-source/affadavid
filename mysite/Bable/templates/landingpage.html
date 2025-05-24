@@ -96,7 +96,7 @@ Glocal.com News SuperIntelligence
 			<button type=submit>Sign Up</button>
 		</form>
 		<p onclick="signInOpen('');" style="cursor: pointer; color: white;">or Sign In</p>
-		<form style="display: none;" id=beginverificationform action="{% url 'Bable:begin_verification_form' %}" method=POST>
+		<form style="display: none;" id=beginverificationform action="{% url 'Bable:login_view' %}" method=POST>
 			{% csrf_token %}
 			{{ begin_verification_form }}
 			<button type=submit>Sign In</button>

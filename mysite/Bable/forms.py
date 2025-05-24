@@ -9,10 +9,21 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.db.models import Q
 
 
+import re
+def validate_phone_number(value):
+    phone_regex = r"^\+?1?\d{9,15}$"
+    if not re.match(phone_regex, value):
+        raise ValidationError("Invalid phone number format.")
+
 
 
 class UserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=66, required=True)
+    last_name = forms.CharField(max_length=66, required=True)
+    phone = forms.CharField(max_length=16, validators=[validate_phone_number])
+
+
 
     class Meta:
         model = User
@@ -37,13 +48,14 @@ class ChangeEmailForm(forms.ModelForm):
         fields = ('email', 'phone',)
     
     def __init__(self, request, *args, **kwargs):
+        super(ChangeEmailForm, self).__init__(*args, **kwargs)
         current_anon = Anon.objects.get(username=request.user)
         self.instance = current_anon
 
     def clean(self):
         cleaned_data = super(ChangeEmailForm, self).clean()
-        email = cleaned_data.get('email')
-        phone = cleaned_data.get('phone')
+        email = cleaned_data.get('email', '')
+        phone = cleaned_data.get('phone', '')
         if not phone == self.instance.phone:
             raise forms.ValidationError('Check phone number is correct')
         else:
@@ -57,13 +69,14 @@ class ChangePhoneForm(forms.ModelForm):
         fields = ('email', 'phone',)
     
     def __init__(self, request, *args, **kwargs):
+        super(ChangePhoneForm, self).__init__(*args, **kwargs)
         current_anon = Anon.objects.get(username=request.user)
         self.instance = current_anon
 
     def clean(self):
         cleaned_data = super(ChangePhoneForm, self).clean()
-        email = cleaned_data.get('email')
-        phone = cleaned_data.get('phone')
+        email = cleaned_data.get('email', '')
+        phone = cleaned_data.get('phone', '')
         if not email == self.instance.email:
             raise forms.ValidationError('Check email is correct')
         else:
@@ -76,16 +89,21 @@ class BeginVerificationForm(forms.ModelForm):
         model = Anon
         fields = ('user_name', 'password',)
         
+    def __init__(self, request, *args, **kwargs):
+        super(BeginVerificationForm, self).__init__(*args, **kwargs)
+        self.instance = Anon.objects.get(username=request.user)
+    
 
     def clean(self):
         cleaned_data = super(BeginVerificationForm, self).clean()
-        user_name = cleaned_data.get('user_name')
-        password = cleaned_data.get('password')
+        user_name = cleaned_data.get('user_name', '')
+        password = cleaned_data.get('password', '')
         if not user_name and not password:
             raise forms.ValidationError('Check your username and password are correct')
         else:
             if not Anon.objects.filter(user_name=user_name):
-                user_anon = Anon.objects.create(user_name=user_name, username=User.objects.create(username=user_name), password=password)
+                user, x = User.objects.get_or_create(username=user_name)
+                user_anon = Anon.objects.create(user_name=user_name, username=user, password=password)
                 user_anon.username.set_password(password)
                 self.instance = user_anon
             else:
@@ -109,12 +127,12 @@ class BeginVerificationFormStart(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(BeginVerificationFormStart, self).clean()
-        email = cleaned_data.get('email')
-        phone = cleaned_data.get('phone')
-        first_name = cleaned_data.get('first_name')
-        last_name = cleaned_data.get('last_name')
-        user_name = cleaned_data.get('user_name')
-        password = cleaned_data.get('password')
+        email = cleaned_data.get('email', '')
+        phone = cleaned_data.get('phone', '')
+        first_name = cleaned_data.get('first_name', '')
+        last_name = cleaned_data.get('last_name', '')
+        user_name = cleaned_data.get('user_name', '')
+        password = cleaned_data.get('password', '')
         if not email and not phone and not first_name and not last_name and not user_name and not password:
             raise forms.ValidationError('Check your email and phone number are correct')
         else:
@@ -136,13 +154,30 @@ class SMSVerificationForm(forms.ModelForm):
         fields = ('phone_verify',)
     
     def __init__(self, request, *args, **kwargs):
+        super(SMSVerificationForm, self).__init__(*args, **kwargs)
         current_anon = Anon.objects.get(username=request.user)
         self.instance = current_anon
 
     def clean(self):
         cleaned_data = super(SMSVerificationForm, self).clean()
-        phone_verify = cleaned_data.get('phone_verify')
+        phone_verify = cleaned_data.get('phone_verify', '')
         if not phone_verify == self.instance.phone_verify.verification_number and not self.instance.phone_verify.creation_date > timedelta(0,5,0):
+            raise forms.ValidationError('SMS Code is wrong, try resending in 5 minutes, or retry')
+
+class EmailVerificationForm(forms.ModelForm):
+    class Meta:
+        model = Anon
+        fields = ('email_verify',)
+    
+    def __init__(self, request, *args, **kwargs):
+        super(EmailVerificationForm, self).__init__(*args, **kwargs)
+        current_anon = Anon.objects.get(username=request.user)
+        self.instance = current_anon
+
+    def clean(self):
+        cleaned_data = super(SMSVerificationForm, self).clean()
+        email_verify = cleaned_data.get('email_verify', '')
+        if not email_verify == self.instance.email_verify.verification_number and not self.instance.email_verify.creation_date > timedelta(0,5,0):
             raise forms.ValidationError('SMS Code is wrong, try resending in 5 minutes, or retry')
 
 
@@ -499,12 +534,11 @@ class PostForm(forms.ModelForm):
         
     def clean(self):
         cleaned_data = super(PostForm, self).clean()
-        body = cleaned_data.get('body')
-        title = cleaned_data.get('title')
-        if not (body or title):
-            raise forms.ValidationError('You need thiings')
-    def __init__(self, *args, **kwargs):
+    
+
+    def __init__(self, request, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
+        self.instance.author = Author.objects.get(username=request.user.username)
         
 
 class AnonForm(forms.ModelForm):

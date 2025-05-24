@@ -482,6 +482,8 @@ def login_view(request):
 	if loginform.is_valid():
 		user = loginform.get_user()
 		login(request, user)
+		Author.objects.get_or_create(username=user.username)
+		Anon.objects.get_or_create(username=user)
 		#requests.post("http://"+request.META['HTTP_HOST']+"/metamask/", data={'user': {'username': user.username}, 'public_address': user.username})
 	
 
@@ -509,7 +511,6 @@ def register_view(request):
 		if user is not None:
 			login(request, user)
 			anon = Anon.objects.create(username=User.objects.get(username=new_user.username))
-			anon.false_wallet += 1000000000
 			anon.save()
 			Author.objects.create(username=new_user.username)
 			# Send email.
@@ -805,7 +806,7 @@ def roadmap(request):
 
 import validators
 from django.utils import dateformat, timezone
-def search(request, count):
+def search(request, search_id, count):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	registerform = UserCreationForm()
 	
@@ -940,12 +941,6 @@ def tower_of_bable(request):
 			pages_view.previous_view_date = previous_view.view_date
 			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
 		post_form = PostForm(request)
-		if not loggedinanon.post_sort_from_date_char:
-			loggedinanon.post_sort_from_date_char = "0,0,0,0"
-			loggedinanon.save()
-		if not loggedinanon.post_sort_depth_char:
-			loggedinanon.post_sort_depth_char = "0,0,0,10000"
-			loggedinanon.save()
 		startdate = datetime.datetime.now() - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
 		enddate = startdate - timedelta(minutes=int(loggedinanon.post_sort_depth_char.split(',')[0]), hours=int(loggedinanon.post_sort_depth_char.split(',')[1]), days=int(loggedinanon.post_sort_depth_char.split(',')[2]), weeks=int(loggedinanon.post_sort_depth_char.split(',')[3]))
 		posts_by_viewcount = Post.objects.filter(latest_change_date__range=[enddate, startdate]).order_by(loggedinanon.post_sort_char)[:25]
@@ -954,22 +949,20 @@ def tower_of_bable(request):
 		post_filter_depth_form = PostFilterDepthForm(request)
 		post_filter_from_date_form = PostFilterFromDateForm(request)
 		
-		posts_values = list(posts_by_viewcount.values('img', 'author__username', 'id', 'title', 'body', 'viewcount', 'creation_date'))
+		posts_values = list(posts_by_viewcount.values('img', 'author__username', 'id', 'title', 'body', 'viewcount', 'pub_date'))
 		postscount = 25
 		posts_by_viewcount = posts_values
 
-		begin_verification_form = BeginVerificationForm(request)
 		sms_verification_form = SMSVerificationForm(request)
 		email_verification_form = EmailVerificationForm(request)
 		change_email_form = ChangeEmailForm(request)
 		change_phone_form = ChangePhoneForm(request)
 
-		begin_verification_form_start = BeginVerificationFormStart()
 		
 		
 
 		
-		the_response = render(request, 'tower_of_bable.html', {"begin_verification_form_start": begin_verification_form_start, "begin_verification_form": begin_verification_form, "sms_verification_form": sms_verification_form, "email_verification_form": email_verification_form, "change_email_form": change_email_form, "change_phone_form": change_phone_form,  "post_filter_depth_form": post_filter_depth_form, "post_filter_from_date_form": post_filter_from_date_form, "post_sort_form": post_sort_form, "postscount": postscount, "ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "total": total, "count": lower, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
+		the_response = render(request, 'tower_of_bable.html', { "sms_verification_form": sms_verification_form, "email_verification_form": email_verification_form, "change_email_form": change_email_form, "change_phone_form": change_phone_form,  "post_filter_depth_form": post_filter_depth_form, "post_filter_from_date_form": post_filter_from_date_form, "post_sort_form": post_sort_form, "postscount": postscount, "ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "total": total, "count": lower, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
 	else:
 		the_response = render(request, 'tower_of_bable.html', {"ip": ip, "x_forwarded_for": x_forwarded_for,  "total": total, "count": lower, "mcount": mcount, "count100": count100, 'loginform': loginform, 'registerform': registerform, })
 	
@@ -1034,7 +1027,7 @@ def landingpage(request):
 			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
 		begin_verification_form_start = BeginVerificationFormStart()
 		begin_verification_form = BeginVerificationForm()
-		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "begin_verification_form_start": begin_verification_form_start, "begin_verification_form": begin_verification_form })
+		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "begin_verification_form_start": begin_verification_form_start, "begin_verification_form": loginform })
 	
 	the_response.set_cookie('current', 'landingpage')
 	return the_response
@@ -1074,8 +1067,8 @@ def begin_verification(request):
 	if request.method == "POST":
 		begin_verification_form = BeginVerificationForm(data=request.POST)
 		if begin_verification_form.is_valid():
-			user = authenticate(request, username=begin_verification_form.cleaned_data["user_name"], password=begin_verification_form.cleaned_data['password'])
-			update_session_auth_hash(request, request.user)
+			user = authenticate(request, username=begin_verification_form.instance.username, password=begin_verification_form.cleaned_data['password'])
+			update_session_auth_hash(request, user)
 		else:
 			error_message = ''
 			for error in begin_verification_form.errors:
@@ -1223,7 +1216,52 @@ def tower_of_bable_count(request, count):
 	return the_response
 
 
+#Import Geocoder 
+import geocoder
 
+#Assign IP address to a variable
+ip = geocoder.ip("161.185.160.93")
+
+#Obtain the city
+print(ip.city)
+
+#Obtain the coordinates: 
+print(ip.latlng)
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+@login_required
+def heatmap(request, keywords):
+	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+	if x_forwarded_for:
+		x_forwarded_for = x_forwarded_for.split(',')[0]
+	ip = request.META.get('REMOTE_ADDR')
+
+	total = 0
+	for page in Pageviews.objects.all():
+		total += page.views
+
+	loggedinauthor = Author.objects.get(username=request.user.username)
+	most_recent_post = Anon.objects.get(username=request.user).posts.order_by('-creation_date').first()
+	stat_signature = most_recent_post.zipfslawstatsignature.zipfs_law_signature.filter(keywords=keywords).first()
+	many_stats = ZipfsLawStatSignature.objects.filter(keywords=keywords, year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day-1)
+
+
+	a = many_stats.values_list('lat', 'lng', 'one_sum')
+	plt.imshow(a, cmap='hot', interpolation='nearest')
+	plt.show()
+
+
+	the_response = render(request, "tob_heatmap.html", {"ip": ip, "x_forwarded_for": x_forwarded_for})
+	the_response.set_cookie('current', 'tob_post')
+	the_response.set_cookie('post', post)
+	the_response.set_cookie('count', 0)
+	return the_response
+
+@login_required
 def tob_post(request, post):
 	users_post = Post.objects.get(id=int(post))
 	
