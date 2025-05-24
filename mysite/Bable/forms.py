@@ -84,67 +84,6 @@ class ChangePhoneForm(forms.ModelForm):
             self.instance.save()
 
 
-class BeginVerificationForm(forms.ModelForm):
-    class Meta:
-        model = Anon
-        fields = ('user_name', 'password',)
-        
-    def __init__(self, request, *args, **kwargs):
-        super(BeginVerificationForm, self).__init__(*args, **kwargs)
-        self.instance = Anon.objects.get(username=request.user)
-    
-
-    def clean(self):
-        cleaned_data = super(BeginVerificationForm, self).clean()
-        user_name = cleaned_data.get('user_name', '')
-        password = cleaned_data.get('password', '')
-        if not user_name and not password:
-            raise forms.ValidationError('Check your username and password are correct')
-        else:
-            if not Anon.objects.filter(user_name=user_name):
-                user, x = User.objects.get_or_create(username=user_name)
-                user_anon = Anon.objects.create(user_name=user_name, username=user, password=password)
-                user_anon.username.set_password(password)
-                self.instance = user_anon
-            else:
-                user_anon = Anon.objects.filter(user_name=user_name).first()
-                user_anon.password = password
-                user_anon.save()
-                self.instance = user_anon
-
-
-
-class BeginVerificationFormStart(forms.ModelForm):
-    class Meta:
-        model = Anon
-        fields = ('first_name', 'last_name', 'email', 'phone', 'user_name', 'password', )
-
-    def __init__(self, *args, **kwargs):
-        super(BeginVerificationFormStart, self).__init__(*args, **kwargs)
-        self.fields['first_name'].placeholder = "First Name"
-        
-       
-
-    def clean(self):
-        cleaned_data = super(BeginVerificationFormStart, self).clean()
-        email = cleaned_data.get('email', '')
-        phone = cleaned_data.get('phone', '')
-        first_name = cleaned_data.get('first_name', '')
-        last_name = cleaned_data.get('last_name', '')
-        user_name = cleaned_data.get('user_name', '')
-        password = cleaned_data.get('password', '')
-        if not email and not phone and not first_name and not last_name and not user_name and not password:
-            raise forms.ValidationError('Check your email and phone number are correct')
-        else:
-            if not User.objects.filter(username=user_name):
-                user_anon = User.objects.create(username=user_name)
-                user_anon.set_password(password)
-                user_anon.save()
-            else:
-                user_anon = User.objects.get(username=user_name)
-            Anon.objects.get_or_create(username=user_anon, user_name=user_name, first_name=first_name, last_name=last_name, phone=phone, email=email)
-            Author.objects.get_or_create(username=user_name)
-
 
 
 

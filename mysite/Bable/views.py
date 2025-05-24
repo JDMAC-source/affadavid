@@ -1232,6 +1232,12 @@ print(ip.latlng)
 import matplotlib.pyplot as plt
 import numpy as np
 
+import plotly as py
+from plotly.offline import iplot
+import plotly.graph_objs as go
+import plotly.io as pio
+pio.renderers.default = 'iframe'
+from matplotlib.figure import Figure
 
 @login_required
 def heatmap(request, keywords):
@@ -1246,18 +1252,26 @@ def heatmap(request, keywords):
 
 	loggedinauthor = Author.objects.get(username=request.user.username)
 	most_recent_post = Anon.objects.get(username=request.user).posts.order_by('-creation_date').first()
-	stat_signature = most_recent_post.zipfslawstatsignature.zipfs_law_signature.filter(keywords=keywords).first()
-	many_stats = ZipfsLawStatSignature.objects.filter(keywords=keywords, year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day-1)
+	if most_recent_post:
+		stat_signature = most_recent_post.zipfslawstatsignature.zipfs_law_signature.filter(keywords=keywords).first()
+	many_stats = ZipfsLawStatSignature.objects.filter(body=keywords, year=timezone.now().date().year, month=timezone.now().date().month, day=timezone.now().date().day-1)
 
 
-	a = many_stats.values_list('lat', 'lng', 'one_sum')
-	plt.imshow(a, cmap='hot', interpolation='nearest')
-	plt.show()
+	a = list(many_stats.values('lat', 'lng', 'one_sum'))
+	#b = list(many_stats.values('lng', 'one_sum'))
+	#ax = plt.imshow(a, cmap='hot', interpolation='nearest')
+	fig = go.Figure(a)
+	#ax = fig.add_subplot(1,1,1)
+	#ax.plot(a, b, '-')
+	#fig.set_xlabel('Lat')
+	#fig.set_ylabel('Lng')
+	#fig.set_title("One Sum")
+	graph_div = plotly.offline.plot(fig, auto_open = False, output_type="div")
 
 
-	the_response = render(request, "tob_heatmap.html", {"ip": ip, "x_forwarded_for": x_forwarded_for})
-	the_response.set_cookie('current', 'tob_post')
-	the_response.set_cookie('post', post)
+	the_response = render(request, "tob_heatmap.html", { "graph_div":graph_div, "ip": ip, "x_forwarded_for": x_forwarded_for})
+	the_response.set_cookie('current', 'tob_heatmap')
+	the_response.set_cookie('keywords', keywords)
 	the_response.set_cookie('count', 0)
 	return the_response
 

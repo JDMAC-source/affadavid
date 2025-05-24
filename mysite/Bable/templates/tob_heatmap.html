@@ -1,0 +1,193 @@
+<!-- # Copyright Aden Handasyde 2019 -->
+
+{% extends 'base.html' %}
+{% load user_referencing %}
+{% load humanize %}
+{% load mptt_tags %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{% if count %}
+Glocal.com - affadavid.org {{ count }}
+{% else %}
+Glocal.com - affadavid.org
+{% endif %}
+{% endblock %}
+
+{% block inserts %}
+<meta name="viewport" content="width=device-width">
+<meta property="og:description" content="Glocal.com ASK THE FBI WHY THEY RECOMMENDED ME">
+<meta property="og:image" content="{% static 'bullseye_3.jpeg' %}">
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+	elements = document.getElementsByClassName("csrf");
+	for (var i=0;  i< elements.length; i++) {
+		elements[i].name = "csrfmiddlewaretoken";
+		elements[i].type = "hidden";
+		elements[i].value = "{{ csrf_token }}";
+	};})
+</script>
+{% endblock %}
+
+
+{% block authenticatedposts %}
+
+<div class=displaybanner>
+	
+	<p>Total post views: {{ total }}</p>
+</div>
+<div class=possectionsort>
+	<form name=post_sort action="{% url 'Bable:change_post_sort_char' %}" method=post>
+		{% csrf_token %}
+		{{ post_sort_form }}
+	</form>
+	<script>
+		var form = document.querySelector('form[name="post_sort"]');
+		form.addEventListener('change', function() {
+		    form.submit();
+		});
+	</script>
+</div>
+<div class=possectionsort>
+	<form name=post_filter_from_date action="{% url 'Bable:change_post_filter_from_date' %}" method=post>
+		{% csrf_token %}
+		{{ post_filter_from_date_form }}
+	</form>
+	<script>
+		var form_filter_from_date = document.querySelector('form[name="post_filter_from_date"]');
+		form_filter_from_date.addEventListener('change', function() {
+		    form_filter_from_date.submit();
+		});
+	</script>
+</div>
+<div class=possectionsort>
+	<form name=post_filter_depth action="{% url 'Bable:change_post_filter_depth' %}" method=post>
+		{% csrf_token %}
+		{{ post_filter_depth_form }}
+	</form>
+	<script>
+		var form_filter_depth = document.querySelector('form[name="post_filter_depth"]');
+		form_filter_depth.addEventListener('change', function() {
+		    form_filter_depth.submit();
+		});
+	</script>
+</div>
+<style>
+	.posttitle h4 {
+		font-size: 1.5em;
+		margin: 0 auto;
+	}
+
+	.posttitle {
+		margin: auto;
+		text-align: center;
+	}
+
+	.postpreview img, .postssponsors img, .post, .postbody {
+		border-radius: 8px;
+	}
+
+	.dummy {
+		animation-duration: 0.1s;
+		animation-name: changeboxshadow;
+		animation-iteration-count: infinite;
+		animation-direction: alternate;
+	}
+
+	.post:hover, .post:active {
+		box-shadow: 0 2px 10px black;
+	    transition: box-shadow 0.3s ease-in-out;
+	}
+
+	@keyframes changeboxshadow {
+	  from {
+	    box-shadow: 0 2px 10px black;
+	    transition: box-shadow 0.3s ease-in-out;
+		
+	  }
+
+	  to {
+	    box-shadow: 0 2px 10px white;
+	    transition: box-shadow 0.3s ease-in-out;
+		
+	  }
+	}
+
+	
+.postpreview img:active {
+		transform: scale(4);
+		position: relative;
+		pointer-events: auto;
+		left: 10em;
+		top: 4em;
+	}
+	
+</style>
+
+
+<div class=posts onbeforeunload="sendtimeframe();" >
+	<div width=100% height=1000px>
+		{{ graph_div|safe }}
+	</div>
+</div>
+<div class=pageno>
+	<a href="{% url 'Bable:tower_of_bable_count' 0 %}"><</a>{{ count }}:{{ count100 }}<a href="{% url 'Bable:tower_of_bable_count' 25 %}">></a>
+</div>
+
+{% endblock %}
+
+
+
+
+{% block scripts %}
+	<script>
+		
+		function openComment(starter) {
+			var element = document.getElementById(starter + "form");
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function openCommentThread(starter, com) {
+			var element = document.getElementById(starter).getElementById(com);
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function comCollapse(node) {
+			var element = document.getElementById(node)
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		function nodeCollapse(node) {
+			var element = document.getElementById(node)
+			if (element.style.display === "inline-block") {
+				element.style.display = "none";
+			} else {
+				element.style.display = "inline-block";
+			}
+		}
+
+		/* Needs to be step-counted for the DAHS of each Attribute
+		function wordsAttributesAddMore() {
+				var form_idx = $('#id_wa-TOTAL_FORMS').value;
+				var copy = $('#waef').html().replace(/__prefix__/g, form_idx);
+				$('#wafs').append(copy);
+				$('#id_wa-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+			}
+		*/
+
+
+	</script>
+{% endblock %}
