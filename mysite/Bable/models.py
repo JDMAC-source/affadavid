@@ -110,16 +110,1393 @@ class Author(models.Model):
 						anon.posts.add(post)
 				anon.save()
 				return anon
+class BodyCounter(models.Model):
+	keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
 
+
+class DoubleRightAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_skip_one_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[1].startswith(self.right_keyword):
+					if splitsplit_body[2].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_two_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 3:
+				if splitsplit_body[2].startswith(self.right_keyword):
+					if splitsplit_body[3].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_three_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 4:
+				if splitsplit_body[3].startswith(self.right_keyword):
+					if splitsplit_body[4].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_four_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 5:
+				if splitsplit_body[4].startswith(self.right_keyword):
+					if splitsplit_body[5].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_five_by_two_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 6:
+				if splitsplit_body[5].startswith(self.right_keyword):
+					if splitsplit_body[6].startswith(self.rightmost_keyword):
+						self.appearances_in_body_text += 1
+		self.save()
+
+
+class DoubleLeftAdjacentBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def two_skip_one_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 1:
+				if splitsplit_body[1].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_two_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[2].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_three_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 3:
+				if splitsplit_body[3].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_four_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 4:
+				if splitsplit_body[4].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_five_by_one_count_in_body(self, body):
+		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 5:
+				if splitsplit_body[5].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+class AdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length):
+			if split_body[i][1:].startswith(self.right_keyword):
+				self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_one_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 1):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 1:
+				if splitsplit_body[1].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_two_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 2):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[2].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_three_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 3):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 2:
+				if splitsplit_body[3].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_four_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 4):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 3:
+				if splitsplit_body[4].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+	def one_skip_five_by_one_count_in_body(self, body):
+		split_body = body.split(self.left_keyword)
+		for i in range(1, split_body.length - 5):
+			splitsplit_body = split_body[i].split(" ")
+			if splitsplit_body.length > 4:
+				if splitsplit_body[5].startswith(self.right_keyword):
+					self.appearances_in_body_text += 1
+		self.save()
+
+class TripleAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	middle_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_one_by_one_count_in_body(self, body):
+		three = self.left_keyword + ' ' + self.middle_keyword + ' ' + self.right_keyword
+		for three in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class DoubleDoubleAdjacentBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_one_by_one_by_one_count_in_body(self, body):
+		four = self.leftmost_keyword + ' ' + self.left_keyword + ' ' + self.right_keyword + ' ' + self.rightmost_keyword
+		for four in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class SpacelessAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_count_in_body(self, body):
+		spaceless = self.left_keyword + self.right_keyword
+		for spaceless in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class TripleSpacelessAdjacentBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	middle_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_count_in_body(self, body):
+		spaceless = self.left_keyword + self.middle_keyword + self.right_keyword
+		for spaceless in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class DuoDuoBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_by_spaceless_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		spaceless = space_left + ' ' + space_right
+		for spaceless in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_one_by_two_count_in_body(self, body):
+		space_left = self.leftmost_keyword +' '+ self.left_keyword
+		space_right = self.right_keyword +' '+ self.rightmost_keyword
+		split_body = body.split(self.leftmost_keyword)
+		if split_body[1].split(" ").length > 4:
+			for i in range(1, split_body.length - 3):
+				splitsplit_body = split_body[i].split(" ")
+				if splitsplit_body.length > 4:
+					for split in range(0, splitsplit_body.length):
+						if splitsplit_body[split].startswith(self.left_keyword):
+							if splitsplit_body[split+2].startswith(self.right_keyword):
+								if splitsplit_body[split+3].startswith(self.rightmost_keyword):
+									self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_two_by_two_count_in_body(self, body):
+		space_left = self.leftmost_keyword +' '+ self.left_keyword
+		space_right = self.right_keyword +' '+ self.rightmost_keyword
+		split_body = body.split(self.leftmost_keyword)
+		if split_body[1].split(" ").length > 5:
+			for i in range(1, split_body.length - 3):
+				splitsplit_body = split_body[i].split(" ")
+				if splitsplit_body.length > 5:
+					for split in range(0, splitsplit_body.length):
+						if splitsplit_body[split].startswith(self.left_keyword):
+							if splitsplit_body[split+3].startswith(self.right_keyword):
+								if splitsplit_body[split+4].startswith(self.rightmost_keyword):
+									self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_three_by_two_count_in_body(self, body):
+		space_left = self.leftmost_keyword +' '+ self.left_keyword
+		space_right = self.right_keyword +' '+ self.rightmost_keyword
+		split_body = body.split(self.leftmost_keyword)
+		if split_body[1].split(" ").length > 6:
+			for i in range(1, split_body.length - 3):
+				splitsplit_body = split_body[i].split(" ")
+				if splitsplit_body.length > 6:
+					for split in range(0, splitsplit_body.length):
+						if splitsplit_body[split].startswith(self.left_keyword):
+							if splitsplit_body[split+4].startswith(self.right_keyword):
+								if splitsplit_body[split+5].startswith(self.rightmost_keyword):
+									self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_four_by_two_count_in_body(self, body):
+		space_left = self.leftmost_keyword +' '+ self.left_keyword
+		space_right = self.right_keyword +' '+ self.rightmost_keyword
+		split_body = body.split(self.leftmost_keyword)
+		if split_body[1].split(" ").length > 6:
+			for i in range(1, split_body.length - 3):
+				splitsplit_body = split_body[i].split(" ")
+				if splitsplit_body.length > 7:
+					for split in range(0, splitsplit_body.length):
+						if splitsplit_body[split].startswith(self.left_keyword):
+							if splitsplit_body[split+5].startswith(self.right_keyword):
+								if splitsplit_body[split+6].startswith(self.rightmost_keyword):
+									self.appearances_in_body_text += 1
+		self.save()
+
+	def two_skip_five_by_two_count_in_body(self, body):
+		space_left = self.leftmost_keyword +' '+ self.left_keyword
+		space_right = self.right_keyword +' '+ self.rightmost_keyword
+		split_body = body.split(self.leftmost_keyword)
+		if split_body[1].split(" ").length > 6:
+			for i in range(1, split_body.length - 3):
+				splitsplit_body = split_body[i].split(" ")
+				if splitsplit_body.length > 8:
+					for split in range(0, splitsplit_body.length):
+						if splitsplit_body[split].startswith(self.left_keyword):
+							if splitsplit_body[split+6].startswith(self.right_keyword):
+								if splitsplit_body[split+7].startswith(self.rightmost_keyword):
+									self.appearances_in_body_text += 1
+		self.save()
+
+	def two_by_two_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		split_body = body.split(space_left)
+		if split_body[1].split(" ").length > 0:
+			for i in range(1, split_body.length):
+				splitsplit_body = split_body[i].split(" ")
+				if splitsplit_body.length > 0:
+					for split in range(0, splitsplit_body.length):
+						if splitsplit_body[split].startswith(space_right):
+							self.appearances_in_body_text += 1
+		self.save()
+
+	def four_of_one_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		space = space_left + space_right
+		for space in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+	def three_by_one_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + ' ' + self.rightmost_keyword
+		space = space_left + space_right
+		for space in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+	def one_by_three_count_in_body(self, body):
+		space_left = self.leftmost_keyword + ' ' + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		space = space_left + space_right
+		for space in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class SpacelessQuatroBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	left_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def spaceless_by_spaceless_count_in_body(self, body):
+		space_left = self.leftmost_keyword + self.left_keyword
+		space_right = self.right_keyword + self.rightmost_keyword
+		spaceless = space_left + space_right
+		for spaceless in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class TripleOneBodyCounter(models.Model):
+	leftmost_keyword = models.CharField(default='', max_length=66)
+	leftmiddle_keyword = models.CharField(default='', max_length=66)
+	leftright_keyword = models.CharField(default='', max_length=66)
+	right_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def triple_by_one_count_in_body(self, body):
+		triple = self.leftmost_keyword + self.leftmiddle_keyword + self.leftright_keyword
+		byby = triple + ' ' + self.right_keyword
+		for byby in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+
+class OneTripleBodyCounter(models.Model):
+	left_keyword = models.CharField(default='', max_length=66)
+	rightleft = models.CharField(default='', max_length=66)
+	rightmiddle_keyword = models.CharField(default='', max_length=66)
+	rightmost_keyword = models.CharField(default='', max_length=66)
+	appearances_in_body_text = models.IntegerField(default=0)
+
+	def one_by_triple_count_in_body(self, body):
+		triple = self.right_keyword + self.rightmiddle_keyword + self.rightmost_keyword
+		byby = self.left_keyword + ' ' + triple
+		for byby in body:
+			self.appearances_in_body_text += 1
+		self.save()
+
+class ZipfsApproximateDifferenceDay(models.Model):
+	keywords = models.CharField(default='', max_length=267)
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, blank=True, null=True)
+	significance = models.BooleanField(default=False)
+
+	year = models.IntegerField(default=2025)
+	month = models.IntegerField(default=1)
+	day = models.IntegerField(default=1)
+
+
+	one_of_one = models.FloatField(default=0.00)
+	one_by_one = models.FloatField(default=0.00)
+
+	two_of_one = models.FloatField(default=0.00)
+	one_by_one_by_one = models.FloatField(default=0.00)
+
+	one_skip_one_by_one = models.FloatField(default=0.00)
+	one_skip_two_by_one = models.FloatField(default=0.00)
+	one_skip_three_by_one = models.FloatField(default=0.00)
+	one_skip_four_by_one = models.FloatField(default=0.00)
+	one_skip_five_by_one = models.FloatField(default=0.00)
+
+	two_skip_one_by_one = models.FloatField(default=0.00)
+	two_skip_two_by_one = models.FloatField(default=0.00)
+	two_skip_three_by_one = models.FloatField(default=0.00)
+	two_skip_four_by_one = models.FloatField(default=0.00)
+	two_skip_five_by_one = models.FloatField(default=0.00)
+
+	one_skip_one_by_two = models.FloatField(default=0.00)
+	one_skip_two_by_two = models.FloatField(default=0.00)
+	one_skip_three_by_two = models.FloatField(default=0.00)
+	one_skip_four_by_two = models.FloatField(default=0.00)
+	one_skip_five_by_two = models.FloatField(default=0.00)
+
+	two_skip_one_by_two = models.FloatField(default=0.00)
+	two_skip_two_by_two = models.FloatField(default=0.00)
+	two_skip_three_by_two = models.FloatField(default=0.00)
+	two_skip_four_by_two = models.FloatField(default=0.00)
+	two_skip_five_by_two = models.FloatField(default=0.00)
+
+	three_of_one = models.FloatField(default=0.00)
+	one_by_one_by_one_by_one = models.FloatField(default=0.00)
+	two_by_two_first = models.FloatField(default=0.00)
+	two_by_two_second = models.FloatField(default=0.00)
+	two_by_two_third = models.FloatField(default=0.00)
+	two_by_two_fourth = models.FloatField(default=0.00)
+
+	four_of_one_first_first_first = models.FloatField(default=0.00)
+	four_of_one_first_first_second = models.FloatField(default=0.00)
+	four_of_one_second_first_first = models.FloatField(default=0.00)
+	four_of_one_first_second_first = models.FloatField(default=0.00)
+	four_of_one_second_second_first = models.FloatField(default=0.00)
+	four_of_one_second_second_second = models.FloatField(default=0.00)
+	four_of_one_first_second_second = models.FloatField(default=0.00)
+	four_of_one_second_first_second = models.FloatField(default=0.00)
+	four_of_one_third_first_first = models.FloatField(default=0.00)
+	four_of_one_third_second_first = models.FloatField(default=0.00)
+	four_of_one_third_second_second = models.FloatField(default=0.00)
+	four_of_one_third_first_second = models.FloatField(default=0.00)
+	four_of_one_third_third_first = models.FloatField(default=0.00)
+	four_of_one_third_third_second = models.FloatField(default=0.00)
+	four_of_one_third_third_third = models.FloatField(default=0.00)
+	four_of_one_third_first_third = models.FloatField(default=0.00)
+
+	four_of_one_fourth_first_first = models.FloatField(default=0.00)
+	four_of_one_fourth_second_first = models.FloatField(default=0.00)
+	four_of_one_fourth_second_second = models.FloatField(default=0.00)
+	four_of_one_fourth_first_second = models.FloatField(default=0.00)
+	four_of_one_fourth_third_first = models.FloatField(default=0.00)
+	four_of_one_fourth_third_second = models.FloatField(default=0.00)
+	four_of_one_fourth_third_third = models.FloatField(default=0.00)
+	four_of_one_fourth_first_third = models.FloatField(default=0.00)
+	four_of_one_fourth_fourth_first = models.FloatField(default=0.00)
+	four_of_one_fourth_fourth_second = models.FloatField(default=0.00)
+	four_of_one_fourth_fourth_third = models.FloatField(default=0.00)
+	four_of_one_fourth_fourth_fourth = models.FloatField(default=0.00)
+	four_of_one_fourth_first_fourth = models.FloatField(default=0.00)
+	four_of_one_fourth_second_fourth = models.FloatField(default=0.00)
+	four_of_one_fourth_third_fourth = models.FloatField(default=0.00)
+	four_of_one_fourth_fourth_fourth = models.FloatField(default=0.00)
+
+
+	three_by_one_first_first = models.FloatField(default=0.00)
+	three_by_one_first_second = models.FloatField(default=0.00)
+	three_by_one_first_third = models.FloatField(default=0.00)
+	three_by_one_first_fourth = models.FloatField(default=0.00)
+	three_by_one_second_first = models.FloatField(default=0.00)
+	three_by_one_second_second = models.FloatField(default=0.00)
+	three_by_one_second_third = models.FloatField(default=0.00)
+	three_by_one_second_fourth = models.FloatField(default=0.00)
+	three_by_one_third_first = models.FloatField(default=0.00)
+	three_by_one_third_second = models.FloatField(default=0.00)
+	three_by_one_third_third = models.FloatField(default=0.00)
+	three_by_one_third_fourth = models.FloatField(default=0.00)
+	three_by_one_fourth_first = models.FloatField(default=0.00)
+	three_by_one_fourth_second = models.FloatField(default=0.00)
+	three_by_one_fourth_third = models.FloatField(default=0.00)
+	three_by_one_fourth_fourth = models.FloatField(default=0.00)
+
+	one_by_three_first_first = models.FloatField(default=0.00)
+	one_by_three_first_second = models.FloatField(default=0.00)
+	one_by_three_first_third = models.FloatField(default=0.00)
+	one_by_three_first_fourth = models.FloatField(default=0.00)
+	one_by_three_second_first = models.FloatField(default=0.00)
+	one_by_three_second_second = models.FloatField(default=0.00)
+	one_by_three_second_third = models.FloatField(default=0.00)
+	one_by_three_second_fourth = models.FloatField(default=0.00)
+	one_by_three_third_first = models.FloatField(default=0.00)
+	one_by_three_third_second = models.FloatField(default=0.00)
+	one_by_three_third_third = models.FloatField(default=0.00)
+	one_by_three_third_fourth = models.FloatField(default=0.00)
+	one_by_three_fourth_first = models.FloatField(default=0.00)
+	one_by_three_fourth_second = models.FloatField(default=0.00)
+	one_by_three_fourth_third = models.FloatField(default=0.00)
+	one_by_three_fourth_fourth = models.FloatField(default=0.00)
+
+class ZipfsLawStatSignature(models.Model):
+	body = models.TextField(default='', max_length=144000)
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, blank=True, null=True)
+
+	zipfs_law_difference_day = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_difference")
+	zipfs_law_difference_day_significance = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_difference_significance")
+	
+	zipfs_law_self_difference_day = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_self_difference")
+	zipfs_law_self_difference_day_significance = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_self_difference_significance")
+	
+	zipfs_law_difference_week = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_week_difference")
+	zipfs_law_difference_week_significance = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_week_difference_significance")
+	
+	zipfs_law_self_difference_week = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_self_week_difference")
+	zipfs_law_self_difference_week_significance = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_self_week_difference_significance")
+	
+	zipfs_law_difference_year = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_year_difference")
+	zipfs_law_difference_year_significance = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_year_difference_significance")
+	
+	zipfs_law_self_difference_year = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_self_year_difference")
+	zipfs_law_self_difference_year_significance = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_self_year_difference_significance")
+	
+	zipfs_law_signature = models.ManyToManyField(ZipfsApproximateDifferenceDay, default=None, related_name="zipfs_law_signature")
+
+	one_of_one = models.ManyToManyField(BodyCounter, default=None)
+	one_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_by_one")
+	
+	two_of_one = models.ManyToManyField(SpacelessAdjacentBodyCounter, default=None, related_name="two_of_one")
+
+	one_skip_one_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_one_by_one")
+	one_skip_two_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_two_by_one")
+	one_skip_three_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_three_by_one")
+	one_skip_four_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_four_by_one")
+	one_skip_five_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_five_by_one")
+
+	one_by_one_by_one = models.ManyToManyField(TripleAdjacentBodyCounter, default=None)
+	
+	three_of_one = models.ManyToManyField(TripleSpacelessAdjacentBodyCounter, default=None)
+
+	two_skip_one_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_one_by_one")
+	two_skip_two_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_two_by_one")
+	two_skip_three_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_three_by_one")
+	two_skip_four_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_four_by_one")
+	two_skip_five_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_five_by_one")
+
+	one_skip_one_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_one_by_two")
+	one_skip_two_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_two_by_two")
+	one_skip_three_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_three_by_two")
+	one_skip_four_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_four_by_two")
+	one_skip_five_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_five_by_two")
+
+	two_skip_one_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None, related_name="two_skip_one_by_two")
+	two_skip_two_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None, related_name="two_skip_two_by_two")
+	two_skip_three_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None, related_name="two_skip_three_by_two")
+	two_skip_four_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None, related_name="two_skip_four_by_two")
+	two_skip_five_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None, related_name="two_skip_five_by_two")
+	
+	one_by_one_by_one_by_one = models.ManyToManyField(DoubleDoubleAdjacentBodyCounter, default=None)
+	two_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None)
+	four_of_one = models.ManyToManyField(SpacelessQuatroBodyCounter, default=None)
+
+	three_by_one = models.ManyToManyField(TripleOneBodyCounter, default=None)
+	one_by_three = models.ManyToManyField(OneTripleBodyCounter, default=None)
+
+	def place_keywords_into_counters(self, body):
+		self.body = body
+		keywords_split = body.split(" ")
+		for word_num in range(0, keywords_split.length):
+			word = keywords_split[word_num]
+			one_of_one = BodyCounter.objects.new(keyword=word)
+			self.one_of_one.add(one_of_one)
+			for word in body:
+				one_of_one.appearances_in_body_text += 1
+			one_of_one.save()
+
+			if word_num < keywords_split.length:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+1]
+				one_by_one = AdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword)
+				self.one_by_one.add(one_by_one)
+				one_by_one.one_by_one_count_in_body(body)
+				
+
+			if word_num < keywords_split.length-1:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+2]
+				one_skip_one_by_one = AdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword)
+				self.one_skip_one_by_one.add(one_skip_one_by_one)
+				one_skip_one_by_one.one_skip_one_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-2:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+3]
+				one_skip_two_by_one = AdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword)
+				self.one_skip_two_by_one.add(one_skip_two_by_one)
+				one_skip_two_by_one.one_skip_two_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-3:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+4]
+				one_skip_three_by_one = AdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword)
+				self.one_skip_three_by_one.add(one_skip_three_by_one)
+				one_skip_three_by_one.one_skip_three_by_one_count_in_body(body)
+
+				
+			if word_num < keywords_split.length-4:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+5]
+				one_skip_four_by_one = AdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword)
+				self.one_skip_four_by_one.add(one_skip_four_by_one)
+				one_skip_four_by_one.one_skip_four_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-5:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+6]
+				one_skip_five_by_one = AdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword)
+				self.one_skip_five_by_one.add(one_skip_five_by_one)
+				one_skip_five_by_one.one_skip_five_by_one_count_in_body(body)
+
+			if word_num < eywords_split.length-3:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+2]
+				rightmost_keyword = keywords_split[word_num+3]
+				one_skip_one_by_two = DoubleRightAdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.one_skip_one_by_two.add(one_skip_one_by_two)
+				one_skip_one_by_two.one_skip_one_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-4:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+3]
+				rightmost_keyword = keywords_split[word_num+4]
+				one_skip_two_by_two = DoubleRightAdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.one_skip_two_by_two.add(one_skip_two_by_two)
+				one_skip_two_by_two.one_skip_two_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-5:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+4]
+				rightmost_keyword = keywords_split[word_num+5]
+				one_skip_three_by_two = DoubleRightAdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.one_skip_three_by_two.add(one_skip_three_by_two)
+				one_skip_three_by_two.one_skip_three_by_two_count_in_body(body)
+
+				
+			if word_num < keywords_split.length-6:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+5]
+				rightmost_keyword = keywords_split[word_num+6]
+				one_skip_four_by_two = DoubleRightAdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.one_skip_four_by_two.add(one_skip_four_by_two)
+				one_skip_four_by_two.one_skip_four_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-7:
+				left_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+6]
+				rightmost_keyword = keywords_split[word_num+7]
+				one_skip_five_by_two = DoubleRightAdjacentBodyCounter.objects.new(left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.one_skip_five_by_two.add(one_skip_five_by_two)
+				one_skip_five_by_two.one_skip_five_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-3:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+3]
+				two_skip_one_by_one = DoubleLeftAdjacentBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword)
+				self.two_skip_one_by_one.add(two_skip_one_by_one)
+				two_skip_one_by_one.two_skip_one_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-4:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+4]
+				two_skip_two_by_one = DoubleLeftAdjacentBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword)
+				self.two_skip_two_by_one.add(two_skip_two_by_one)
+				two_skip_two_by_one.two_skip_two_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-5:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+5]
+				two_skip_three_by_one = DoubleLeftAdjacentBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword)
+				self.two_skip_three_by_one.add(two_skip_three_by_one)
+				two_skip_three_by_one.two_skip_three_by_one_count_in_body(body)
+
+				
+			if word_num < keywords_split.length-6:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+6]
+				two_skip_four_by_one = DoubleLeftAdjacentBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword)
+				self.two_skip_four_by_one.add(two_skip_four_by_one)
+				two_skip_four_by_one.two_skip_four_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-7:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+7]
+				two_skip_five_by_one = DoubleLeftAdjacentBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword)
+				self.two_skip_five_by_one.add(one_skip_five_by_one)
+				two_skip_five_by_one.two_skip_five_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-5:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+3]
+				rightmost_keyword = keywords_split[word_num+4]
+				two_skip_one_by_two = DuoDuoBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.two_skip_one_by_two.add(two_skip_one_by_two)
+				two_skip_one_by_two.two_skip_one_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-6:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+4]
+				rightmost_keyword = keywords_split[word_num+5]
+				two_skip_two_by_two = DuoDuoBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.two_skip_two_by_two.add(two_skip_two_by_two)
+				two_skip_two_by_two.two_skip_two_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-7:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+5]
+				rightmost_keyword = keywords_split[word_num+6]
+				two_skip_three_by_two = DuoDuoBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.two_skip_three_by_two.add(two_skip_three_by_two)
+				two_skip_three_by_two.two_skip_three_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-8:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+6]
+				rightmost_keyword = keywords_split[word_num+7]
+				two_skip_four_by_two = DuoDuoBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.two_skip_four_by_two.add(two_skip_four_by_two)
+				two_skip_four_by_two.two_skip_four_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-9:
+				left_keyword = keywords_split[word_num+1]
+				leftmost_keyword = keywords_split[word_num]
+				right_keyword = keywords_split[word_num+7]
+				rightmost_keyword = keywords_split[word_num+8]
+				two_skip_five_by_two = DuoDuoBodyCounter.objects.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.two_skip_five_by_two.add(two_skip_five_by_two)
+				two_skip_five_by_two.two_skip_five_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-3:
+				leftmost_keyword = keywords_split[word_num]
+				left_keyword = keywords_split[word_num+1]
+				right_keyword = keywords_split[word_num+2]
+				rightmost_keyword = keywords_split[word_num+3]
+				one_by_one_by_one_by_one = DoubleDoubleAdjacentBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+				self.one_by_one_by_one_by_one.add(one_by_one_by_one_by_one)
+				one_by_one_by_one_by_one.one_by_one_by_one_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 0:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:]
+					right_keyword = keywords_split[word_num+1][0:1]
+					rightmost_keyword = keywords_split[word_num+1][1:]
+					two_by_two_first = DuoDuoBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.two_by_two.add(two_by_two_first)
+					two_by_two_first.two_by_two_count_in_body(body)
+
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 1:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:]
+					right_keyword = keywords_split[word_num+1][0:2]
+					rightmost_keyword = keywords_split[word_num+1][2:]
+					two_by_two_second = DuoDuoBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.two_by_two.add(two_by_two_second)
+					two_by_two_second.two_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 2:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:]
+					right_keyword = keywords_split[word_num+1][0:3]
+					rightmost_keyword = keywords_split[word_num+1][3:]
+					two_by_two_third = DuoDuoBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.two_by_two.add(two_by_two_third)
+					two_by_two_third.two_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:]
+					right_keyword = keywords_split[word_num+1][0:4]
+					rightmost_keyword = keywords_split[word_num+1][4:]
+					two_by_two_fourth = DuoDuoBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.two_by_two.add(two_by_two_fourth)
+					two_by_two_fourth.two_by_two_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:2]
+					right_keyword = keywords_split[word_num][2:3]
+					rightmost_keyword = keywords_split[word_num][3:]
+					four_of_one_first_first_first = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_first_first_first)
+					four_of_one_first_first_first.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:3]
+					right_keyword = keywords_split[word_num][3:4]
+					rightmost_keyword = keywords_split[word_num][4:]
+					four_of_one_second_first_first = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_second_first_first)
+					four_of_one_second_first_first.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:3]
+					right_keyword = keywords_split[word_num][3:4]
+					rightmost_keyword = keywords_split[word_num][4:]
+					four_of_one_first_second_first = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_first_second_first)
+					four_of_one_first_second_first.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:2]
+					right_keyword = keywords_split[word_num][3:4]
+					rightmost_keyword = keywords_split[word_num][4:]
+					four_of_one_first_first_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_first_first_second)
+					four_of_one_first_first_second.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:4]
+					right_keyword = keywords_split[word_num][4:5]
+					rightmost_keyword = keywords_split[word_num][5:]
+					four_of_one_second_second_first = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_second_second_first)
+					four_of_one_second_second_first.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:3]
+					right_keyword = keywords_split[word_num][3:5]
+					rightmost_keyword = keywords_split[word_num][5:]
+					four_of_one_second_first_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_second_first_second)
+					four_of_one_second_first_second.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:3]
+					right_keyword = keywords_split[word_num][3:5]
+					rightmost_keyword = keywords_split[word_num][5:]
+					four_of_one_first_second_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_first_second_second)
+					four_of_one_first_second_second.four_of_one_count_in_body(body)
+
+			
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:4]
+					right_keyword = keywords_split[word_num][4:6]
+					rightmost_keyword = keywords_split[word_num][6:]
+					four_of_one_second_second_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_second_second_second)
+					four_of_one_second_second_second.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:4]
+					right_keyword = keywords_split[word_num][4:5]
+					rightmost_keyword = keywords_split[word_num][5:]
+					four_of_one_third_first_first = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_first_first)
+					four_of_one_third_first_first.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:4]
+					right_keyword = keywords_split[word_num][4:6]
+					rightmost_keyword = keywords_split[word_num][6:]
+					four_of_one_third_first_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_first_second)
+					four_of_one_third_first_second.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:5]
+					right_keyword = keywords_split[word_num][5:6]
+					rightmost_keyword = keywords_split[word_num][6:]
+					four_of_one_third_second_first = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_second_first)
+					four_of_one_third_second_first.four_of_one_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:5]
+					right_keyword = keywords_split[word_num][5:7]
+					rightmost_keyword = keywords_split[word_num][7:]
+					four_of_one_third_second_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_second_second)
+					four_of_one_third_second_second.four_of_one_count_in_body(body)
+			
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:5]
+					right_keyword = keywords_split[word_num][5:8]
+					rightmost_keyword = keywords_split[word_num][8:]
+					four_of_one_third_second_third = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_second_third)
+					four_of_one_third_second_third.four_of_one_count_in_body(body)
+			
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:6]
+					right_keyword = keywords_split[word_num][6:8]
+					rightmost_keyword = keywords_split[word_num][8:]
+					four_of_one_third_third_second = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_third_second)
+					four_of_one_third_third_second.four_of_one_count_in_body(body)
+			
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 8:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:6]
+					right_keyword = keywords_split[word_num][6:9]
+					rightmost_keyword = keywords_split[word_num][9:]
+					four_of_one_third_third_third = SpacelessQuatroBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.four_of_one.add(four_of_one_third_third_third)
+					four_of_one_third_third_third.four_of_one_count_in_body(body)
+			
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:2]
+					right_keyword = keywords_split[word_num][2:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_first_first = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_first_first)
+					three_by_one_first_first.three_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:3]
+					right_keyword = keywords_split[word_num][3:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_first_second = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_first_second)
+					three_by_one_first_second.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:4]
+					right_keyword = keywords_split[word_num][4:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_first_third = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_first_third)
+					three_by_one_first_third.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_first_fourth = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_first_fourth)
+					three_by_one_first_fourth.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:3]
+					right_keyword = keywords_split[word_num][3:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_second_first = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_second_first)
+					three_by_one_second_first.three_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:4]
+					right_keyword = keywords_split[word_num][4:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_second_second = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_second_second)
+					three_by_one_second_second.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_second_third = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_second_third)
+					three_by_one_second_third.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:6]
+					right_keyword = keywords_split[word_num][6:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_second_fourth = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_second_fourth)
+					three_by_one_second_fourth.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:4]
+					right_keyword = keywords_split[word_num][4:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_third_first = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_third_first)
+					three_by_one_third_first.three_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_third_second = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_third_second)
+					three_by_one_third_second.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:6]
+					right_keyword = keywords_split[word_num][6:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_third_third = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_third_third)
+					three_by_one_third_third.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 8:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:7]
+					right_keyword = keywords_split[word_num][7:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_third_fourth = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_third_fourth)
+					three_by_one_third_fourth.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_fourth_first = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_fourth_first)
+					three_by_one_fourth_first.three_by_one_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:6]
+					right_keyword = keywords_split[word_num][6:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_fourth_second = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_fourth_second)
+					three_by_one_fourth_second.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:7]
+					right_keyword = keywords_split[word_num][7:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_fourth_third = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_fourth_third)
+					three_by_one_fourth_third.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 8:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:8]
+					right_keyword = keywords_split[word_num][8:]
+					rightmost_keyword = keywords_split[word_num+1]
+					three_by_one_fourth_fourth = TripleOneBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.three_by_one.add(three_by_one_fourth_fourth)
+					three_by_one_fourth_fourth.three_by_one_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 3:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:2]
+					right_keyword = keywords_split[word_num][2:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_first_first = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_first_first)
+					one_by_three_first_first.one_by_three_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:3]
+					right_keyword = keywords_split[word_num][3:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_first_second = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_first_second)
+					one_by_three_first_second.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:4]
+					right_keyword = keywords_split[word_num][4:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_first_third = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_first_third)
+					one_by_three_first_third.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:1]
+					left_keyword = keywords_split[word_num][1:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_first_fourth = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_first_fourth)
+					one_by_three_first_fourth.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 4:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:3]
+					right_keyword = keywords_split[word_num][3:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_second_first = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_second_first)
+					one_by_three_second_first.one_by_three_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:4]
+					right_keyword = keywords_split[word_num][4:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_second_second = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_second_second)
+					one_by_three_second_second.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_second_third = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_second_third)
+					one_by_three_second_third.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:2]
+					left_keyword = keywords_split[word_num][2:6]
+					right_keyword = keywords_split[word_num][6:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_second_fourth = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_second_fourth)
+					one_by_three_second_fourth.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:4]
+					right_keyword = keywords_split[word_num][4:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_third_first = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_third_first)
+					one_by_three_third_first.one_by_three_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_third_second = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_third_second)
+					one_by_three_third_second.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:6]
+					right_keyword = keywords_split[word_num][6:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_third_third = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_third_third)
+					one_by_three_third_third.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 8:
+					leftmost_keyword = keywords_split[word_num][0:3]
+					left_keyword = keywords_split[word_num][3:7]
+					right_keyword = keywords_split[word_num][7:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_third_fourth = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_third_fourth)
+					one_by_three_third_fourth.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 5:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:5]
+					right_keyword = keywords_split[word_num][5:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_fourth_first = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_fourth_first)
+					one_by_three_fourth_first.one_by_three_count_in_body(body)
+
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 6:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:6]
+					right_keyword = keywords_split[word_num][6:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_fourth_second = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_fourth_second)
+					one_by_three_fourth_second.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 7:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:7]
+					right_keyword = keywords_split[word_num][7:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_fourth_third = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_fourth_third)
+					one_by_three_fourth_third.one_by_three_count_in_body(body)
+			
+			if word_num < keywords_split.length-1:
+				if keywords_split[word_num].length > 8:
+					leftmost_keyword = keywords_split[word_num][0:4]
+					left_keyword = keywords_split[word_num][4:8]
+					right_keyword = keywords_split[word_num][8:]
+					rightmost_keyword = keywords_split[word_num+1]
+					one_by_three_fourth_fourth = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
+					self.one_by_three.add(one_by_three_fourth_fourth)
+					one_by_three_fourth_fourth.one_by_three_count_in_body(body)
+			
+			
+			#(ABOVE) finished each keyword count in body
+			#(BELOW) finished each day week month years difference and significance
+			yesterdays_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day-1, author=None)
+			self.zipfs_law_difference_day.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			count = self.body.split(" ").length+1
+			count_doubles = count - 1
+			if count > 2:
+				count_triples = count - 2
+			else:
+				count_triples = 1
+			if count > 3:
+				count_quads = count - 3
+			else:
+				count_quads = 1
+			if count > 4:
+				count_quints = count - 4
+			else:
+				count_quints = 1
+			if count > 5:
+				count_sext = count - 5
+			else:
+				count_sext = 1
+			if count > 6:
+				count_sept = count - 6
+			else:
+				count_sept = 1
+			if count > 7:
+				count_oct = count - 7
+			else:
+				count_oct = 1
+			if count > 8:
+				count_non = count - 8
+			else:
+				count_non = 1
+			self.zipfs_law_significance_day.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], significance=True, year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2)))
+
+			yesterdays_self_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day-1, author=self.author)
+			self.zipfs_law_self_difference_day.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			self.zipfs_law_self_difference_day_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			if yesterdays_self_difference.day < 8:
+				yesterweeks_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month-1, day=timezone.now.date.day+21, author=None)
+				self.zipfs_law_difference_week.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=y(esterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				self.zipfs_law_difference_week_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				yesterweeks_self_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month-1, day=timezone.now.date.day+21, author=self.author)
+				self.zipfs_law_self_difference_week.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				self.zipfs_law_self_difference_week_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesterdays_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			else:
+				yesterweeks_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day-7, author=None)
+				self.zipfs_law_difference_week.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				self.zipfs_law_difference_week_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				yesterweeks_self_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day-7, author=self.author)
+				self.zipfs_law_self_difference_week.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				self.zipfs_law_difference_week_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesterdays_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesterdays_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesterdays_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesterdays_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesterdays_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesterdays_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesterdays_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesterdays_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesterdays_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesterdays_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesterdays_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesterdays_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesterdays_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesterdays_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesterdays_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesterdays_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesterdays_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesterdays_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesterdays_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesterdays_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				
+			if yesterweeks_self_difference.month == 1:
+				yestermonths_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month-1, day=timezone.now.date.day-1, author=None)
+				self.zipfs_law_difference_month.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yestermonths_difference.one_by_one-float(one_by_one.appearances_in_body_text)), one_of_one=(yestermonths_difference.one_of_one-float(one_of_one.appearances_in_body_text)), one_skip_one_by_one=(yestermonths_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text)), one_skip_two_by_one=(yestermonths_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text)), one_skip_three_by_one=(yestermonths_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text)), one_skip_four_by_one=(yestermonths_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text)), one_skip_five_by_one=(yestermonths_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text)), two_skip_one_by_one=(yestermonths_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text)), two_skip_two_by_one=(yestermonths_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text)), two_skip_three_by_one=(yestermonths_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text)), two_skip_four_by_one=(yestermonths_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text)), two_skip_five_by_one=(yestermonths_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text)), one_skip_one_by_two=(yestermonths_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text)), one_skip_two_by_two=(yestermonths_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text)), one_skip_three_by_two=(yestermonths_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text)), one_skip_four_by_two=(yestermonths_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text)), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text)), two_skip_one_by_two=(yestermonths_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text)), two_skip_two_by_two=(yestermonths_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text)), two_skip_three_by_two=(yestermonths_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text)), two_skip_four_by_two=(yestermonths_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text)), two_skip_five_by_two=(yestermonths_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text)), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text)), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text)), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text)), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text)), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text)), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text)), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text)), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text)), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text)), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text)), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text)), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text)), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text)), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text)), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text)), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text)), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text)), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text)), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text)), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text)), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text)), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text)), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text)), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text)), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text)), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text)), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text)), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text)), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text)), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text)), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text)), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text)), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text)), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))))
+				self.zipfs_law_difference_month_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=None, one_by_one=(yestermonths_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yestermonths_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yestermonths_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yestermonths_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yestermonths_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yestermonths_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yestermonths_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yestermonths_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yestermonths_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yestermonths_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yestermonths_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yestermonths_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yestermonths_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yestermonths_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yestermonths_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yestermonths_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yestermonths_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yestermonths_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yestermonths_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count)**2), two_skip_four_by_two=(yestermonths_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yestermonths_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				yestermonths_self_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month-1, day=timezone.now.date.day-1, author=self.author)
+				self.zipfs_law_self_difference_month.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yestermonths_difference.one_by_one-float(one_by_one.appearances_in_body_text)), one_of_one=(yestermonths_difference.one_of_one-float(one_of_one.appearances_in_body_text)), one_skip_one_by_one=(yestermonths_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text)), one_skip_two_by_one=(yestermonths_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text)), one_skip_three_by_one=(yestermonths_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text)), one_skip_four_by_one=(yestermonths_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text)), one_skip_five_by_one=(yestermonths_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text)), two_skip_one_by_one=(yestermonths_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text)), two_skip_two_by_one=(yestermonths_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text)), two_skip_three_by_one=(yestermonths_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text)), two_skip_four_by_one=(yestermonths_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text)), two_skip_five_by_one=(yestermonths_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text)), one_skip_one_by_two=(yestermonths_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text)), one_skip_two_by_two=(yestermonths_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text)), one_skip_three_by_two=(yestermonths_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text)), one_skip_four_by_two=(yestermonths_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text)), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text)), two_skip_one_by_two=(yestermonths_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text)), two_skip_two_by_two=(yestermonths_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text)), two_skip_three_by_two=(yestermonths_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text)), two_skip_four_by_two=(yestermonths_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text)), two_skip_five_by_two=(yestermonths_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text)), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text)), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text)), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text)), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text)), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text)), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text)), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text)), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text)), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text)), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text)), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text)), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text)), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text)), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text)), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text)), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text)), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text)), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text)), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text)), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text)), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text)), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text)), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text)), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text)), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text)), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text)), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text)), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text)), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text)), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text)), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text)), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text)), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text)), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))))
+				self.zipfs_law_self_difference_month_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yestermonths_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yestermonths_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yestermonths_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yestermonths_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yestermonths_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yestermonths_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yestermonths_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yestermonths_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yestermonths_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yestermonths_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yestermonths_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yestermonths_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yestermonths_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yestermonths_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yestermonths_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yestermonths_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yestermonths_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yestermonths_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yestermonths_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count)**2), two_skip_four_by_two=(yestermonths_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesterdays_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesterdays_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesterdays_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesterdays_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesterdays_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesterdays_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesterdays_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesterdays_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesterdays_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesterdays_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesterdays_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesterdays_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesterdays_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesterdays_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesterdays_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesterdays_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesterdays_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesterdays_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesterdays_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesterdays_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesterdays_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesterdays_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesterdays_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesterdays_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesterdays_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesterdays_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesterdays_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesterdays_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesterdays_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesterdays_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesterdays_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesterdays_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesterdays_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesterdays_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesterdays_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesterdays_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesterdays_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			else:
+				yestermonths_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year-1, month=timezone.now.date.month+11, day=timezone.now.date.day, author=self.author)
+				self.zipfs_law_difference_month.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yestermonths_difference.one_by_one-float(one_by_one.appearances_in_body_text)), one_of_one=(yestermonths_difference.one_of_one-float(one_of_one.appearances_in_body_text)), one_skip_one_by_one=(yestermonths_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text)), one_skip_two_by_one=(yestermonths_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text)), one_skip_three_by_one=(yestermonths_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text)), one_skip_four_by_one=(yestermonths_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text)), one_skip_five_by_one=(yestermonths_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text)), two_skip_one_by_one=(yestermonths_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text)), two_skip_two_by_one=(yestermonths_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text)), two_skip_three_by_one=(yestermonths_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text)), two_skip_four_by_one=(yestermonths_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text)), two_skip_five_by_one=(yestermonths_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text)), one_skip_one_by_two=(yestermonths_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text)), one_skip_two_by_two=(yestermonths_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text)), one_skip_three_by_two=(yestermonths_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text)), one_skip_four_by_two=(yestermonths_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text)), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text)), two_skip_one_by_two=(yestermonths_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text)), two_skip_two_by_two=(yestermonths_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text)), two_skip_three_by_two=(yestermonths_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text)), two_skip_four_by_two=(yestermonths_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text)), two_skip_five_by_two=(yestermonths_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text)), two_by_two_first=(yestermonths_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text)), two_by_two_second=(yestermonths_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text)), two_by_two_third=(yestermonths_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text)), two_by_two_fourth=(yestermonths_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text)), four_of_one_first_first_first=(yestermonths_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text)), four_of_one_second_first_first=(yestermonths_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text)), four_of_one_first_second_first=(yestermonths_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text)), four_of_one_first_first_second=(yestermonths_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text)), four_of_one_first_second_second=(yestermonths_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text)), four_of_one_second_second_second=(yestermonths_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text)), four_of_one_second_second_first=(yestermonths_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text)), four_of_one_third_second_second=(yestermonths_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text)), four_of_one_third_first_second=(yestermonths_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text)), four_of_one_third_second_first=(yestermonths_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text)), four_of_one_third_second_third=(yestermonths_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text)), four_of_one_third_third_second=(yestermonths_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yestermonths_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yestermonths_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text)), four_of_one_third_first_third=(yestermonths_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text)), four_of_one_first_second_third=(yestermonths_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text)), four_of_one_second_first_third=(yestermonths_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text)), four_of_one_first_first_third=(yestermonths_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text)), four_of_one_first_first_fourth=(yestermonths_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text)), four_of_one_first_second_fourth=(yestermonths_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text)), four_of_one_first_third_fourth=(yestermonths_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text)), four_of_one_first_fourth_fourth=(yestermonths_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text)), four_of_one_second_fourth_fourth=(yestermonths_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text)), four_of_one_second_third_fourth=(yestermonths_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text)), four_of_one_second_second_fourth=(yestermonths_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text)), four_of_one_second_first_fourth=(yestermonths_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text)), four_of_one_third_first_fourth=(yestermonths_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text)), four_of_one_third_second_fourth=(yestermonths_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text)), four_of_one_fourth_first_fourth=(yestermonths_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text)), four_of_one_fourth_second_fourth=(yestermonths_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text)), four_of_one_fourth_third_fourth=(yestermonths_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text)), four_of_one_fourth_fourth_fourth=(yestermonths_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))))
+				self.zipfs_law_difference_month_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yestermonths_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yestermonths_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yestermonths_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yestermonths_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yestermonths_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yestermonths_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yestermonths_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yestermonths_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yestermonths_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yestermonths_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yestermonths_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yestermonths_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yestermonths_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yestermonths_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yestermonths_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yestermonths_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_two=(yestermonths_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yestermonths_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yestermonths_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yestermonths_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yestermonths_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yestermonths_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yestermonths_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yestermonths_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yestermonths_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yestermonths_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yestermonths_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yestermonths_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yestermonths_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yestermonths_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yestermonths_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yestermonths_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yestermonths_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yestermonths_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yestermonths_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yestermonths_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yestermonths_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yestermonths_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yestermonths_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yestermonths_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yestermonths_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yestermonths_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yestermonths_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yestermonths_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yestermonths_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yestermonths_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yestermonths_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yestermonths_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yestermonths_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yestermonths_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yestermonths_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yestermonths_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yestermonths_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yestermonths_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yestermonths_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yestermonths_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yestermonths_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+				yestermonths_self_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year-1, month=timezone.now.date.month+11, day=timezone.now.date.day, author=self.author)
+				self.zipfs_law_self_difference_month.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yestermonths_self_difference.one_by_one-float(one_by_one.appearances_in_body_text)), one_of_one=(yestermonths_self_difference.one_of_one-float(one_of_one.appearances_in_body_text)), one_skip_one_by_one=(yestermonths_self_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text)), one_skip_two_by_one=(yestermonths_self_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text)), one_skip_three_by_one=(yestermonths_self_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text)), one_skip_four_by_one=(yestermonths_self_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text)), one_skip_five_by_one=(yestermonths_self_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text)), two_skip_one_by_one=(yestermonths_self_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text)), two_skip_two_by_one=(yestermonths_self_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text)), two_skip_three_by_one=(yestermonths_self_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text)), two_skip_four_by_one=(yestermonths_self_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text)), two_skip_five_by_one=(yestermonths_self_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text)), one_skip_one_by_two=(yestermonths_self_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text)), one_skip_two_by_two=(yestermonths_self_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text)), one_skip_three_by_two=(yestermonths_self_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text)), one_skip_four_by_two=(yestermonths_self_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text)), one_skip_five_by_two=(yestermonths_self_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text)), two_skip_one_by_two=(yestermonths_self_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text)), two_skip_two_by_two=(yestermonths_self_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text)), two_skip_three_by_two=(yestermonths_self_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text)), two_skip_four_by_two=(yestermonths_self_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text)), two_skip_five_by_two=(yestermonths_self_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text)), two_by_two_first=(yestermonths_self_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text)), two_by_two_second=(yestermonths_self_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text)), two_by_two_third=(yestermonths_self_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text)), two_by_two_fourth=(yestermonths_self_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text)), four_of_one_first_first_first=(yestermonths_self_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text)), four_of_one_second_first_first=(yestermonths_self_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text)), four_of_one_first_second_first=(yestermonths_self_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text)), four_of_one_first_first_second=(yestermonths_self_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text)), four_of_one_first_second_second=(yestermonths_self_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text)), four_of_one_second_second_second=(yestermonths_self_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text)), four_of_one_second_second_first=(yestermonths_self_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text)), four_of_one_third_second_second=(yestermonths_self_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text)), four_of_one_third_first_second=(yestermonths_self_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text)), four_of_one_third_second_first=(yestermonths_self_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text)), four_of_one_third_second_third=(yestermonths_self_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text)), four_of_one_third_third_second=(yestermonths_self_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yestermonths_self_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yestermonths_self_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text)), four_of_one_third_first_third=(yestermonths_self_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text)), four_of_one_first_second_third=(yestermonths_self_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text)), four_of_one_second_first_third=(yestermonths_self_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text)), four_of_one_first_first_third=(yestermonths_self_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text)), four_of_one_first_first_fourth=(yestermonths_self_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text)), four_of_one_first_second_fourth=(yestermonths_self_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text)), four_of_one_first_third_fourth=(yestermonths_self_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text)), four_of_one_first_fourth_fourth=(yestermonths_self_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text)), four_of_one_second_fourth_fourth=(yestermonths_self_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text)), four_of_one_second_third_fourth=(yestermonths_self_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text)), four_of_one_second_second_fourth=(yestermonths_self_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text)), four_of_one_second_first_fourth=(yestermonths_self_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text)), four_of_one_third_first_fourth=(yestermonths_self_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text)), four_of_one_third_second_fourth=(yestermonths_self_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text)), four_of_one_fourth_first_fourth=(yestermonths_self_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text)), four_of_one_fourth_second_fourth=(yestermonths_self_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yestermonths_self_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text)), four_of_one_fourth_fourth_fourth=(yestermonths_self_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))))
+				self.zipfs_law_self_difference_month_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yestermonths_self_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yestermonths_self_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yestermonths_self_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yestermonths_self_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yestermonths_self_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yestermonths_self_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yestermonths_self_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yestermonths_self_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yestermonths_self_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yestermonths_self_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yestermonths_self_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yestermonths_self_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yestermonths_self_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yestermonths_self_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yestermonths_self_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yestermonths_self_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yestermonths_self_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yestermonths_self_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yestermonths_self_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yestermonths_self_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yestermonths_self_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yestermonths_self_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yestermonths_self_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yestermonths_self_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yestermonths_self_difference.two_by_two_first-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yestermonths_self_difference.two_by_two_first-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yestermonths_self_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yestermonths_self_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yestermonths_self_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yestermonths_self_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yestermonths_self_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yestermonths_self_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yestermonths_self_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yestermonths_self_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yestermonths_self_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yestermonths_self_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yestermonths_self_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yestermonths_self_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yestermonths_self_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yestermonths_self_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yestermonths_self_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yestermonths_self_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yestermonths_self_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yestermonths_self_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yestermonths_self_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yestermonths_self_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yestermonths_self_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yestermonths_self_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yestermonths_self_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yestermonths_self_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yestermonths_self_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yestermonths_self_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yestermonths_self_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yestermonths_self_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yestermonths_self_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yestermonths_self_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yestermonths_self_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yestermonths_self_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			
+			yesteryears_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year-1, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author)
+			self.zipfs_law_difference_year.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesteryears_difference.one_by_one-float(one_by_one.appearances_in_body_text)), one_of_one=(yesteryears_difference.one_of_one-float(one_of_one.appearances_in_body_text)), one_skip_one_by_one=(yesteryears_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text)), one_skip_two_by_one=yesteryears_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text)), one_skip_three_by_one=(yesteryears_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text)), one_skip_four_by_one=(yesteryears_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text)), one_skip_five_by_one=(yesteryears_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text)), two_skip_one_by_one=(yesteryears_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text)), two_skip_two_by_one=(yesteryears_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text)), two_skip_three_by_one=(yesteryears_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text)), two_skip_four_by_one=(yesteryears_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text)), two_skip_five_by_one=(yesteryears_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text)), one_skip_one_by_two=(yesteryears_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text)), one_skip_two_by_two=(yesteryears_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text)), one_skip_three_by_two=(yesteryears_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text)), one_skip_four_by_two=(yesteryears_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text)), one_skip_five_by_two=(yesteryears_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text)), two_skip_one_by_two=(yesteryears_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text)), two_skip_two_by_two=(yesteryears_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text)), two_skip_three_by_two=(yesteryears_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text)), two_skip_four_by_two=(yesteryears_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text)), two_skip_five_by_two=(yesteryears_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text)), two_by_two_first=(yesteryears_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text)), two_by_two_second=(yesteryears_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text)), two_by_two_third=(yesteryears_difference.two_by_two_third-float(two_by_two_third.appearances_in_body_text)), two_by_two_fourth=(yesteryears_difference.two_by_two_fourth-float(two_by_two_fourth.appearances_in_body_text)), four_of_one_first_first_first=(yesteryears_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text)), four_of_one_second_first_first=(yesteryears_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text)), four_of_one_first_second_first=(yesteryears_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text)), four_of_one_first_first_second=(yesteryears_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text)), four_of_one_first_second_second=(yesteryears_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text)), four_of_one_second_second_second=(yesteryears_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text)), four_of_one_second_second_first=(yesteryears_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text)), four_of_one_third_second_second=(yesteryears_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text)), four_of_one_third_first_second=(yesteryears_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text)), four_of_one_third_second_first=(yesteryears_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text)), four_of_one_third_second_third=(yesteryears_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text)), four_of_one_third_third_second=(yesteryears_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yesteryears_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yesteryears_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text)), four_of_one_third_first_third=(yesteryears_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text)), four_of_one_first_second_third=(yesteryears_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text)), four_of_one_second_first_third=(yesteryears_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text)), four_of_one_first_first_third=(yesteryears_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text)), four_of_one_first_first_fourth=(yesteryears_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text)), four_of_one_first_second_fourth=(yesteryears_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text)), four_of_one_first_third_fourth=(yesteryears_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text)), four_of_one_first_fourth_fourth=(yesteryears_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text)), four_of_one_second_fourth_fourth=(yesteryears_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text)), four_of_one_second_third_fourth=(yesteryears_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text)), four_of_one_second_second_fourth=(yesteryears_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text)), four_of_one_second_first_fourth=(yesteryears_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text)), four_of_one_third_first_fourth=(yesteryears_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text)), four_of_one_third_second_fourth=(yesteryears_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text)), four_of_one_fourth_first_fourth=(yesteryears_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text)), four_of_one_fourth_second_fourth=(yesteryears_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text)), four_of_one_fourth_third_fourth=(yesteryears_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text)), four_of_one_fourth_fourth_fourth=(yesteryears_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text)))
+			self.zipfs_law_difference_year_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesteryears_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesteryears_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesteryears_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesteryears_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesteryears_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesteryears_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesteryears_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesteryears_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesteryears_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesteryears_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesteryears_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesteryears_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesteryears_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesteryears_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesteryears_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesteryears_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesteryears_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesteryears_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesteryears_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesteryears_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesteryears_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesteryears_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesteryears_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count)**2), two_by_two_second=(yesteryears_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesteryears_difference.two_by_two_third-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesteryears_difference.two_by_two_fourth-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesteryears_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesteryears_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesteryears_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesteryears_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesteryears_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesteryears_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesteryears_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesteryears_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesteryears_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesteryears_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesteryears_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesteryears_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesteryears_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesteryears_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesteryears_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesteryears_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesteryears_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesteryears_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesteryears_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesteryears_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesteryears_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesteryears_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesteryears_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesteryears_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesteryears_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesteryears_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesteryears_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesteryears_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesteryears_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesteryears_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesteryears_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesteryears_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			yesteryears_self_difference, x = ZipfsApproximateDifferenceDay.objects.get_or_create(keywords=keywords_split[word_num], year=timezone.now.date.year-1, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author)
+			self.zipfs_law_self_difference_year.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesteryears_difference.one_by_one-float(one_by_one.appearances_in_body_text)), one_of_one=(yesteryears_self_difference.one_of_one-float(one_of_one.appearances_in_body_text)), one_skip_one_by_one=yesteryears_self_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text), one_skip_two_by_one=yesteryears_self_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text), one_skip_three_by_one=(yesteryears_self_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text)), one_skip_four_by_one=(yesteryears_self_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text)), one_skip_five_by_one=(yesteryears_self_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text)), two_skip_one_by_one=(yesteryears_self_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text)), two_skip_two_by_one=(yesteryears_self_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text)), two_skip_three_by_one=(yesteryears_self_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text)), two_skip_four_by_one=yesteryears_self_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text), two_skip_five_by_one=(yesteryears_self_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text)), one_skip_one_by_two=(yesteryears_self_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text)), one_skip_two_by_two=(yesteryears_self_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text)), one_skip_three_by_two=(yesteryears_self_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text)), one_skip_four_by_two=(yesteryears_self_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text)), one_skip_five_by_two=(yesteryears_self_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text)), two_skip_one_by_two=(yesteryears_self_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text)), two_skip_two_by_two=(yesteryears_self_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text)), two_skip_three_by_two=(yesteryears_self_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text)), two_skip_four_by_two=(yesteryears_self_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text)), two_skip_five_by_two=(yesteryears_self_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text)), two_by_two_first=(yesteryears_self_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text)), two_by_two_second=(yesteryears_self_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text)), two_by_two_third=(yesteryears_self_difference.two_by_two_third-float(two_by_two_third.appearances_in_body_text)), two_by_two_fourth=(yesteryears_self_difference.two_by_two_fourth-float(two_by_two_fourth.appearances_in_body_text)), four_of_one_first_first_first=(yesteryears_self_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text)), four_of_one_second_first_first=(yesteryears_self_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text)), four_of_one_first_second_first=(yesteryears_self_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text)), four_of_one_first_first_second=(yesteryears_self_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text)), four_of_one_first_second_second=(yesteryears_self_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text)), four_of_one_second_second_second=(yesteryears_self_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text)), four_of_one_second_second_first=(yesteryears_self_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text)), four_of_one_third_second_second=(yesteryears_self_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text)), four_of_one_third_first_second=(yesteryears_self_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text)), four_of_one_third_second_first=(yesteryears_self_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text)), four_of_one_third_second_third=(yesteryears_self_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text)), four_of_one_third_third_second=(yesteryears_self_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text)), four_of_one_third_third_third=(yesteryears_self_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text)), four_of_one_first_third_third=(yesteryears_self_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text)), four_of_one_third_first_third=(yesteryears_self_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text)), four_of_one_first_second_third=(yesteryears_self_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text)), four_of_one_second_first_third=(yesteryears_self_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text)), four_of_one_first_first_third=(yesteryears_self_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text)), four_of_one_first_first_fourth=(yesteryears_self_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text)), four_of_one_first_second_fourth=(yesteryears_self_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text)), four_of_one_first_third_fourth=(yesteryears_self_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text)), four_of_one_first_fourth_fourth=(yesteryears_self_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text)), four_of_one_second_fourth_fourth=(yesteryears_self_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text)), four_of_one_second_third_fourth=(yesteryears_self_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text)), four_of_one_second_second_fourth=(yesteryears_self_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text)), four_of_one_second_first_fourth=(yesteryears_self_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text)), four_of_one_third_first_fourth=(yesteryears_self_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text)), four_of_one_third_second_fourth=(yesteryears_self_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text)), four_of_one_fourth_first_fourth=(yesteryears_self_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text)), four_of_one_fourth_second_fourth=(yesteryears_self_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text)), four_of_one_fourth_third_fourth=(yesteryears_self_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text)), four_of_one_fourth_fourth_fourth=(yesteryears_self_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			self.zipfs_law_self_difference_year_significance.add(ZipfsApproximateDifferenceDay.objects.create(keywords=keywords_split[word_num], year=timezone.now.date.year, month=timezone.now.date.month, day=timezone.now.date.day, author=self.author, one_by_one=(yesteryears_difference.one_by_one-float(one_by_one.appearances_in_body_text))/(float(count_doubles)**2), one_of_one=(yesteryears_self_difference.one_of_one-float(one_of_one.appearances_in_body_text))/(float(count)**2), one_skip_one_by_one=(yesteryears_self_difference.one_skip_one_by_one-float(one_skip_one_by_one.appearances_in_body_text))/(float(count_triples)**2), one_skip_two_by_one=(yesteryears_self_difference.one_skip_two_by_one-float(one_skip_two_by_one.appearances_in_body_text))/(float(count_quads)**2), one_skip_three_by_one=(yesteryears_self_difference.one_skip_three_by_one-float(one_skip_three_by_one.appearances_in_body_text))/(float(count_quints)**2), one_skip_four_by_one=(yesteryears_self_difference.one_skip_four_by_one-float(one_skip_four_by_one.appearances_in_body_text))/(float(count_sext)**2), one_skip_five_by_one=(yesteryears_self_difference.one_skip_five_by_one-float(one_skip_five_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_one_by_one=(yesteryears_self_difference.two_skip_one_by_one-float(two_skip_one_by_one.appearances_in_body_text))/(float(count_quads)**2), two_skip_two_by_one=(yesteryears_self_difference.two_skip_two_by_one-float(two_skip_two_by_one.appearances_in_body_text))/(float(count_quints)**2), two_skip_three_by_one=(yesteryears_self_difference.two_skip_three_by_one-float(two_skip_three_by_one.appearances_in_body_text))/(float(count_sext)**2), two_skip_four_by_one=(yesteryears_self_difference.two_skip_four_by_one-float(two_skip_four_by_one.appearances_in_body_text))/(float(count_sept)**2), two_skip_five_by_one=(yesteryears_self_difference.two_skip_five_by_one-float(two_skip_five_by_one.appearances_in_body_text))/(float(count_oct)**2), one_skip_one_by_two=(yesteryears_self_difference.one_skip_one_by_two-float(one_skip_one_by_two.appearances_in_body_text))/(float(count_quads)**2), one_skip_two_by_two=(yesteryears_self_difference.one_skip_two_by_two-float(one_skip_two_by_two.appearances_in_body_text))/(float(count_quints)**2), one_skip_three_by_two=(yesteryears_self_difference.one_skip_three_by_two-float(one_skip_three_by_two.appearances_in_body_text))/(float(count_sext)**2), one_skip_four_by_two=(yesteryears_self_difference.one_skip_four_by_two-float(one_skip_four_by_two.appearances_in_body_text))/(float(count_sept)**2), one_skip_five_by_two=(yesteryears_self_difference.one_skip_five_by_two-float(one_skip_five_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_one_by_two=(yesteryears_self_difference.two_skip_one_by_two-float(two_skip_one_by_two.appearances_in_body_text))/(float(count_quints)**2), two_skip_two_by_two=(yesteryears_self_difference.two_skip_two_by_two-float(two_skip_two_by_two.appearances_in_body_text))/(float(count_sext)**2), two_skip_three_by_two=(yesteryears_self_difference.two_skip_three_by_two-float(two_skip_three_by_two.appearances_in_body_text))/(float(count_sept)**2), two_skip_four_by_two=(yesteryears_self_difference.two_skip_four_by_two-float(two_skip_four_by_two.appearances_in_body_text))/(float(count_oct)**2), two_skip_five_by_two=(yesteryears_self_difference.two_skip_five_by_two-float(two_skip_five_by_two.appearances_in_body_text))/(float(count_non)**2), two_by_two_first=(yesteryears_self_difference.two_by_two_first-float(two_by_two_first.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_second=(yesteryears_self_difference.two_by_two_second-float(two_by_two_second.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_third=(yesteryears_self_difference.two_by_two_third-float(two_by_two_third.appearances_in_body_text))/(float(count_doubles)**2), two_by_two_fourth=(yesteryears_self_difference.two_by_two_fourth-float(two_by_two_fourth.appearances_in_body_text))/(float(count_doubles)**2), four_of_one_first_first_first=(yesteryears_self_difference.four_of_one_first_first_first-float(four_of_one_first_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_first=(yesteryears_self_difference.four_of_one_second_first_first-float(four_of_one_second_first_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_first=(yesteryears_self_difference.four_of_one_first_second_first-float(four_of_one_first_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_second=(yesteryears_self_difference.four_of_one_first_first_second-float(four_of_one_first_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_second=(yesteryears_self_difference.four_of_one_first_second_second-float(four_of_one_first_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_second=(yesteryears_self_difference.four_of_one_second_second_second-float(four_of_one_second_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_first=(yesteryears_self_difference.four_of_one_second_second_first-float(four_of_one_second_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_second=(yesteryears_self_difference.four_of_one_third_second_second-float(four_of_one_third_second_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_second=(yesteryears_self_difference.four_of_one_third_first_second-float(four_of_one_third_first_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_first=(yesteryears_self_difference.four_of_one_third_second_first-float(four_of_one_third_second_first.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_third=(yesteryears_self_difference.four_of_one_third_second_third-float(four_of_one_third_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_second=(yesteryears_self_difference.four_of_one_third_third_second-float(four_of_one_third_third_second.appearances_in_body_text))/(float(count)**2), four_of_one_third_third_third=(yesteryears_self_difference.four_of_one_third_third_third-float(four_of_one_third_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_third=(yesteryears_self_difference.four_of_one_first_third_third-float(four_of_one_first_third_third.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_third=(yesteryears_self_difference.four_of_one_third_first_third-float(four_of_one_third_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_third=(yesteryears_self_difference.four_of_one_first_second_third-float(four_of_one_first_second_third.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_third=(yesteryears_self_difference.four_of_one_second_first_third-float(four_of_one_second_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_third=(yesteryears_self_difference.four_of_one_first_first_third-float(four_of_one_first_first_third.appearances_in_body_text))/(float(count)**2), four_of_one_first_first_fourth=(yesteryears_self_difference.four_of_one_first_first_fourth-float(four_of_one_first_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_second_fourth=(yesteryears_self_difference.four_of_one_first_second_fourth-float(four_of_one_first_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_third_fourth=(yesteryears_self_difference.four_of_one_first_third_fourth-float(four_of_one_first_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_first_fourth_fourth=(yesteryears_self_difference.four_of_one_first_fourth_fourth-float(four_of_one_first_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_fourth_fourth=(yesteryears_self_difference.four_of_one_second_fourth_fourth-float(four_of_one_second_fourth_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_third_fourth=(yesteryears_self_difference.four_of_one_second_third_fourth-float(four_of_one_second_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_second_fourth=(yesteryears_self_difference.four_of_one_second_second_fourth-float(four_of_one_second_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_second_first_fourth=(yesteryears_self_difference.four_of_one_second_first_fourth-float(four_of_one_second_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_first_fourth=(yesteryears_self_difference.four_of_one_third_first_fourth-float(four_of_one_third_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_third_second_fourth=(yesteryears_self_difference.four_of_one_third_second_fourth-float(four_of_one_third_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_first_fourth=(yesteryears_self_difference.four_of_one_fourth_first_fourth-float(four_of_one_fourth_first_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_second_fourth=(yesteryears_self_difference.four_of_one_fourth_second_fourth-float(four_of_one_fourth_second_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_third_fourth=(yesteryears_self_difference.four_of_one_fourth_third_fourth-float(four_of_one_fourth_third_fourth.appearances_in_body_text))/(float(count)**2), four_of_one_fourth_fourth_fourth=(yesteryears_self_difference.four_of_one_fourth_fourth_fourth-float(four_of_one_fourth_fourth_fourth.appearances_in_body_text))/(float(count)**2)))
+			
+
+
+class Insight(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
+	insight_heading = models.CharField(max_length=66, default='')
+	heading_count = models.IntegerField(default=0)
+	insight = models.TextField(max_length=1440, default='')
+	post_id = models.IntegerField(default=0)
+	comment_id = models.IntegerField(default=0)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
+
+
+class Recommendation(models.Model):
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
+	recommendation_heading = models.CharField(max_length=66, default='')
+	heading_count = models.IntegerField(default=0)
+	recommendation = models.TextField(max_length=1440, default='')
+	post_id = models.IntegerField(default=0)
+	comment_id = models.IntegerField(default=0)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
 
 class Comment_Edit(models.Model):
-	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None)
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
 	body = models.TextField(max_length=1440, default='')
 	comment_id = models.IntegerField(default=0)
 	creation_date = models.DateTimeField(default=timezone.now)
+	insights = models.ManyToManyField(Insight, default=None)
+	recommendations = models.ManyToManyField(Recommendation, default=None)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
 
 class Comment(MPTTModel):
-	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None)
+	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
 	body = models.TextField(max_length=1440, default='')
 	edit_history = models.ManyToManyField(Comment_Edit, default=None, related_name="edit_history")
 	suggested_edits = models.ManyToManyField(Comment_Edit, default=None, related_name="suggested_edits")
@@ -137,9 +1514,12 @@ class Comment(MPTTModel):
 
 	likes = models.ManyToManyField(Author, default=None, related_name='comment_likes')
 	dislikes = models.ManyToManyField(Author, default=None, related_name='comment_dislikes')
-	parent = TreeForeignKey('self', on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='children', db_index=True)
+	parent = TreeForeignKey('self', on_delete=models.PROTECT, default=None, null=True, blank=True, related_name='children', db_index=True)
 	children_count = models.IntegerField(default=0)
 
+	insights = models.ManyToManyField(Insight, default=None)
+	recommendations = models.ManyToManyField(Recommendation, default=None)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
 	
 
 	def __str__(self):
@@ -208,6 +1588,10 @@ class Sentence_Edit(models.Model):
 	
 	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None, null=True)
 
+	insights = models.ManyToManyField(Insight, default=None)
+	recommendations = models.ManyToManyField(Recommendation, default=None)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
+
 class Sentence(models.Model):
 	sentence = models.TextField(max_length=14400, default='')
 
@@ -232,6 +1616,12 @@ class Sentence(models.Model):
 	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
 	creation_date = models.DateTimeField(default=timezone.now)
 
+	insights = models.ManyToManyField(Insight, default=None)
+	recommendations = models.ManyToManyField(Recommendation, default=None)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
+
+
+
 	
 class Edit(models.Model):
 	new_body = models.TextField(max_length=144000, default='')
@@ -240,6 +1630,11 @@ class Edit(models.Model):
 	post_id = models.IntegerField(default=0)
 	author = models.ForeignKey(Author, on_delete=models.PROTECT, default=None)
 	creation_date = models.DateTimeField(default=timezone.now)
+
+	insights = models.ManyToManyField(Insight, default=None)
+	recommendations = models.ManyToManyField(Recommendation, default=None)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
+
 
 	
 	
@@ -276,6 +1671,9 @@ class Post(models.Model):
 	allowed_to_edit_authors = models.ManyToManyField(Author, default=None, related_name='allowed_to_edit_authors')
 	blocked_from_commenting = models.ManyToManyField(Author, default=None, related_name='blocked_from_commenting')
 	
+	insights = models.ManyToManyField(Insight, default=None)
+	recommendations = models.ManyToManyField(Recommendation, default=None)
+	zipfslawstatsignature = models.OneToOneField(ZipfsLawStatSignature, on_delete=models.PROTECT, default=None)
 	def __str__(self):
 		return self.title
 
@@ -723,322 +2121,7 @@ class Availability(models.Model):
 class Keyword(models.Model):
 	key_word = models.CharField(default='', max_length=66)
 
-class BodyCounter(models.Model):
-	keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
 
-
-class DoubleRightAdjacentBodyCounter(models.Model):
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	rightmost_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def one_skip_one_by_two_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 2:
-				if splitsplit_body[1].startswith(self.right_keyword):
-					if splitsplit_body[2].startswith(self.rightmost_keyword):
-						self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_two_by_two_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 3:
-				if splitsplit_body[2].startswith(self.right_keyword):
-					if splitsplit_body[3].startswith(self.rightmost_keyword):
-						self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_three_by_two_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 4:
-				if splitsplit_body[3].startswith(self.right_keyword):
-					if splitsplit_body[4].startswith(self.rightmost_keyword):
-						self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_four_by_two_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 5:
-				if splitsplit_body[4].startswith(self.right_keyword):
-					if splitsplit_body[5].startswith(self.rightmost_keyword):
-						self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_five_by_two_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 6:
-				if splitsplit_body[5].startswith(self.right_keyword):
-					if splitsplit_body[6].startswith(self.rightmost_keyword):
-						self.appearances_in_body_text += 1
-		self.save()
-
-
-class DoubleLeftAdjacentBodyCounter(models.Model):
-	leftmost_keyword = models.CharField(default='', max_length=66)
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def two_skip_one_by_one_count_in_body(self, body):
-		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 1:
-				if splitsplit_body[1].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def two_skip_two_by_one_count_in_body(self, body):
-		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 2:
-				if splitsplit_body[2].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def two_skip_three_by_one_count_in_body(self, body):
-		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 3:
-				if splitsplit_body[3].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def two_skip_four_by_one_count_in_body(self, body):
-		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 4:
-				if splitsplit_body[4].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def two_skip_five_by_one_count_in_body(self, body):
-		split_body = body.split(self.leftmost_keyword+' '+self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_body[i].split(" ")
-			if splitsplit_body.length > 5:
-				if splitsplit_body[5].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-class AdjacentBodyCounter(models.Model):
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def one_by_one_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length):
-			if split_body[i][1:].startswith(self.right_keyword):
-				self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_one_by_one_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 1):
-			splitsplit_body = split_bdy[i].split(" ")
-			if splitsplit_body.length > 1:
-				if splitsplit_body[1].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_two_by_one_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 2):
-			splitsplit_body = split_bdy[i].split(" ")
-			if splitsplit_body.length > 2:
-				if splitsplit_body[2].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_three_by_one_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 3):
-			splitsplit_body = split_bdy[i].split(" ")
-			if splitsplit_body.length > 2:
-				if splitsplit_body[3].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_four_by_one_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 4):
-			splitsplit_body = split_bdy[i].split(" ")
-			if splitsplit_body.length > 3:
-				if splitsplit_body[4].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-	def one_skip_five_by_one_count_in_body(self, body):
-		split_body = body.split(self.left_keyword)
-		for i in range(1, split_body.length - 5):
-			splitsplit_body = split_bdy[i].split(" ")
-			if splitsplit_body.length > 4:
-				if splitsplit_body[5].startswith(self.right_keyword):
-					self.appearances_in_body_text += 1
-		self.save()
-
-class TripleAdjacentBodyCounter(models.Model):
-	left_keyword = models.CharField(default='', max_length=66)
-	middle_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def one_by_one_by_one_count_in_body(self, body):
-		three = self.left_keyword + ' ' + self.middle_keyword + ' ' + self.right_keyword
-		for three in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-
-class DoubleDoubleAdjacentBodyCounter(models.Model):
-	leftmost_keyword = models.CharField(default='', max_length=66)
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	rightmost_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def one_by_one_by_one_by_one_count_in_body(self, body):
-		four = self.leftmost_keyword + ' ' + self.left_keyword + ' ' + self.right_keyword + ' ' + self.rightmost_keyword
-		for four in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-class SpacelessAdjacentBodyCounter(models.Model):
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def spaceless_count_in_body(self, body):
-		spaceless = self.left_keyword + self.right_keyword
-		for spaceless in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-
-class TripleSpacelessAdjacentBodyCounter(models.Model):
-	left_keyword = models.CharField(default='', max_length=66)
-	middle_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def spaceless_count_in_body(self, body):
-		spaceless = self.left_keyword + self.middle_keyword + self.right_keyword
-		for spaceless in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-
-class DuoDuoBodyCounter(models.Model):
-	leftmost_keyword = models.CharField(default='', max_length=66)
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	rightmost_keyword = models.CharField(default='', max_length=66)
-
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def spaceless_by_spaceless_count_in_body(self, body):
-		space_left = self.leftmost_keyword + self.left_keyword
-		space_right = self.right_keyword + self.rightmost_keyword
-		spaceless = space_left + ' ' + space_right
-		for spaceless in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-class SpacelessQuatroBodyCounter(models.Model):
-	leftmost_keyword = models.CharField(default='', max_length=66)
-	left_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	rightmost_keyword = models.CharField(default='', max_length=66)
-
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def spaceless_by_spaceless_count_in_body(self, body):
-		space_left = self.leftmost_keyword + self.left_keyword
-		space_right = self.right_keyword + self.rightmost_keyword
-		spaceless = space_left + space_right
-		for spaceless in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-class TripleOneBodyCounter(models.Model):
-	leftmost_keyword = models.CharField(default='', max_length=66)
-	leftmiddle_keyword = models.CharField(default='', max_length=66)
-	leftright_keyword = models.CharField(default='', max_length=66)
-	right_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def triple_by_one_count_in_body(self, body):
-		triple = self.leftmost_keyword + self.leftmiddle_keyword + self.leftright_keyword
-		byby = triple + ' ' + self.right_keyword
-		for byby in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-
-class OneTripleBodyCounter(models.Model):
-	left_keyword = models.CharField(default='', max_length=66)
-	rightleft = models.CharField(default='', max_length=66)
-	rightmiddle_keyword = models.CharField(default='', max_length=66)
-	rightmost_keyword = models.CharField(default='', max_length=66)
-	appearances_in_body_text = models.IntegerField(default=0)
-
-	def one_by_triple_count_in_body(self, body):
-		triple = self.right_keyword + self.rightmiddle_keyword + self.rightmost_keyword
-		byby = self.left_keyword + ' ' + triple
-		for byby in body:
-			self.appearances_in_body_text += 1
-		self.save()
-
-class ZipfsLawStatSignature(models.Model):
-	one_of_one = models.ManyToManyField(BodyCounter, default=None)
-	one_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_by_one")
-	
-	two_of_one = models.ManyToManyField(SpacelessAdjacentBodyCounter, default=None, related_name="two_of_one")
-
-	one_skip_one_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_one_by_one")
-	one_skip_two_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_two_by_one")
-	one_skip_three_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_three_by_one")
-	one_skip_four_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_four_by_one")
-	one_skip_five_by_one = models.ManyToManyField(AdjacentBodyCounter, default=None, related_name="one_skip_five_by_one")
-
-	one_by_one_by_one = models.ManyToManyField(TripleAdjacentBodyCounter, default=None)
-	
-	three_of_one = models.ManyToManyField(TripleSpacelessAdjacentBodyCounter, default=None)
-
-	two_skip_one_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_one_by_one")
-	two_skip_two_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_two_by_one")
-	two_skip_three_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_three_by_one")
-	two_skip_four_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_four_by_one")
-	two_skip_five_by_one = models.ManyToManyField(DoubleLeftAdjacentBodyCounter, default=None, related_name="two_skip_five_by_one")
-
-	one_skip_one_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_one_by_two")
-	one_skip_two_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_two_by_two")
-	one_skip_three_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_three_by_two")
-	one_skip_four_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_four_by_two")
-	one_skip_five_by_two = models.ManyToManyField(DoubleRightAdjacentBodyCounter, default=None, related_name="one_skip_five_by_two")
-
-	one_by_one_by_one_by_one = models.ManyToManyField(DoubleDoubleAdjacentBodyCounter, default=None)
-	two_by_two = models.ManyToManyField(DuoDuoBodyCounter, default=None)
-	four_of_one = models.ManyToManyField(SpacelessQuatroBodyCounter, default=None)
-
-	three_by_one = models.ManyToManyField(TripleOneBodyCounter, default=None)
-	one_by_three = models.ManyToManyField(OneTripleBodyCounter, default=None)
 
 
 
