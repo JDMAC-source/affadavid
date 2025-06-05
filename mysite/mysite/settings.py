@@ -107,11 +107,12 @@ DATABASES = {
         # brew services start postgresql
         # createdb db
         # psql db
+        #the password is 6cfa0bb966064f49a2679d8e2666d872
         # CREATE USER default WITH SUPERUSER PASSWORD 'default';        # \q
         # issues in psycopg2: makemigrations Bable
-        'NAME': 'db3',                                                   
-        'USER': 'adenhandasyde',                                                   
-        'PASSWORD': '',                                      
+        'NAME': 'db',                                                   
+        'USER': 'postgres',                                                   
+        'PASSWORD': 'postgres',                                      
         'HOST': '127.0.0.1',                                                     
         'PORT': '5432',  
     }

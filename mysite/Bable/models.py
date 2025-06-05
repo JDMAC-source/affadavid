@@ -2260,6 +2260,8 @@ class Post(models.Model):
 		for bit in splitting[0:appearance_order]:
 			if not appearance_order:
 				new_body += bit + old_sentence
+			else:
+				new_body += bit
 		new_body += new_sentence
 		for bit in splitting[appearance_order:]:
 			new_body += bit
@@ -2306,6 +2308,8 @@ class Post(models.Model):
 		for bit in splitting[0:appearance_order]:
 			if not appearance_order:
 				new_body += bit + old_sentence
+			else:
+				new_body += bit
 		new_body += new_sentence
 		for bit in splitting[appearance_order:]:
 			new_body += bit
@@ -2351,6 +2355,8 @@ class Post(models.Model):
 		for bit in splitting[0:appearance_order]:
 			if not appearance_order:
 				new_body += bit + old_sentence
+			else:
+				new_body += bit
 		new_body += new_sentence
 		for bit in splitting[appearance_order:]:
 			new_body += bit
