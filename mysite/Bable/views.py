@@ -133,7 +133,48 @@ def grabusername(request):
 		q = request.GET['name']
 		if not User.objects.filter(username__startswith=q):
 			return True
+		else:
+			return False
+	else:
+		return False
 
+@login_required
+def collaborative_edit(request, post_id):
+	if request.user.is_authenticated:
+		loggedinanon = Anon.objects.get(username=request.user)
+		loggedinauthor = Author.objects.get(username=request.user.username)
+		post = Post.objects.get(id=int(post_id))
+		if post in loggedinanon.collaborated_on_posts.all():
+			post.pass_sentence_to_collaborative_edit(request.GET['new_sentence'], request.GET['old_sentence'], request.GET['appearance_order'], loggedinauthor.id)
+			return True
+	return False
+
+@login_required
+def contributive_edit(request, post_id):
+	if request.user.is_authenticated:
+		loggedinanon = Anon.objects.get(username=request.user)
+		loggedinauthor = Author.objects.get(username=request.user.username)
+		post = Post.objects.get(id=int(post_id))
+		post.pass_sentence_to_contributive_edit(request.GET['new_sentence'], request.GET['old_sentence'], request.GET['appearance_order'], request.GET['author_id'])
+		return True
+	return False
+
+@login_required
+def suggestive_edit(request, post_id):
+	if request.user.is_authenticated:
+		loggedinanon = Anon.objects.get(username=request.user)
+		loggedinauthor = Author.objects.get(username=request.user.username)
+		post = Post.objects.get(id=int(post_id))
+		post.pass_sentence_to_collaborative_edit(request.GET['new_sentence'], request.GET['old_sentence'], request.GET['appearance_order'], request.GET['author_id'])
+	return False
+
+@login_required
+def check_contribution(request, post_id):
+	return False
+
+@login_required
+def check_suggestion(request, post_id):
+	return False
 
 
 def autocomplete_votestyles(request):

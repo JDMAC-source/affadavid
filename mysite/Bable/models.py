@@ -2244,13 +2244,14 @@ class Post(models.Model):
 	def __unicode__(self):
    		return unicode(self.title) or u''
 
-	def pass_sentence_to_collaborative_edit(self, new_sentence, old_sentence, appearance_order=0):
+	def pass_sentence_to_collaborative_edit(self, new_sentence, old_sentence, appearance_order=0, author_id=self.author.id):
+		editing_author = Author.objects.get(id=author_id)
 		unedited_sentence = self.sentences.filter(sentence=old_sentence).order_by('creation_date')[appearance_order]
-		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
+		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=editing_author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
 		unedited_sentence.collaborated_sentence_edits.add(sentence_edit)
 		self.post_collaborated_sentence_edits.add(sentence_edit)
 		self.sentences.remove(unedited_sentence)
-		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
+		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=editing_author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
 		for view in unedited_sentence.post_views_after_sentence_edit.all():
 			new_edited_sentence.post_views_before_sentence_edit.add(view)
 		new_edited_sentence.save()
@@ -2266,7 +2267,7 @@ class Post(models.Model):
 		for bit in splitting[appearance_order:]:
 			new_body += bit
 
-		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=self.author, post_id=self.id))
+		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=editing_author, post_id=self.id))
 		self.body = new_body
 
 		self.save()
@@ -2292,13 +2293,14 @@ class Post(models.Model):
 			anon.save()
 
 
-	def pass_sentence_to_contributive_edit(self, new_sentence, old_sentence, appearance_order=0):
+	def pass_sentence_to_contributive_edit(self, new_sentence, old_sentence, appearance_order=0, author_id=self.author.id):
+		editing_author = Author.objects.get(id=author_id)
 		unedited_sentence = self.sentences.filter(sentence=old_sentence).order_by('creation_date')[appearance_order]
-		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
+		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=editing_author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
 		unedited_sentence.contributed_sentence_edits.add(sentence_edit)
 		self.post_collaborated_sentence_edits.add(sentence_edit)
 		self.sentences.remove(unedited_sentence)
-		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
+		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=editing_author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
 		for view in unedited_sentence.post_views_after_sentence_edit.all():
 			new_edited_sentence.post_views_before_sentence_edit.add(view)
 		new_edited_sentence.save()
@@ -2314,7 +2316,7 @@ class Post(models.Model):
 		for bit in splitting[appearance_order:]:
 			new_body += bit
 
-		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=self.author, post_id=self.id))
+		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=editing_author, post_id=self.id))
 		self.body = new_body
 
 		self.save()
@@ -2339,13 +2341,14 @@ class Post(models.Model):
 			anon.anon_suggested_sentence_edits.add(sentence_edit)
 			anon.save()
 
-	def pass_sentence_to_suggestive_edit(self, new_sentence, old_sentence, appearance_order=0):
+	def pass_sentence_to_suggestive_edit(self, new_sentence, old_sentence, appearance_order=0, author_id=self.author.id):
+		editing_author = Author.objects.get(id=author_id)
 		unedited_sentence = self.sentences.filter(sentence=old_sentence).order_by('creation_date')[appearance_order]
-		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
+		sentence_edit = Sentence_Edit.objects.create(sentence=new_sentence, sentence_prior=old_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=editing_author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all(), post_views_after_sentence_edit=unedited_sentence.post_views_after_sentence_edit.all(), one_day_has_passed=unedited_sentence.one_day_has_passed, one_day_view_bump_from_sentence_edit=unedited_sentence.one_day_view_bump_from_sentence_edit, odvbfse_with_assumed_information_decay=unedited_sentence.odvbfse_with_assumed_information_decay, odvbfse_waid_virality_day_two=unedited_sentence.odvbfse_waid_virality_day_two, odvbfse_woaid_virality_day_two=unedited_sentence.odvbfse_woaid_virality_day_two, two_days_have_passed=unedited_sentence.two_days_have_passed)
 		unedited_sentence.suggested_sentence_edits.add(sentence_edit)
 		self.post_collaborated_sentence_edits.add(sentence_edit)
 		self.sentences.remove(unedited_sentence)
-		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=unedited_sentence.author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
+		new_edited_sentence = Sentence.objects.create(sentence=new_sentence, accuracy=unedited_sentence.accuracy.all(), credibility=unedited_sentence.credibility.all(), author=editing_author, post_views_before_sentence_edit=unedited_sentence.post_views_before_sentence_edit.all())
 		for view in unedited_sentence.post_views_after_sentence_edit.all():
 			new_edited_sentence.post_views_before_sentence_edit.add(view)
 		new_edited_sentence.save()
@@ -2361,7 +2364,7 @@ class Post(models.Model):
 		for bit in splitting[appearance_order:]:
 			new_body += bit
 
-		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=self.author, post_id=self.id))
+		self.edits.add(Edit.objects.create(new_body=new_body, old_body=self.body, sentences=self.sentences.all(), author=editing_author, post_id=self.id))
 		self.body = new_body
 
 		self.save()
