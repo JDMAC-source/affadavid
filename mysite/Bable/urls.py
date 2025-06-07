@@ -13,9 +13,10 @@ from rest_framework import routers
 
 # Each has a sort
 # Needs a page-number
+import coreapi
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt import views as jwt_views
-import coreapi
+
 app_name='Bable'
 # path('admin/', admin.site.urls),
 router = routers.DefaultRouter()
