@@ -49,6 +49,7 @@ pytz-deprecation-shim==0.1.0.post0
 regex==2024.11.6
 requests==2.32.3
 scipy==1.15.3
+setuptools<=81.0.0
 six==1.17.0
 soupsieve==2.7.0
 sqlparse==0.5.3
