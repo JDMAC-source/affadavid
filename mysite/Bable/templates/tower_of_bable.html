@@ -127,7 +127,7 @@ Glocal.com - affadavid.org
 
 
 <div class=posts onbeforeunload="sendtimeframe();" >
-	{% if postscount %}
+	{% if posts.all %}
 		{% for post in posts %}
 		<div class=post style="display: flex;">
 				{% if post.img %}
@@ -141,7 +141,7 @@ Glocal.com - affadavid.org
 				
 				{% if post.author.username %}
 				<div class=posttitle>
-					<a href="{% url 'Bable:tob_users_post' post.author.username post.id 0 %}"><h4>{{ post.title }}</h4></a>
+					<a href="{% url 'Bable:tob_users_post' post.author.username post.id 0 0 %}"><h4>{{ post.title }}</h4></a>
 				</div>
 				{% if post.author.username == loggedinanon.username.username %}
 				<div class=postdel>

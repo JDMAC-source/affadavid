@@ -89,7 +89,7 @@
 
 					
 					<div id="searchindex" >
-						<form id="searchform" action="{% url 'Bable:search' 0 0 %}" method="get" style="background-color: white; border-radius: 12px;">
+						<form id="searchform" action="{% url 'Bable:search' 0 0 %}" method="post" style="background-color: white; border-radius: 12px;">
 							<img src="{% static 'search.png' %}" style="display: inline-block; height:20px; width:20px; border-radius: 12px; position:relative; top: 3px; left:5px background-color: transparent;">
 							<input id="search" name="q" type="text" style="display: inline-block; border: none; border-radius: 8px; width: 65%" placeholder="Enter Search">
 							<img src="{% static 'Circle_Plus_Expand_Icon.png' %}" style="display: inline-block; height: 20px; width: 20px;border-radius: 12px; position:relative; right:3px; top: 3px; float: right;">
@@ -216,23 +216,15 @@
 					</form>
 				</div>
 				<div id="email_verification_form" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:email_verification_form' %}" method="post">
+					<form action="{% url 'Bable:email_verification' %}" method="post">
 						<b>Submit Email</b><br>
 						{% csrf_token %}
 						{{ email_verification_form }}
 						<button type="submit">Submit</button>
 					</form>
 				</div>
-				<div id="begin_verification_form" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:begin_verification_form' %}" method="post">
-						<b>Submit Email</b><br>
-						{% csrf_token %}
-						{{ begin_verification_form }}
-						<button type="submit">Submit</button>
-					</form>
-				</div>
 				<div id="sms_verification_form" style="display: block; background: white; margin-top: 50px; margin-bottom: 400px;">
-					<form action="{% url 'Bable:sms_verification_form' %}" method="post">
+					<form action="{% url 'Bable:sms_verification' %}" method="post">
 						<b>Submit Email</b><br>
 						{% csrf_token %}
 						{{ sms_verification_form }}

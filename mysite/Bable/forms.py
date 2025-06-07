@@ -15,6 +15,10 @@ def validate_phone_number(value):
     if not re.match(phone_regex, value):
         raise ValidationError("Invalid phone number format.")
 
+def validate_verification_number(value):
+    phone_regex = r"\d{9,9}$"
+    if not re.match(phone_regex, value):
+        raise ValidationError("Invalid phone number format.")
 
 
 class UserCreationForm(UserCreationForm):
@@ -54,8 +58,8 @@ class ChangeEmailForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ChangeEmailForm, self).clean()
-        email = cleaned_data.get('email', '')
-        phone = cleaned_data.get('phone', '')
+        email = cleaned_data['email']
+        phone = cleaned_data['phone']
         if not phone == self.instance.phone:
             raise forms.ValidationError('Check phone number is correct')
         else:
@@ -75,8 +79,8 @@ class ChangePhoneForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ChangePhoneForm, self).clean()
-        email = cleaned_data.get('email', '')
-        phone = cleaned_data.get('phone', '')
+        email = cleaned_data['email']
+        phone = cleaned_data['phone']
         if not email == self.instance.email:
             raise forms.ValidationError('Check email is correct')
         else:
@@ -88,35 +92,37 @@ class ChangePhoneForm(forms.ModelForm):
 
 
 class SMSVerificationForm(forms.ModelForm):
+    verification_number = forms.CharField(max_length=9, validators=[validate_verification_number], widget=forms.NumberInput(attrs={'size': '9'}))
+
     class Meta:
-        model = Anon
-        fields = ('phone_verify',)
+        model = VerificationNumbers
+        fields = ('verification_number',)
     
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(SMSVerificationForm, self).__init__(*args, **kwargs)
-        current_anon = Anon.objects.get(username=request.user)
-        self.instance = current_anon
+        
 
     def clean(self):
         cleaned_data = super(SMSVerificationForm, self).clean()
-        phone_verify = cleaned_data.get('phone_verify', '')
+        phone_verify = cleaned_data['phone_verify']
         if not phone_verify == self.instance.phone_verify.verification_number and not self.instance.phone_verify.creation_date > timedelta(0,5,0):
             raise forms.ValidationError('SMS Code is wrong, try resending in 5 minutes, or retry')
 
 class EmailVerificationForm(forms.ModelForm):
+    verification_number = forms.CharField(max_length=9, validators=[validate_verification_number], widget=forms.NumberInput(attrs={'size': '9'}))
+
     class Meta:
-        model = Anon
-        fields = ('email_verify',)
+        model = VerificationNumbers
+        fields = ['verification_number']
     
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(EmailVerificationForm, self).__init__(*args, **kwargs)
-        current_anon = Anon.objects.get(username=request.user)
-        self.instance = current_anon
+        
 
     def clean(self):
-        cleaned_data = super(SMSVerificationForm, self).clean()
-        email_verify = cleaned_data.get('email_verify', '')
-        if not email_verify == self.instance.email_verify.verification_number and not self.instance.email_verify.creation_date > timedelta(0,5,0):
+        cleaned_data = super().clean()
+        verification_number = cleaned_data['verification_number']
+        if not verification_number == self.author.to_anon().email_verify.verification_number and not self.author.to_anon().email_verify.creation_date > timedelta(0,5,0):
             raise forms.ValidationError('SMS Code is wrong, try resending in 5 minutes, or retry')
 
 
@@ -239,6 +245,14 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         class Meta:
             model = User
             fields = ['old_password', 'new_password1', 'new_password2']
+
+        def clean(self):
+            cleaned_date = super(CustomPasswordChangeForm, self).clean()
+
+        def __init__(self, user, *args, **kwargs):
+            super(CustomPasswordChangeForm, self).__init__(user, *args, **kwargs)
+            self.instance = user
+
 
 
 

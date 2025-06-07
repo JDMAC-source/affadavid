@@ -45,7 +45,10 @@ div {
 	width: auto;
 }
 
-
+.helptext {
+	background-color: white;
+	border-radius: 12px;
+}
 
 #owner {
 	padding: 42px 420px 69px 42px;
@@ -179,10 +182,11 @@ a, a:link, a:visited, a:focus, a:hover, a:active {
 }
 
 #searchindex {
-	display: none;
+	display: inline-block;
 	background-color: #e3dac9;
 	margin-left:1em;
-	width: 200px;
+	width: 300px;
+	border-radius: 24px;
 }
 
 #searchindex #search {

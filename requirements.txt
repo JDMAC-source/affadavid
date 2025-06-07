@@ -7,7 +7,6 @@ cffi==1.17.1
 charset-normalizer==3.4.2
 cloudinary==1.44.0
 coinbase-commerce==1.0.1
-coreapi==2.3.3
 coreschema==0.0.4
 cryptography==42.0.4
 cssselect==1.0.3
@@ -22,13 +21,13 @@ django-mptt==0.17.0
 django-paypal==2.1
 django-storages==1.7.1
 djangorestframework==3.16.0
-djangorestframework-simplejwt==5.0.0
+djangorestframework-simplejwt==5.5.0
 drf-writable-nested==0.7.0
 feedparser==6.0.10
 fire==0.1.3
 fonttools==4.58.2
 geocoder==1.38.1
-gunicorn==22.0.0
+gunicorn==23.0.0
 langchain==0.3.25
 Legacy-cgi==2.6.3
 lxml==5.4.0

@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'markdownify',
     'rest_framework',
     'rest_framework.authtoken',
-    'coreapi',
     
 ]
 

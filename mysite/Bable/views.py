@@ -19,7 +19,7 @@ from .forms import *
 #from instantiatetotality import *
 from django.core.mail import EmailMessage
 
-
+import pytz
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.forms import formset_factory, modelformset_factory
 from paypal.standard.forms import PayPalPaymentsForm
@@ -87,7 +87,7 @@ class dotdict(dict):
 def stream(request):
 	loggedinuser = User.objects.get(username=request.user.username)
 	loggedinanon = Anon.objects.get(username=loggedinuser)
-	now = datetime.datetime.now()
+	now = datetime.datetime.now(tz=pytz.timezone('America/New_York'))
 	def event_stream():
 		while True:
 			time.sleep(1)
@@ -129,7 +129,7 @@ def send_notification(author, text):
 from django.http import HttpResponseRedirect, JsonResponse
 
 def grabusername(request):
-	if request.GET.get('name'):
+	if request.GET['name']:
 		q = request.GET['name']
 		if not User.objects.filter(username__startswith=q):
 			return True
@@ -177,18 +177,6 @@ def check_suggestion(request, post_id):
 	return False
 
 
-def autocomplete_votestyles(request):
-	if request.GET.get('q'):
-		q = request.GET.get('q')
-		if Votes.objects.filter(the_vote_name__startswith=q):
-			data = Votes.objects.filter(the_vote_name__startswith=q).order_by('-creation_date').values_list('the_vote_name',flat=True)
-			json = list(data)
-			return JsonResponse(json, safe=False)
-		return JsonResponse([], safe=False)
-	else:
-		data = Votes.objects.all().order_by('-creation_date').values_list('the_vote_name',flat=True)
-		json = list(data)
-		return JsonResponse(json, safe=False)
 
 
 
@@ -311,7 +299,7 @@ def barcode_ai(request, numbers):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 	else:
 		previous_view = UserViews.objects.filter(ip_address=ip).order_by('-view_date').first()
 		pages_view = UserViews.objects.create(page_view="barcode_ai", ip_address=ip, httpxforwardfor=x_forwarded_for)
@@ -320,7 +308,7 @@ def barcode_ai(request, numbers):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		if not created:
 			return JsonResponse("Too many barcodes scanned, create an account to buy credits. Costs 1 cent per barcode", safe=False)
 
@@ -441,6 +429,7 @@ def roadmap(request):
 
 
 # which is true comment, or the source comment.
+@login_required
 def delete_own_comment(request, comment_id):
 	user_themself = User.objects.get(username=request.user.username)
 	user_anon = Anon.objects.get(username=user_themself)
@@ -462,11 +451,11 @@ def delete_own_comment(request, comment_id):
 
 
 
-
+@login_required
 def delete_own_post(request, user, post_id):
 	user_themself = User.objects.get(username=user)
 	user_anon = Anon.objects.get(username=user_themself)
-	users_post = Post.objects.get(id=int(post))
+	users_post = Post.objects.get(id=int(post_id))
 
 	if request.user.is_authenticated:
 		loggedinuser = User.objects.get(username=request.user.username)
@@ -483,7 +472,7 @@ def delete_own_post(request, user, post_id):
 	return redirect('Bable:tob_user_view_count', user=user, count=0)
 
 
-def base_redirect(request, error):
+def base_redirect(request, error=0):
 	if request.COOKIES['current'] == ('tob_view_users' or 'tower_of_bable') :
 		response = redirect("Bable:"+request.COOKIES['current'])
 		response.set_cookie('error', error)
@@ -504,6 +493,11 @@ def base_redirect(request, error):
 		response = redirect("Bable:"+request.COOKIES['current'], user=request.COOKIES['viewing_user'], post=request.COOKIES['post'], comment=request.COOKIES['comment'])
 		response.set_cookie('error', error)
 		return response
+	elif request.COOKIES['current'] == ('landingpage'):
+		response = redirect("Bable:"+request.COOKIES['current'])
+		response.set_cookie('error', error)
+		return response
+	
 	return redirect('Bable:tower_of_bable')
 '''
 def sign_wallet(request):
@@ -516,7 +510,7 @@ def sign_wallet(request):
 def logout_user(request):
 	user = request.user
 	logout(request)
-	return redirect('Bable:tower_of_bable')
+	return redirect('Bable:landingpage')
 
 def login_view(request):
 	loginform = AuthenticationForm(data=request.POST)
@@ -849,18 +843,8 @@ import validators
 from django.utils import dateformat, timezone
 def search(request, search_id, count):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
-	registerform = UserCreationForm()
-	
-		
-	
-	loginform = AuthenticationForm()
-	count = int(count)
-	count100 = count+25
-	mcount = 0
-	if count > 25:
-		mcount = count - 25
-	if ('q' in request.GET) and request.GET['q'].strip():
-		query_string = request.GET['q']
+	if ('q' in request.POST) and request.POST['q'].strip():
+		query_string = request.POST['q']
 		if validators.url(query_string):
 			if request.user.is_authenticated:
 				loggedinuser = User.objects.get(username=request.user.username)
@@ -895,7 +879,7 @@ def search(request, search_id, count):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 
 		search_post = Post.objects.filter(title__icontains=query_string).filter(Q(public=True)|Q(allowed_to_view_authors=loggedinauthor)).order_by('-latest_change_date')[count:count100]
 		search_space = Space.objects.filter(the_space_itself__the_word_itself__icontains=query_string).filter(Q(public=True)|Q(approved_voters=loggedinauthor)).order_by('-latest_change_date')[count:count100]
@@ -913,7 +897,7 @@ def search(request, search_id, count):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 		search_post = Post.objects.filter(title__icontains=query_string).filter(public=True)[count:count100]
 		posts_by_viewcount = search_post
@@ -947,7 +931,7 @@ def tower_of_bable(request):
 	
 	test, x = Author.objects.get_or_create(username='test')
 	
-	if Anon.objects.all().count():
+	if not Anon.objects.all().count():
 		user, x = User.objects.get_or_create(username="test")
 		user.set_password("thattickles")
 		anon, x = Anon.objects.get_or_create(username=user)
@@ -972,7 +956,7 @@ def tower_of_bable(request):
 	if request.user.is_authenticated:
 		loggedinuser = User.objects.get(username=request.user.username)
 		loggedinanon = Anon.objects.get(username=loggedinuser)
-		loggedinauthor = Author.objects.get(username=request.user.username)
+		loggedinauthor, x = Author.objects.get_or_create(username=request.user.username)
 		previous_view = UserViews.objects.filter(anon=loggedinanon).order_by('-view_date').first()
 		pages_view = UserViews.objects.create(page_view="tower_of_bable", anon=loggedinanon, ip_address=ip, httpxforwardfor=x_forwarded_for)
 		page_views.user_views.add(pages_view)
@@ -980,9 +964,9 @@ def tower_of_bable(request):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		post_form = PostForm(request)
-		startdate = datetime.datetime.now() - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
+		startdate = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
 		enddate = startdate - timedelta(minutes=int(loggedinanon.post_sort_depth_char.split(',')[0]), hours=int(loggedinanon.post_sort_depth_char.split(',')[1]), days=int(loggedinanon.post_sort_depth_char.split(',')[2]), weeks=int(loggedinanon.post_sort_depth_char.split(',')[3]))
 		posts_by_viewcount = Post.objects.filter(latest_change_date__range=[enddate, startdate]).order_by(loggedinanon.post_sort_char)[:25]
 		file_form = FileForm()
@@ -994,8 +978,8 @@ def tower_of_bable(request):
 		postscount = 25
 		posts_by_viewcount = posts_values
 
-		sms_verification_form = SMSVerificationForm(request)
-		email_verification_form = EmailVerificationForm(request)
+		sms_verification_form = SMSVerificationForm(instance=loggedinanon.phone_verify)
+		email_verification_form = EmailVerificationForm(instance=loggedinanon.email_verify)
 		change_email_form = ChangeEmailForm(request)
 		change_phone_form = ChangePhoneForm(request)
 
@@ -1003,7 +987,7 @@ def tower_of_bable(request):
 		
 
 		
-		the_response = render(request, 'tower_of_bable.html', { "sms_verification_form": sms_verification_form, "email_verification_form": email_verification_form, "change_email_form": change_email_form, "change_phone_form": change_phone_form,  "post_filter_depth_form": post_filter_depth_form, "post_filter_from_date_form": post_filter_from_date_form, "post_sort_form": post_sort_form, "postscount": postscount, "ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "total": total, "count": lower, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, "post_form": post_form, })
+		the_response = render(request, 'tower_of_bable.html', { "sms_verification_form": sms_verification_form, "email_verification_form": email_verification_form, "change_email_form": change_email_form, "change_phone_form": change_phone_form, "post_filter_depth_form": post_filter_depth_form, "post_filter_from_date_form": post_filter_from_date_form, "post_sort_form": post_sort_form, "postscount": postscount, "ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "total": total, "count": lower, "mcount": mcount, "count100": count100, "loggedinanon": loggedinanon, "posts": posts_by_viewcount, "post_form": post_form })
 	else:
 		the_response = render(request, 'tower_of_bable.html', {"ip": ip, "x_forwarded_for": x_forwarded_for,  "total": total, "count": lower, "mcount": mcount, "count100": count100, 'loginform': loginform, 'registerform': registerform, })
 	
@@ -1054,7 +1038,7 @@ def landingpage(request):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "loggedinanon": loggedinanon, 'loginform': loginform, 'registerform': registerform, "post_form": post_form,})
 	else: 
@@ -1065,26 +1049,25 @@ def landingpage(request):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		begin_verification_form_start = BeginVerificationFormStart()
-		begin_verification_form = BeginVerificationForm()
-		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "begin_verification_form_start": begin_verification_form_start, "begin_verification_form": loginform })
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
+		the_response = render(request, 'landingpage.html', { "ip": ip, "x_forwarded_for": x_forwarded_for, "loginform": loginform, "registerform": registerform })
 	
 	the_response.set_cookie('current', 'landingpage')
 	return the_response
 
 
 
-
+@login_required
 def change_password(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
-		change_password_form = CustomChangePasswordForm(data=request.POST)
+		change_password_form = CustomPasswordChangeForm(request.user, data=request.POST)
 		if change_password_form.is_valid():
 			change_password_form.save()
 			update_session_auth_hash(request, request.user)
 	return base_redirect(request, 0)
 
+@login_required
 def change_phone(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
@@ -1094,6 +1077,7 @@ def change_phone(request):
 			
 	return base_redirect(request, 0)
 
+@login_required
 def change_email(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
@@ -1103,10 +1087,11 @@ def change_email(request):
 			
 	return base_redirect(request, 0)
 
+
 def begin_verification(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
-		begin_verification_form = BeginVerificationForm(data=request.POST)
+		begin_verification_form = AuthenticationForm(data=request.POST)
 		if begin_verification_form.is_valid():
 			user = authenticate(request, username=begin_verification_form.instance.username, password=begin_verification_form.cleaned_data['password'])
 			update_session_auth_hash(request, user)
@@ -1122,16 +1107,19 @@ def begin_verification(request):
 def begin_verification_start(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
-		begin_verification_form = BeginVerificationFormStart(data=request.POST)
+		begin_verification_form = UserCreationForm(data=request.POST)
 		if begin_verification_form.is_valid():
-			user_anon = Anon.objects.get(user_name=begin_verification_form.cleaned_data["user_name"])
-			login(request, user_anon.username)
+			new_user = begin_verification_form.save()
+			Anon.objects.create(username=new_user, email=new_user.email, first_name=new_user.first_name, last_name=new_user.last_name, phone=begin_verification_form.cleaned_data['phone'], user_name=new_user.username)
+			Author.objects.create(username=new_user.username)
+			login(request, new_user)
 			update_session_auth_hash(request, request.user)
+			return redirect('Bable:tower_of_bable_count', 0)
 
 			
 	return base_redirect(request, 0)
 
-
+@login_required
 def email_verification(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
@@ -1140,7 +1128,7 @@ def email_verification(request):
 			email_verification_form.save()
 	return base_redirect(request, 0)
 
-
+@login_required
 def sms_verification(request):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
 	if request.method == "POST":
@@ -1150,26 +1138,18 @@ def sms_verification(request):
 	return base_redirect(request, 0)
 
 
+
 def tower_of_bable_count(request, count):
 	#recently_modified_post = Post.objects.order_by('-latest_change_date')[:100]
-	registerform = UserCreationForm()
-	change_password_form = CustomChangePasswordForm()
-	begin_verification_form = BeginVerificationForm()
-	sms_verification_form = SMSVerificationForm()
-	email_verification_form = EmailVerificationForm()
-	if Anon.objects.all().count():
-		user = User.objects.create(username="test")
+	change_password_form = CustomPasswordChangeForm(request.user)
+	sms_verification_form = SMSVerificationForm(request)
+	email_verification_form = EmailVerificationForm(request)
+	if not Anon.objects.all().count():
+		user, x = User.objects.get_or_create(username="test")
 		user.set_password("thattickles")
-		anon = Anon.objects.create(username=user)
-		author = Author.objects.create(username="test")
+		anon, x = Anon.objects.get_or_create(username=user)
+		author, x = Author.objects.get_or_create(username="test")
 	
-	basic_price = Price.objects.filter(name="Donate - Predictionary.us", anon_user_id=1).first()
-	if not basic_price.stripe_price_id:
-		basic_price.stripe_price_id = "price_1Nf8jMIDEcA7LIBjpnt385yZ"
-
-		basic_price.stripe_product_id = "prod_OS2pk9gZWam5Ye"
-		basic_price.price = 500
-		basic_price.save()
 
 
 	count = int(count)
@@ -1213,32 +1193,21 @@ def tower_of_bable_count(request, count):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
-		startdate = datetime.datetime.now() - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
+		startdate = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
 		enddate = startdate - timedelta(minutes=int(loggedinanon.post_sort_depth_char.split(',')[0]), hours=int(loggedinanon.post_sort_depth_char.split(',')[1]), days=int(loggedinanon.post_sort_depth_char.split(',')[2]), weeks=int(loggedinanon.post_sort_depth_char.split(',')[3]))
 		posts_by_viewcount = Post.objects.filter(latest_change_date__range=[enddate, startdate]).order_by(loggedinanon.post_sort_char)[count:count100]
 		postscount = posts_by_viewcount.count()
 
-		dic_form = DictionaryForm()
 		post_form = PostForm(request)
-		space_form = SpaceForm(request)
-		task_form = TaskForm()
-		word_form = WordForm(request)
-		
-		apply_votestyle_form = ApplyVotestyleForm(request)
-		create_votes_form = CreateVotesForm(request)
-		exclude_votes_form = ExcludeVotesForm(request)
-		apply_dic_form = ApplyDictionaryForm(request)
-		exclude_dic_form = ExcludeDictionaryAuthorForm()
-
 		post_sort_form = PostSortForm(request)
 		post_filter_depth_form = PostFilterDepthForm(request)
 		post_filter_from_date_form = PostFilterFromDateForm(request)
 		
 		
 
-		the_response = render(request, 'tower_of_bable.html', {"change_password_form": change_password_form, "basic_price": basic_price, "post_sort_form": post_sort_form, "postscount": postscount, "buyadvertisingform": buyadvertisingform, "total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, "loggedinanon": loggedinanon, 'loginform': loginform, 'registerform': registerform,  'postform': post_form, 'spaceform': space_form, "post_form": post_form, 'taskform': task_form, 
-			"apply_votestyle_form": apply_votestyle_form, "create_votes_form": create_votes_form, "exclude_votes_form": exclude_votes_form, "apply_dic_form": apply_dic_form, "exclude_dic_form": exclude_dic_form})
+		the_response = render(request, 'tower_of_bable.html', {"change_password_form": change_password_form, "post_sort_form": post_sort_form, "postscount": postscount, "total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, "loggedinanon": loggedinanon, 'loginform': loginform, 'registerform': registerform,  'postform': post_form, 
+			})
 	else:
 		previous_view = UserViews.objects.filter(ip_address=ip).order_by('-view_date').first()
 		pages_view = UserViews.objects.create(page_view="tower_of_bable_count__"+str(count), ip_address=ip, httpxforwardfor=x_forwarded_for)
@@ -1247,11 +1216,11 @@ def tower_of_bable_count(request, count):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 		posts_by_viewcount = Post.objects.order_by('viewcount')[count:count100]
 		postscount = posts_by_viewcount.count()
-		the_response = render(request, 'tower_of_bable.html', {"basic_price": basic_price, "postscount": postscount, "buyadvertisingform": buyadvertisingform, "total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, })
+		the_response = render(request, 'tower_of_bable.html', {"postscount": postscount, "total": total, "count": count, "mcount": mcount, "count100": count100, "posts": posts_by_viewcount, 'loginform': loginform, 'registerform': registerform, })
 	the_response.set_cookie('current', 'tower_of_bable_count')
 	the_response.set_cookie('count', count)
 	return the_response
@@ -1260,14 +1229,7 @@ def tower_of_bable_count(request, count):
 #Import Geocoder 
 import geocoder
 
-#Assign IP address to a variable
-ip = geocoder.ip("161.185.160.93")
 
-#Obtain the city
-print(ip.city)
-
-#Obtain the coordinates: 
-print(ip.latlng)
 
 
 import matplotlib.pyplot as plt
@@ -1297,6 +1259,14 @@ def heatmap(request, keywords):
 		stat_signature = most_recent_post.zipfslawstatsignature.zipfs_law_signature.filter(keywords=keywords).first()
 	many_stats = ZipfsLawStatSignature.objects.filter(body=keywords, year=timezone.now().date().year, month=timezone.now().date().month, day=timezone.now().date().day-1)
 
+	#Assign IP address to a variable
+	ip = geocoder.ip("161.185.160.93")
+
+	#Obtain the city
+	print(ip.city)
+
+	#Obtain the coordinates: 
+	print(ip.latlng)
 
 	a = list(many_stats.values('lat', 'lng', 'one_sum'))
 	#b = list(many_stats.values('lng', 'one_sum'))
@@ -1322,12 +1292,6 @@ def tob_post(request, post):
 	
 	posts_comments = users_post.comments.order_by('-viewcount')[:25]
 	users_post.viewcount += 1
-	if users_post.spaces.count():
-		for space in users_post.spaces.all():
-			full_space = space.to_full()
-			full_space.posts_viewcount += 1
-			full_space.save()
-	max_sponsor = users_post.max_sponsor()
 	users_post.save()
 	
 	page_views, created = Pageviews.objects.get_or_create(page="tob_post")
@@ -1357,24 +1321,13 @@ def tob_post(request, post):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 
-		dic_form = DictionaryForm()
 		post_form = PostForm(request)
-		space_form = SpaceForm(request)
-		task_form = TaskForm()
-		word_form = WordForm(request)
-	
-		apply_votestyle_form = ApplyVotestyleForm(request)
-		create_votes_form = CreateVotesForm(request)
-		exclude_votes_form = ExcludeVotesForm(request)
-		apply_dic_form = ApplyDictionaryForm(request)
-		exclude_dic_form = ExcludeDictionaryAuthorForm()
 
 		file_form = FileForm() 
-		the_response = render(request, "tob_post.html", {"ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "loggedinanon": loggedinanon, "users_post": users_post, "space_form": space_form, "post_form": post_form, "task_form": task_form, "word_form": word_form, "registerform": registerform,  "loginform": loginform, 
-			"apply_votestyle_form": apply_votestyle_form, "create_votes_form": create_votes_form, "exclude_votes_form": exclude_votes_form, "apply_dic_form": apply_dic_form, "exclude_dic_form": exclude_dic_form})
+		the_response = render(request, "tob_post.html", {"ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "loggedinanon": loggedinanon, "users_post": users_post, "post_form": post_form, "registerform": registerform,  "loginform": loginform })
 	else:
 		previous_view = UserViews.objects.filter(ip_address=ip).order_by('-view_date').first()
 		pages_view = UserViews.objects.create(page_view="tob_post__"+post, ip_address=ip, httpxforwardfor=x_forwarded_for)
@@ -1383,7 +1336,7 @@ def tob_post(request, post):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 		the_response = render(request, "tob_post.html", {"ip": ip, "x_forwarded_for": x_forwarded_for, "users_post": users_post, "registerform": registerform,  "loginform": loginform})
 	the_response.set_cookie('current', 'tob_post')
@@ -1415,7 +1368,7 @@ def notification_redirect(request, new_notification_id):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 
 
@@ -1447,21 +1400,11 @@ def notifications_page(request):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 
-		dic_form = DictionaryForm()
 		post_form = PostForm(request)
-		space_form = SpaceForm(request)
-		task_form = TaskForm()
-		word_form = WordForm(request)
-	
-		apply_votestyle_form = ApplyVotestyleForm(request)
-		create_votes_form = CreateVotesForm(request)
-		exclude_votes_form = ExcludeVotesForm(request)
-		apply_dic_form = ApplyDictionaryForm(request)
-		exclude_dic_form = ExcludeDictionaryAuthorForm()
-
+		
 	
 		file_form = FileForm() 
 		the_response = render(request, "notifications_page.html", {"ip": ip, "x_forwarded_for": x_forwarded_for, "file_form": file_form, "loggedinanon": loggedinanon, "space_form": space_form, "post_form": post_form, "task_form": task_form, "word_form": word_form, "registerform": registerform,  "loginform": loginform, 
@@ -1564,7 +1507,7 @@ def tob_view_users(request):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 
 		user_anons = Anon.objects.order_by(loggedinanon.anon_sort_char)[0:25]
@@ -1581,7 +1524,7 @@ def tob_view_users(request):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 		the_response = render(request, "tob_view_users.html", {"user_anons_count": user_anons_count, "count": count, "mcount": mcount, "count100": count100, "user_anons": user_anons, "registerform": registerform,  "loginform": loginform})
 	the_response.set_cookie('current', 'tob_view_users')
@@ -1630,7 +1573,7 @@ def tob_view_users_count(request, count):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 
 
@@ -1646,7 +1589,7 @@ def tob_view_users_count(request, count):
 			pages_view.previous_view_id = previous_view.id
 			pages_view.previous_page = previous_view.page_view
 			pages_view.previous_view_date = previous_view.view_date
-			pages_view.previous_view_time_between_pages = datetime.datetime.now(timezone.utc) - previous_view.view_date
+			pages_view.previous_view_time_between_pages = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - previous_view.view_date
 		
 		the_response = render(request, "tob_view_users.html", {"user_anons_count": user_anons_count, "count": count, "mcount": mcount, "count100": count100, "user_anons": user_anons, "registerform": registerform,  "loginform": loginform})
 	the_response.set_cookie('current', 'tob_view_users_count')
@@ -1996,7 +1939,7 @@ def tob_users_post(request, user, post, count=0, comment_count=0):
 
 		
 
-		startdate = datetime.datetime.now() - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
+		startdate = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - timedelta(minutes=int(loggedinanon.post_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.post_sort_from_date_char.split(',')[1]), days=int(loggedinanon.post_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.post_sort_from_date_char.split(',')[3]))
 		enddate = startdate - timedelta(minutes=int(loggedinanon.post_sort_depth_char.split(',')[0]), hours=int(loggedinanon.post_sort_depth_char.split(',')[1]), days=int(loggedinanon.post_sort_depth_char.split(',')[2]), weeks=int(loggedinanon.post_sort_depth_char.split(',')[3]))
 		
 		posts_by_viewcount = Post.objects.filter(latest_change_date__range=[enddate, startdate]).order_by(loggedinanon.post_sort_char)[count:count+25]
@@ -2005,7 +1948,7 @@ def tob_users_post(request, user, post, count=0, comment_count=0):
 			loggedinanon.comment_sort_from_date_char = "0,0,0,0"
 		if not loggedinanon.comment_sort_depth_char:
 			loggedinanon.comment_sort_depth_char = "0,0,0,10000"
-		startdate = datetime.datetime.now() - timedelta(minutes=int(loggedinanon.comment_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.comment_sort_from_date_char.split(',')[1]), days=int(loggedinanon.comment_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.comment_sort_from_date_char.split(',')[3]))
+		startdate = datetime.datetime.now(tz=pytz.timezone('America/New_York')) - timedelta(minutes=int(loggedinanon.comment_sort_from_date_char.split(',')[0]), hours=int(loggedinanon.comment_sort_from_date_char.split(',')[1]), days=int(loggedinanon.comment_sort_from_date_char.split(',')[2]), weeks=int(loggedinanon.comment_sort_from_date_char.split(',')[3]))
 		enddate = startdate - timedelta(minutes=int(loggedinanon.comment_sort_depth_char.split(',')[0]), hours=int(loggedinanon.comment_sort_depth_char.split(',')[1]), days=int(loggedinanon.comment_sort_depth_char.split(',')[2]), weeks=int(loggedinanon.comment_sort_depth_char.split(',')[3]))
 		
 		comments_by_viewcount = users_post.comments.filter(latest_change_date__range=[enddate, startdate]).order_by(loggedinanon.comment_sort_char)[comment_count:comment_count+100]

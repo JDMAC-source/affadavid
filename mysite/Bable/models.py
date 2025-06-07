@@ -2735,6 +2735,10 @@ def validate_phone_number(value):
     if not re.match(phone_regex, value):
         raise ValidationError("Invalid phone number format.")
 
+def validate_verification_number(value):
+    phone_regex = r"\d{9,9}$"
+    if not re.match(phone_regex, value):
+        raise ValidationError("Invalid phone number format.")
 
 
 
@@ -2742,7 +2746,8 @@ def validate_phone_number(value):
 
 from random import randrange
 class VerificationNumbers(models.Model):
-	verification_number = models.IntegerField(default=int(str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))))
+	author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None, null=True, blank=True)
+	verification_number = models.CharField(max_length=9, validators=[validate_verification_number], default=int(str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))+str(randrange(10))))
 	creation_date = models.DateTimeField(default=timezone.now)
 
 class Anon(models.Model):

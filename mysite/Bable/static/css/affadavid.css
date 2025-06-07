@@ -45,7 +45,10 @@ div {
 	width: auto;
 }
 
-
+.helptext {
+	background-color: white;
+	border-radius: 12px;
+}
 
 #owner {
 	padding: 42px 420px 69px 42px;
