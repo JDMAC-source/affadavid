@@ -213,6 +213,8 @@ GS_CACHE_CONTROL = 'max_age=86400'
 from google.cloud import storage
 GOOGLE_APPLICATION_CREDENTIALS = storage.Client.from_service_account_json(os.path.join(os.path.dirname(os.path.abspath(__file__)), "towerofbable-37-4e4d75248973.json"))
 '''
+DATABASE_URL = env('DATABASE_URL')
+
 
 REST_FRAMEWORK = {
      'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
