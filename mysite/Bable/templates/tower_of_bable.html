@@ -33,10 +33,11 @@ Glocal.com - affadavid.org
 
 {% block authenticatedposts %}
 
-<div class=displaybanner>
+<div class=displaybanner style="display: inline;">
 	
 	<p>Total post views: {{ total }}</p>
 </div>
+<div style="width: fit-content; margin: auto;">
 <div class=possectionsort>
 	<form name=post_sort action="{% url 'Bable:change_post_sort_char' %}" method=post>
 		{% csrf_token %}
@@ -72,6 +73,7 @@ Glocal.com - affadavid.org
 		    form_filter_depth.submit();
 		});
 	</script>
+</div>
 </div>
 <style>
 	.posttitle h4 {
