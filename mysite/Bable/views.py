@@ -910,7 +910,6 @@ def search(request, search_id, count):
 from django.views.generic import TemplateView
 
 
-import discord
 import requests
 
 
