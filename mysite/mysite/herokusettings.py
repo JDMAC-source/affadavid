@@ -12,28 +12,26 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import psycopg2
 import environ
-env = environ.Env()
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+env = environ.Env()
+environ.Env.read_env()
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_ROOT)
-OPEN_AI_API_KEY = ''
 
-STRIPE_PUBLISHABLE_KEY = ''
-STRIPE_SECRET_KEY = ''
+#STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY')
+#STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!@#!@#!@#!@#!@#!@#!@#!@#!@#!@#!@#!@#'
-
+SECRET_KEY = env('SECRET_KEY')
+#OPEN_AI_API_KEY = env("OPEN_AI_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-COINBASE_COMMERCE_API_KEY = ''
+#COINBASE_COMMERCE_API_KEY = env('COINBASE_COMMERCE_API_KEY')
 
 ALLOWED_HOSTS = ['*']
 
@@ -54,10 +52,9 @@ INSTALLED_APPS = [
     'mptt',
     'Bable',
     'paypal.standard.ipn', # django-paypal
-    'markdownify',
-    'coreapi',
     'rest_framework',
     'rest_framework.authtoken',
+    'coreapi',
     
 ]
 
@@ -107,12 +104,11 @@ DATABASES = {
         # brew services start postgresql
         # createdb db
         # psql db
-        #the password is 6cfa0bb966064f49a2679d8e2666d872
         # CREATE USER default WITH SUPERUSER PASSWORD 'default';        # \q
         # issues in psycopg2: makemigrations Bable
-        'NAME': 'db',                                                   
-        'USER': 'postgres',                                                   
-        'PASSWORD': 'postgres',                                      
+        'NAME': 'db2',                                                   
+        'USER': 'jackmclovin',                                                   
+        'PASSWORD': 'thattickles',                                      
         'HOST': '127.0.0.1',                                                     
         'PORT': '5432',  
     }
@@ -197,7 +193,7 @@ EMAIL_HOST_USER = 'jackdonmclovin@gmail.com'
 '''
 Keep out of Open Source
 '''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
 # https://www.youtube.com/watch?v=Z5dBopZWOzo
@@ -206,8 +202,8 @@ EMAIL_PORT = 587
 PAYPAL_RECEIVER_EMAIL = 'donkeycon@protonmail.com'
 PAYPAL_TEST = False
 
-#import dj_database_url
-#DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+import dj_database_url
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 '''
 DATABASE_URL = 'https://towerofbable-37.appspot.com/'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
@@ -217,6 +213,8 @@ GS_CACHE_CONTROL = 'max_age=86400'
 from google.cloud import storage
 GOOGLE_APPLICATION_CREDENTIALS = storage.Client.from_service_account_json(os.path.join(os.path.dirname(os.path.abspath(__file__)), "towerofbable-37-4e4d75248973.json"))
 '''
+DATABASE_URL = env('DATABASE_URL')
+
 
 REST_FRAMEWORK = {
      'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
