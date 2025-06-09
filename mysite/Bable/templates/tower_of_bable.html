@@ -33,7 +33,7 @@ Glocal.com - affadavid.org
 
 {% block authenticatedposts %}
 
-<div class=displaybanner style="display: inline;">
+<div class=displaybanner style="display: inline; margin-left: 20px;">
 	
 	<p>Total post views: {{ total }}</p>
 </div>
@@ -183,7 +183,7 @@ Glocal.com - affadavid.org
 		</div>
 	{% endif %}
 </div>
-<div class=pageno>
+<div class=pageno style="margin-left: 20px;">
 	<a href="{% url 'Bable:tower_of_bable_count' mcount %}"><</a>{{ count }}:{{ count100 }}<a href="{% url 'Bable:tower_of_bable_count' count100 %}">></a>
 </div>
 
