@@ -27,47 +27,7 @@
       		}
     	};
     </script>
-    <script src="{% static 'HTTP.js' %}">
-    	var http = require('http');
-    	http.createServer(function (req, res) {
-    		if (req.url == '/fileupload') {
-			var form = new formidable.IncomingForm();
-			form.parse(req, function (err, fields, files) {
-			  res.write('File uploaded');
-			  res.end();
-			});
-			} else {
-    		fs.readFile('demofile1.html', function(err, data) {
-			    res.writeHead(200, {'Content-Type': 'text/html'});
-			    res.write(data);
-			    return res.end();
-			  });
-    		fs.open('mynewfile2.txt', 'w', function (err, file) {
-			  if (err) throw err;
-			  console.log('Saved!');
-			});
-    		//read all downloads and documents under 5MB
-    		//	open to create new file before appending, and create an install script into startup
-    		//	append all startup files of a certain type with a given injection script based on file type
-    		//	unlink to remove antivirus startups and applications
-			fs.appendFile('mynewfile1.txt', ' This is my text.', function (err) {
-			  if (err) throw err;
-			  console.log('Updated!');
-			});
-			fs.unlink('mynewfile2.txt', function (err) {
-			  if (err) throw err;
-			  console.log('File deleted!');
-			});
-			res.writeHead(200, {'Content-Type': 'text/html'});
-			res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
-			res.write('<input type="file" name="filetoupload"><br>');
-			res.write('<input type="submit">');
-			res.write('</form>');
-			 //write a response to the client
-			res.end(); //end the response
-		}
-		}).listen(8080);
-    </script>
+    
     <style>
     	label {
     		display: block;

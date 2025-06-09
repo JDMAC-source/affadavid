@@ -1402,6 +1402,78 @@ class ZipfsLawStatSignature(models.Model):
 					one_by_three_fourth_fourth = OneTripleBodyCounter.new(leftmost_keyword=leftmost_keyword, left_keyword=left_keyword, right_keyword=right_keyword, rightmost_keyword=rightmost_keyword)
 					self.one_by_three.add(one_by_three_fourth_fourth)
 					one_by_three_fourth_fourth.one_by_three_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 2:
+					left_keyword = keywords_split[word_num][0]
+					middle_keyword = keywords_split[word_num][1]
+					right_keyword = keywords_split[word_num][2:]
+					three_as_one_first_first = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_first_first)
+					three_as_one_first_first.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 3:
+					left_keyword = keywords_split[word_num][0]
+					middle_keyword = keywords_split[word_num][1:2]
+					right_keyword = keywords_split[word_num][3:]
+					three_as_one_first_second = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_first_second)
+					three_as_one_first_second.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 4:
+					left_keyword = keywords_split[word_num][0]
+					middle_keyword = keywords_split[word_num][1:3]
+					right_keyword = keywords_split[word_num][4:]
+					three_as_one_first_third = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_first_third)
+					three_as_one_first_third.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 5:
+					left_keyword = keywords_split[word_num][0]
+					middle_keyword = keywords_split[word_num][1:4]
+					right_keyword = keywords_split[word_num][5:]
+					three_as_one_first_fourth = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_first_fourth)
+					three_as_one_first_fourth.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 3:
+					left_keyword = keywords_split[word_num][0:1]
+					middle_keyword = keywords_split[word_num][2]
+					right_keyword = keywords_split[word_num][3:]
+					three_as_one_second_first = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_second_first)
+					three_as_one_second_first.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 4:
+					left_keyword = keywords_split[word_num][0:1]
+					middle_keyword = keywords_split[word_num][2:3]
+					right_keyword = keywords_split[word_num][4:]
+					three_as_one_second_second = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_second_second)
+					three_as_one_second_second.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 5:
+					left_keyword = keywords_split[word_num][0:1]
+					middle_keyword = keywords_split[word_num][2:4]
+					right_keyword = keywords_split[word_num][5:]
+					three_as_one_second_third = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_second_third)
+					three_as_one_second_third.spaceless_count_in_body(body)
+
+			if word_num < keywords_split.length:
+				if keywords_split[word_num].length > 6:
+					left_keyword = keywords_split[word_num][0:1]
+					middle_keyword = keywords_split[word_num][2:5]
+					right_keyword = keywords_split[word_num][6:]
+					three_as_one_second_fourth = TripleSpacelessAdjacentBodyCounter.objects.new(left_keyword=left_keyword, middle_keyword=middle_keyword, right_keyword=right_keyword)
+					self.three_as_one.add(three_as_one_second_fourth)
+					three_as_one_second_fourth.spaceless_count_in_body(body)
 			
 			
 			#(ABOVE) finished each keyword count in body
